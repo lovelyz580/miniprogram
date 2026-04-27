@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "心情气泡",
+  "navigationBarBackgroundColor": "#FFFFFF",
+  "navigationBarTextStyle": "black",
+  "backgroundColor": "#F5F7FA",
+  "disableScroll": false,
+  "usingComponents": {}
+}

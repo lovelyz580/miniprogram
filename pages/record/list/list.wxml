@@ -1,0 +1,244 @@
+<!--list.wxml-->
+<view class="container">
+  <!-- 顶部搜索栏 -->
+  <!-- <view class="search-bar">
+    <view class="search-input-wrap">
+      <text class="search-icon">🔍</text>
+      <input 
+        class="search-input"
+        placeholder="搜索记录内容..."
+        bindinput="onSearchInput"
+        value="{{searchKeyword}}"
+      />
+      <text class="search-clear" bindtap="clearSearch" wx:if="{{searchKeyword}}">×</text>
+    </view>
+    <view class="search-btn" bindtap="onSearch">
+      <text>搜索</text>
+    </view>
+  </view> -->
+
+  <!-- 筛选栏 -->
+  <view class="filter-bar">
+    <view class="filter-tabs">
+      <view 
+        class="filter-tab {{filterType === 'all' ? 'active' : ''}}"
+        bindtap="onFilterType"
+        data-type="all"
+      >
+        全部
+      </view>
+      <view 
+        class="filter-tab {{filterType === 'diary' ? 'active' : ''}}"
+        bindtap="onFilterType"
+        data-type="diary"
+      >
+        日记
+      </view>
+      <view 
+        class="filter-tab {{filterType === 'question' ? 'active' : ''}}"
+        bindtap="onFilterType"
+        data-type="question"
+      >
+        问答
+      </view>
+      <view 
+        class="filter-tab {{filterType === 'milestone' ? 'active' : ''}}"
+        bindtap="onFilterType"
+        data-type="milestone"
+      >
+        里程碑
+      </view>
+    </view>
+    
+    <!-- <view class="filter-sort" bindtap="showSortPicker">
+      <text class="sort-icon">{{sortIcon}}</text>
+      <text class="sort-text">{{sortText}}</text>
+    </view> -->
+  </view>
+
+  <!-- 选择栏（批量操作） -->
+  <!-- <view class="selection-bar {{isSelectionMode ? 'show' : ''}}">
+    <view class="selection-info">
+      <text>已选择 {{selectedList.length}} 项</text>
+    </view>
+    <view class="selection-actions">
+      <text class="selection-action" bindtap="selectAll">{{isSelectAll ? '取消全选' : '全选'}}</text>
+      <text class="selection-action danger" bindtap="batchDelete">删除</text>
+    </view>
+  </view> -->
+
+  <!-- 记录列表 -->
+  <scroll-view 
+    class="record-list"
+    scroll-y
+    bindscrolltolower="loadMore"
+    refresher-enabled
+    refresher-triggered="{{isRefreshing}}"
+    bindrefresherrefresh="onRefresh"
+  >
+    <!-- 列表项 -->
+    <view 
+      class="record-item {{isSelectionMode && selectedList.includes(item.id) ? 'selected' : ''}}"
+      wx:for="{{records}}"
+      wx:key="id"
+      bindtap="goToDetail"
+      data-id="{{item.id}}"
+      bindlongpress="onLongPress"
+      data-item="{{item}}"
+    >
+      <!-- 选择框 -->
+      <!-- <view class="item-checkbox" catchtap="onSelectItem" data-id="{{item.id}}">
+        <text class="checkbox-icon {{selectedList.includes(item.id) ? 'checked' : ''}}">
+          {{selectedList.includes(item.id) ? '✓' : ''}}
+        </text>
+      </view> -->
+
+      <!-- 媒体缩略图 -->
+      <view class="item-media">
+        <image 
+          wx:if="{{item.mediaUrls && item.mediaUrls.length > 0}}"
+          src="{{item.mediaUrls[0].url || item.mediaUrls[0]}}"
+          mode="aspectFill"
+          class="item-image"
+        ></image>
+        <view class="item-placeholder" wx:else>
+          <text class="placeholder-icon">{{item.typeIcon}}</text>
+        </view>
+        <view class="item-media-count" wx:if="{{item.mediaUrls && item.mediaUrls.length > 1}}">
+          <text>{{item.mediaUrls.length}}</text>
+        </view>
+        <view class="item-type-badge">
+          <text>{{item.typeName}}</text>
+        </view>
+      </view>
+
+      <!-- 内容区域 -->
+      <view class="item-content">
+        <view class="item-header">
+          <image class="item-pet-avatar" src="{{item.petAvatarUrl || '/assets/images/default-pet.png'}}" mode="aspectFill"></image>
+          <view class="item-pet-info">
+            <text class="item-pet-name">{{item.petName}}</text>
+            <text class="item-date">{{item.createTime}}</text>
+          </view>
+        </view>
+        
+        <text class="item-text">{{item.content}}</text>
+        
+        <view class="item-footer">
+          <!-- <view class="item-stats">
+            <text class="stat-item">❤️ {{item.likeCount || 0}}</text>
+            <text class="stat-item">💬 {{item.commentCount || 0}}</text>
+          </view> -->
+          <view class="item-tag" wx:if="{{item.moodTag}}">
+            <text># {{item.moodTag}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{records.length === 0 && !isLoading}}">
+      <text class="empty-icon">📝</text>
+      <text class="empty-text">暂无记录</text>
+      <text class="empty-desc">开始记录你和宠物的美好时光吧~</text>
+      <view class="empty-btn" bindtap="goToCreate">
+        <text>写日记</text>
+      </view>
+    </view>
+
+    <!-- 加载更多 -->
+    <view class="load-more" wx:if="{{hasMore && records.length > 0}}">
+      <text wx:if="{{isLoading}}">加载中...</text>
+      <text wx:else bindtap="loadMore">加载更多</text>
+    </view>
+
+    <!-- 没有更多了 -->
+    <view class="no-more" wx:if="{{!hasMore && records.length > 0}}">
+      <text>— 没有更多了 —</text>
+    </view>
+  </scroll-view>
+
+  <!-- 底部发布入口 -->
+  <view class="fab-container" wx:if="{{!isSelectionMode}}">
+    <view class="fab-btn" bindtap="showCreateOptions">
+      <text class="fab-icon">+</text>
+    </view>
+  </view>
+</view>
+
+<!-- 创建选项弹窗 -->
+<view class="create-modal {{showCreateModal ? 'show' : ''}}">
+  <view class="create-mask" bindtap="hideCreateModal"></view>
+  <view class="create-content">
+    <view class="create-title">
+      <text>创建记录</text>
+    </view>
+    <view class="create-options">
+      <view class="create-option" bindtap="createDiary">
+        <text class="option-icon">📝</text>
+        <text class="option-name">写日记</text>
+        <text class="option-desc">记录日常点滴</text>
+      </view>
+      <view class="create-option" bindtap="createQuestion">
+        <text class="option-icon">💭</text>
+        <text class="option-name">今日问答</text>
+        <text class="option-desc">回答有趣问题</text>
+      </view>
+      <view class="create-option" bindtap="createMilestone">
+        <text class="option-icon">🏆</text>
+        <text class="option-name">里程碑</text>
+        <text class="option-desc">记录重要时刻</text>
+      </view>
+    </view>
+    <view class="create-cancel" bindtap="hideCreateModal">
+      <text>取消</text>
+    </view>
+  </view>
+</view>
+
+<!-- 排序选择弹窗 -->
+<view class="sort-modal {{showSortModal ? 'show' : ''}}">
+  <view class="sort-mask" bindtap="hideSortModal"></view>
+  <view class="sort-content">
+    <view class="sort-title">
+      <text>排序方式</text>
+    </view>
+    <view class="sort-options">
+      <view 
+        class="sort-option {{currentSort === 'time_desc' ? 'active' : ''}}"
+        bindtap="onSortChange"
+        data-sort="time_desc"
+      >
+        <text>最新优先</text>
+        <text class="sort-check" wx:if="{{currentSort === 'time_desc'}}">✓</text>
+      </view>
+      <view 
+        class="sort-option {{currentSort === 'time_asc' ? 'active' : ''}}"
+        bindtap="onSortChange"
+        data-sort="time_asc"
+      >
+        <text>最早优先</text>
+        <text class="sort-check" wx:if="{{currentSort === 'time_asc'}}">✓</text>
+      </view>
+      <!-- <view 
+        class="sort-option {{currentSort === 'like_desc' ? 'active' : ''}}"
+        bindtap="onSortChange"
+        data-sort="like_desc"
+      >
+        <text>点赞最多</text>
+        <text class="sort-check" wx:if="{{currentSort === 'like_desc'}}">✓</text>
+      </view>
+      <view 
+        class="sort-option {{currentSort === 'comment_desc' ? 'active' : ''}}"
+        bindtap="onSortChange"
+        data-sort="comment_desc"
+      >
+        <text>评论最多</text>
+        <text class="sort-check" wx:if="{{currentSort === 'comment_desc'}}">✓</text>
+      </view>-->
+    </view> 
+    <view class="sort-cancel" bindtap="hideSortModal">
+      <text>取消</text>
+    </view>
+  </view>
+</view>

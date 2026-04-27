@@ -1,0 +1,283 @@
+<!--edit.wxml-->
+<view class="container">
+  <!-- 顶部导航 -->
+  <view class="nav-bar">
+    <text class="nav-back" bindtap="onBack">‹</text>
+    <text class="nav-title">编辑宠物</text>
+    <text class="nav-save {{canSave ? 'active' : ''}}" bindtap="onSave">保存</text>
+  </view>
+
+  <!-- 头像上传 -->
+  <view class="avatar-section">
+    <view class="avatar-wrapper" bindtap="chooseAvatar">
+      <image 
+        class="avatar-image" 
+        src="{{formData.avatarUrl || '/assets/images/default-pet.png'}}" 
+        mode="aspectFill"
+      ></image>
+      <view class="avatar-edit">
+        <text>📷</text>
+      </view>
+    </view>
+    <text class="avatar-tip">点击更换头像</text>
+  </view>
+
+  <!-- 基本信息表单 -->
+  <view class="form-section">
+    <view class="form-title">基本信息</view>
+    
+    <view class="form-item">
+      <text class="form-label">名字 <text class="required">*</text></text>
+      <input 
+        class="form-input"
+        placeholder="给宠物取个名字"
+        bindinput="onNameInput"
+        value="{{formData.name}}"
+        maxlength="20"
+      />
+    </view>
+    <view class="form-item">
+      <text class="form-label">宠物类型</text>
+      <view class="type-selector">
+        <view 
+          class="type-option {{formData.species === 'dog' ? 'active' : ''}}"
+          bindtap="selectPetType"
+          data-type="dog"
+        >
+          <text class="type-icon">🐕</text>
+          <text class="type-text">狗狗</text>
+        </view>
+        <view 
+          class="type-option {{formData.species === 'cat' ? 'active' : ''}}"
+          bindtap="selectPetType"
+          data-type="cat"
+        >
+          <text class="type-icon">🐈</text>
+          <text class="type-text">猫猫</text>
+        </view>
+        <view 
+          class="type-option {{formData.species === 'other' ? 'active' : ''}}"
+          bindtap="selectPetType"
+          data-type="other"
+        >
+          <text class="type-icon">🐾</text>
+          <text class="type-text">其他</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">品种 <text class="required">*</text></text>
+      <view class="form-picker" bindtap="showBreedPicker">
+        <text class="{{formData.breed ? '' : 'placeholder'}}">
+          {{formData.breed || '选择品种'}}
+        </text>
+        <text class="picker-arrow">›</text>
+      </view>
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">性别</text>
+      <view class="gender-selector">
+        <view 
+          class="gender-option {{formData.gender === 'male' ? 'active' : ''}}"
+          bindtap="selectGender"
+          data-gender="male"
+        >
+          <text class="gender-icon">♂️</text>
+          <text class="gender-text">弟弟</text>
+        </view>
+        <view 
+          class="gender-option {{formData.gender === 'female' ? 'active' : ''}}"
+          bindtap="selectGender"
+          data-gender="female"
+        >
+          <text class="gender-icon">♀️</text>
+          <text class="gender-text">妹妹</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">生日</text>
+      <view class="form-picker" bindtap="showBirthdayPicker">
+        <text class="{{formData.birthDate ? '' : 'placeholder'}}">
+          {{formData.birthDate || '选择生日'}}
+        </text>
+        <text class="picker-arrow">›</text>
+      </view>
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">领养日期 <text class="required">*</text></text>
+      <view class="form-picker" bindtap="showAdoptDatePicker">
+        <text class="{{formData.adoptDate ? '' : 'placeholder'}}">
+          {{formData.adoptDate || '选择领养日期'}}
+        </text>
+        <text class="picker-arrow">›</text>
+      </view>
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">体重 (kg)</text>
+      <input 
+        class="form-input"
+        type="digit"
+        placeholder="输入体重"
+        bindinput="onWeightInput"
+        value="{{formData.weight}}"
+      />
+    </view>
+  </view>
+
+  <!-- 详细信息表单 -->
+  <view class="form-section">
+    <view class="form-title">详细信息</view>
+
+    <view class="form-item">
+      <text class="form-label">毛色</text>
+      <input 
+        class="form-input"
+        placeholder="如：金色、黑白相间"
+        bindinput="onColorInput"
+        value="{{formData.color}}"
+        maxlength="30"
+      />
+    </view>
+
+
+    <view class="form-item">
+      <text class="form-label">是否已绝育</text>
+      <view class="switch-wrap">
+        <switch 
+          checked="{{formData.isNeutered}}"
+          bindchange="onNeuteredChange"
+          color="#3366CC"
+        />
+      </view>
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">是否已打疫苗</text>
+      <view class="switch-wrap">
+        <switch 
+          checked="{{formData.isVaccinated}}"
+          bindchange="onVaccinatedChange"
+          color="#3366CC"
+        />
+      </view>
+    </view>
+
+    <view class="form-item vertical">
+      <text class="form-label">备注</text>
+      <textarea 
+        class="form-textarea"
+        placeholder="记录宠物的喜好、习惯等..."
+        bindinput="onRemarkInput"
+        value="{{formData.remark}}"
+        maxlength="500"
+      ></textarea>
+    </view>
+  </view>
+
+  <!-- 其他信息 -->
+  <view class="form-section">
+    <view class="form-title">其他</view>
+
+    <view class="form-item">
+      <text class="form-label">是否离世</text>
+      <view class="switch-wrap">
+        <switch 
+          checked="{{formData.isDeceased}}"
+          bindchange="onDeceasedChange"
+          color="#3366CC"
+        />
+      </view>
+    </view>
+
+    <view class="form-item" wx:if="{{formData.isDeceased}}">
+      <text class="form-label">离世日期</text>
+      <view class="form-picker" bindtap="showDeceasedDatePicker">
+        <text class="{{formData.deceasedDate ? '' : 'placeholder'}}">
+          {{formData.deceasedDate || '选择日期'}}
+        </text>
+        <text class="picker-arrow">›</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 宠龄信息 -->
+  <view class="age-section" wx:if="{{petAge}}">
+    <view class="age-info">
+      <text class="age-label">宠龄</text>
+      <text class="age-value">{{petAge}}</text>
+    </view>
+    <view class="age-info">
+      <text class="age-label">相伴</text>
+      <text class="age-value">{{togetherDays}}天</text>
+    </view>
+  </view>
+
+  <!-- 删除按钮 -->
+  <view class="delete-section">
+    <view class="delete-btn" bindtap="onDelete">
+      <text>删除宠物</text>
+    </view>
+  </view>
+</view>
+
+<!-- 品种选择弹窗 -->
+<view class="picker-modal {{showBreedPickerModal ? 'show' : ''}}">
+  <view class="picker-mask" bindtap="hideBreedPicker"></view>
+  <view class="picker-content">
+    <view class="picker-header">
+      <text bindtap="hideBreedPicker">取消</text>
+      <text class="picker-title">选择品种</text>
+      <text bindtap="confirmBreed">确定</text>
+    </view>
+    <picker-view 
+      class="breed-picker"
+      value="{{breedPickerValue}}"
+      bindchange="onBreedChange"
+    >
+      <picker-view-column>
+        <view class="picker-item" wx:for="{{breedList}}" wx:key="*this">{{item}}</view>
+      </picker-view-column>
+    </picker-view>
+    <view class="custom-breed">
+      <input 
+        class="custom-input"
+        placeholder="或输入自定义品种"
+        bindinput="onCustomBreedInput"
+        value="{{customBreed}}"
+      />
+    </view>
+  </view>
+</view>
+
+<!-- 日期选择器弹窗 -->
+<view class="picker-modal {{showDatePickerModal ? 'show' : ''}}">
+  <view class="picker-mask" bindtap="hideDatePicker"></view>
+  <view class="picker-content">
+    <view class="picker-header">
+      <text bindtap="hideDatePicker">取消</text>
+      <text class="picker-title">{{datePickerTitle}}</text>
+      <text bindtap="confirmDate">确定</text>
+    </view>
+    <picker-view 
+      class="date-picker"
+      value="{{datePickerValue}}"
+      bindchange="onDateChange"
+    >
+      <picker-view-column>
+        <view class="picker-item" wx:for="{{years}}" wx:key="*this">{{item}}年</view>
+      </picker-view-column>
+      <picker-view-column>
+        <view class="picker-item" wx:for="{{months}}" wx:key="*this">{{item}}月</view>
+      </picker-view-column>
+      <picker-view-column>
+        <view class="picker-item" wx:for="{{days}}" wx:key="*this">{{item}}日</view>
+      </picker-view-column>
+    </picker-view>
+  </view>
+</view>

@@ -1,0 +1,126 @@
+<!-- pages/health/checkup.wxml -->
+<view class="container">
+  <!-- 筛选栏 -->
+  <view class="filter-bar">
+    <view class="filter-tabs">
+      <view 
+        class="filter-tab {{currentTab === 'all' ? 'active' : ''}}" 
+        bindtap="switchTab" 
+        data-tab="all"
+      >
+        <text>全部</text>
+      </view>
+      <view 
+        class="filter-tab {{currentTab === 'routine' ? 'active' : ''}}" 
+        bindtap="switchTab" 
+        data-tab="routine"
+      >
+        <text>常规体检</text>
+      </view>
+      <view 
+        class="filter-tab {{currentTab === 'special' ? 'active' : ''}}" 
+        bindtap="switchTab" 
+        data-tab="special"
+      >
+        <text>专项检查</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 体重趋势图（可选） -->
+  <view class="weight-chart-section" wx:if="{{weightData.length > 0}}">
+    <view class="chart-header">
+      <text class="chart-title">体重趋势</text>
+      <text class="chart-subtitle">近6次记录</text>
+    </view>
+    <canvas canvas-id="weightCanvas" class="chart-canvas"></canvas>
+  </view>
+
+  <!-- 体检记录列表 -->
+  <scroll-view 
+    class="record-list" 
+    scroll-y
+    bindscrolltolower="loadMore"
+    refresher-enabled 
+    refresher-triggered="{{isRefreshing}}"
+    bindrefresherrefresh="onRefresh"
+  >
+    <view class="record-item" wx:for="{{records}}" wx:key="id">
+      <view class="record-card" bindtap="showDetail" data-id="{{item.id}}">
+        <!-- 记录头部 -->
+        <view class="record-header">
+          <view class="checkup-type-badge">
+            <text>{{item.checkupType}}</text>
+          </view>
+          <text class="record-date">{{item.checkupDate}}</text>
+        </view>
+
+        <!-- 记录内容 -->
+        <view class="record-body">
+          <view class="body-title">
+            <text class="checkup-icon">🩺</text>
+            <text class="checkup-title">{{item.checkupTitle}}</text>
+          </view>
+
+          <!-- 基本信息 -->
+          <view class="info-grid" wx:if="{{item.weight || item.temperature}}">
+            <view class="info-item" wx:if="{{item.weight}}">
+              <text class="info-label">体重</text>
+              <text class="info-value">{{item.weight}}kg</text>
+            </view>
+            <view class="info-item" wx:if="{{item.temperature}}">
+              <text class="info-label">体温</text>
+              <text class="info-value">{{item.temperature}}°C</text>
+            </view>
+          </view>
+
+          <!-- 体检结果 -->
+          <view class="result-section" wx:if="{{item.resultSummary}}">
+            <text class="result-label">体检结果</text>
+            <text class="result-text">{{item.resultSummary}}</text>
+          </view>
+
+          <!-- 医院信息 -->
+          <view class="hospital-info" wx:if="{{item.hospitalName}}">
+            <text class="hospital-icon">🏥</text>
+            <text class="hospital-name">{{item.hospitalName}}</text>
+          </view>
+        </view>
+
+        <!-- 附件标识 -->
+        <view class="attachment-badge" wx:if="{{item.hasAttachment}}">
+          <text>📎</text>
+        </view>
+
+        <!-- 记录底部 -->
+        <view class="record-footer">
+          <text class="record-age">宠龄：{{item.petAge}}</text>
+          <view class="record-actions">
+            <text class="action-btn" catchtap="viewAttachment" data-id="{{item.petId}}" wx:if="{{item.hasAttachment}}">查看报告</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 加载状态 -->
+    <view class="load-more" wx:if="{{records.length > 0}}">
+      <text wx:if="{{hasMore}}">加载中...</text>
+      <text wx:else>没有更多了</text>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{records.length === 0 && !isLoading}}">
+      <text class="empty-icon">🩺</text>
+      <text class="empty-title">还没有体检记录哦</text>
+      <text class="empty-desc">给TA做个健康备忘录吧~</text>
+    </view>
+  </scroll-view>
+
+  <!-- 添加按钮 -->
+  <view class="add-btn" bindtap="goToAdd">
+    <text class="add-icon">🐾</text>
+  </view>
+
+  <!-- 底部导航栏占位 -->
+  <view class="tab-bar-placeholder"></view>
+</view>

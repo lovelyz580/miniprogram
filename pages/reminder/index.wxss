@@ -1,0 +1,289 @@
+/* pages/reminder/index.wxss */
+
+/* 页面容器 */
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #F5F7FA;
+  padding-bottom: 140rpx;
+}
+
+/* 筛选栏 */
+.filter-bar {
+  padding: 20rpx 30rpx;
+  background-color: #FFFFFF;
+  border-bottom: 1rpx solid #F0F0F0;
+}
+
+.filter-tabs {
+  display: flex;
+  gap: 16rpx;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.filter-tab {
+  padding: 12rpx 24rpx;
+  background-color: #F5F7FA;
+  border-radius: 30rpx;
+  font-size: 26rpx;
+  color: #666666;
+}
+
+.filter-tab.active {
+  background-color: #3366CC;
+  color: #FFFFFF;
+}
+
+/* 提醒列表 */
+.reminder-list {
+  flex: 1;
+  padding: 20rpx 30rpx;
+}
+
+/* 提醒分组 */
+.reminder-group {
+  margin-bottom: 30rpx;
+}
+
+.group-header {
+  display: flex;
+  align-items: center;
+  padding: 16rpx 0;
+}
+
+.group-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333333;
+}
+
+.group-count {
+  font-size: 24rpx;
+  color: #999999;
+  margin-left: 12rpx;
+  padding: 4rpx 12rpx;
+  background-color: #F0F0F0;
+  border-radius: 20rpx;
+}
+
+.toggle-icon {
+  font-size: 28rpx;
+  color: #999999;
+  margin-left: auto;
+  transition: transform 0.3s;
+}
+
+.toggle-icon.expanded {
+  transform: rotate(90deg);
+}
+
+/* 提醒项 */
+.reminder-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 24rpx;
+  background-color: #FFFFFF;
+  border-radius: 16rpx;
+  margin-bottom: 16rpx;
+}
+
+.reminder-item.overdue {
+  background-color: #FFF9F0;
+}
+
+.reminder-item.completed {
+  opacity: 0.7;
+}
+
+.item-checkbox {
+  margin-right: 20rpx;
+  margin-top: 4rpx;
+}
+
+.checkbox {
+  width: 44rpx;
+  height: 44rpx;
+  border: 2rpx solid #D9D9D9;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24rpx;
+  color: #FFFFFF;
+}
+
+.checkbox.checked {
+  background-color: #52C41A;
+  border-color: #52C41A;
+}
+
+.item-content {
+  flex: 1;
+}
+
+.item-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8rpx;
+}
+
+.category-tag {
+  padding: 6rpx 12rpx;
+  border-radius: 6rpx;
+  font-size: 22rpx;
+  margin-right: 12rpx;
+}
+
+.category-tag-vaccine {
+  background-color: #E6F7FF;
+  color: #1890FF;
+}
+
+.category-tag-checkup {
+  background-color: #FFF7E6;
+  color: #FA8C16;
+}
+
+.category-tag-medication {
+  background-color: #F6FFED;
+  color: #52C41A;
+}
+
+.category-tag-other {
+  background-color: #FFF1F0;
+  color: #FF4D4F;
+}
+
+.item-date {
+  font-size: 24rpx;
+  color: #999999;
+}
+
+.item-date.overdue {
+  color: #FF4D4F;
+}
+
+.item-date.completed-date {
+  color: #52C41A;
+}
+
+.item-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333333;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.item-desc {
+  font-size: 26rpx;
+  color: #666666;
+  display: block;
+  margin-bottom: 8rpx;
+  line-height: 1.4;
+}
+
+.item-footer {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.pet-name {
+  font-size: 24rpx;
+  color: #999999;
+}
+
+.repeat-info {
+  font-size: 22rpx;
+  color: #999999;
+  padding: 4rpx 10rpx;
+  background-color: #F5F7FA;
+  border-radius: 4rpx;
+}
+
+.item-actions {
+  display: flex;
+  gap: 16rpx;
+  margin-left: 16rpx;
+}
+
+.action-edit {
+  font-size: 26rpx;
+  color: #3366CC;
+}
+
+.action-delete {
+  font-size: 26rpx;
+  color: #FF6B6B;
+}
+
+/* 已完成分组 */
+.completed-group .group-header {
+  background-color: transparent;
+}
+
+.completed-list {
+  margin-top: 16rpx;
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 100rpx 0;
+}
+
+.empty-icon {
+  font-size: 120rpx;
+  margin-bottom: 30rpx;
+}
+
+.empty-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 16rpx;
+}
+
+.empty-desc {
+  font-size: 28rpx;
+  color: #999999;
+}
+
+/* 加载更多 */
+.load-more {
+  text-align: center;
+  padding: 30rpx;
+  color: #999999;
+  font-size: 26rpx;
+}
+
+/* 添加按钮 */
+.add-btn {
+  position: fixed;
+  right: 40rpx;
+  bottom: 180rpx;
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+  background-color: #3366CC;
+  box-shadow: 0 8rpx 20rpx rgba(51, 102, 204, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.add-icon {
+  font-size: 60rpx;
+  color: #FFFFFF;
+  font-weight: 300;
+}
+
+/* 底部导航栏占位 */
+.tab-bar-placeholder {
+  height: 100rpx;
+}

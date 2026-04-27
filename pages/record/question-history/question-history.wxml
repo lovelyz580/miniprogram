@@ -1,0 +1,134 @@
+<!--question-history.wxml-->
+<!--历史回答页面-->
+<view class="container">
+  <!-- 顶部标题 -->
+  <view class="header">
+    <view class="header-content">
+      <text class="header-icon">📚</text>
+      <view class="header-text">
+        <text class="header-title">历史回答</text>
+        <text class="header-subtitle">共 {{total}} 条记录</text>
+      </view>
+    </view>
+    <view class="filter-btn" bindtap="toggleFilter">
+      <text class="filter-icon">筛选</text>
+    </view>
+  </view>
+
+  <!-- 筛选面板 -->
+  <view class="filter-panel {{showFilter ? 'show' : ''}}">
+    <!-- 宠物筛选 -->
+    <view class="filter-item">
+      <text class="filter-label">选择宠物</text>
+      <picker 
+        mode="selector" 
+        range="{{petList}}" 
+        range-key="name" 
+        bindchange="onPetChange"
+        value="{{currentPetIndex}}"
+      >
+        <view class="picker-value">
+          {{currentPet ? currentPet.name : '全部宠物'}}
+          <text class="arrow">▼</text>
+        </view>
+      </picker>
+    </view>
+
+    <!-- 日期范围筛选 -->
+    <view class="filter-item">
+      <text class="filter-label">日期范围</text>
+      <view class="date-range">
+        <picker mode="date" value="{{startDate}}" bindchange="onStartDateChange">
+          <view class="date-picker">{{startDate}}</view>
+        </picker>
+        <text class="date-separator">至</text>
+        <picker mode="date" value="{{endDate}}" bindchange="onEndDateChange">
+          <view class="date-picker">{{endDate}}</view>
+        </picker>
+      </view>
+    </view>
+
+    <!-- 快速选择 -->
+    <view class="quick-select">
+      <view class="quick-btn" bindtap="selectDateRange" data-type="week">近7天</view>
+      <view class="quick-btn" bindtap="selectDateRange" data-type="month">近30天</view>
+      <view class="quick-btn" bindtap="selectDateRange" data-type="threeMonth">近3个月</view>
+    </view>
+  </view>
+
+  <!-- 历史回答列表 -->
+  <scroll-view 
+    class="answer-list" 
+    scroll-y 
+    enable-back-to-top
+    bindscrolltolower="onReachBottom"
+    refresher-enabled
+    bindrefresherrefresh="onPullDownRefresh"
+    refresher-triggered="{{refreshing}}"
+  >
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{answerList.length === 0 && !loading}}">
+      <text class="empty-icon">📝</text>
+      <text class="empty-text">暂无历史回答</text>
+      <text class="empty-tip">快去回答今日问题吧</text>
+    </view>
+
+    <!-- 回答卡片 -->
+    <view 
+      class="answer-card" 
+      wx:for="{{answerList}}" 
+      wx:key="answerId"
+      bindtap="viewAnswerDetail"
+      data-index="{{index}}"
+    >
+      <!-- 日期标签 -->
+      <view class="card-date">
+        <text class="date-day">{{item.answerDate || item.createTime}}</text>
+      </view>
+      
+      <!-- 问题 -->
+      <view class="card-question">
+        <text class="question-icon">❓</text>
+        <text class="question-text">{{item.question || item.questionContent}}</text>
+      </view>
+      
+      <!-- 回答内容 -->
+      <view class="card-answer">
+        <text class="answer-icon">💬</text>
+        <text class="answer-text">{{item.content || item.answerContent}}</text>
+      </view>
+      
+      <!-- 图片列表 -->
+      <view class="card-images" wx:if="{{item.images && item.images.length > 0}}">
+        <view 
+          class="card-image-item" 
+          wx:for="{{item.images}}" 
+          wx:for-item="imgItem"
+          wx:for-index="imgIndex"
+          wx:key="imgIndex"
+          bindtap="previewImage"
+          data-images="{{item.images}}"
+          data-current="{{imgItem}}"
+        >
+          <image src="{{imgItem}}" mode="aspectFill" class="card-image"></image>
+        </view>
+      </view>
+      
+      <!-- 宠物标签 -->
+      <view class="card-pet-tag" wx:if="{{item.petId}}">
+        <text class="pet-tag-icon">🐾</text>
+        <text class="pet-tag-text">{{item.petName || '宠物'}}</text>
+      </view>
+    </view>
+
+    <!-- 加载更多 -->
+    <view class="load-more" wx:if="{{answerList.length > 0}}">
+      <view wx:if="{{hasMore && loading}}" class="loading">
+        <text>加载中...</text>
+      </view>
+      <view wx:elif="{{!hasMore}}" class="no-more">
+        <text>没有更多了</text>
+      </view>
+    </view>
+  </scroll-view>
+</view>

@@ -1,0 +1,142 @@
+<!-- pages/health/index.wxml -->
+<view class="container">
+  <!-- 宠物信息栏 -->
+  <view class="pet-info-bar">
+    <view class="pet-avatar-wrapper" bindtap="switchPet">
+      <image class="pet-avatar" src="{{currentPet.avatarUrl || '/assets/images/default-pet.png'}}" mode="aspectFill"></image>
+      <view class="pet-badge" wx:if="{{petList.length > 1}}">
+        <text>{{petList.length}}</text>
+      </view>
+    </view>
+    <view class="pet-detail">
+      <view class="pet-name-row">
+        <text class="pet-name">{{currentPet.name || '我的小毛孩'}}</text>
+        <text class="pet-breed" wx:if="{{currentPet.breed}}">{{currentPet.breed}}</text>
+      </view>
+      <text class="pet-age">宠龄：{{petAge}}</text>
+    </view>
+    <view class="add-pet-btn" bindtap="goToAddPet">
+      <text>🐾</text>
+    </view>
+  </view>
+
+  <!-- 健康概览卡片 -->
+  <view class="health-overview">
+    <view class="overview-title">
+      <text>TA的健康日记 🐾</text>
+      <text class="overview-time" wx:if="{{lastCheckupDate}}">最近体检：{{lastCheckupDate}}</text>
+    </view>
+    
+    <!-- 体重趋势 -->
+    <view class="weight-trend" wx:if="{{weightTrend.length > 0}}">
+      <canvas canvas-id="weightCanvas" class="weight-chart"></canvas>
+      <view class="weight-info">
+        <view class="weight-current">
+          <text class="weight-value">{{currentWeight}}</text>
+          <text class="weight-unit">kg</text>
+        </view>
+        <view class="weight-change {{weightChangeType}}">
+          <text wx:if="{{weightChange !== 0}}">{{weightChange > 0 ? '↑' : '↓'}} {{weightChangeAbs}}kg</text>
+          <text wx:else>体重稳定</text>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 无数据提示 -->
+    <view class="empty-weight" wx:else bindtap="goToWeight">
+      <text class="empty-icon">⚖️</text>
+      <text class="empty-text">点击记录体重，了解健康趋势</text>
+    </view>
+  </view>
+
+  <!-- 健康记录入口卡片 -->
+  <view class="health-cards">
+    <view class="health-card" bindtap="goToVaccine">
+      <view class="card-icon vaccine-icon">
+        <text>💉</text>
+      </view>
+      <view class="card-content">
+        <text class="card-title">疫苗记录</text>
+        <text class="card-desc">{{vaccineCount}}条记录</text>
+      </view>
+      <view class="card-arrow">›</view>
+    </view>
+
+    <view class="health-card" bindtap="goToCheckup">
+      <view class="card-icon checkup-icon">
+        <text>🩺</text>
+      </view>
+      <view class="card-content">
+        <text class="card-title">体检记录</text>
+        <text class="card-desc">{{checkupCount}}条记录</text>
+      </view>
+      <view class="card-arrow">›</view>
+    </view>
+
+    <view class="health-card" bindtap="goToMedication">
+      <view class="card-icon medication-icon">
+        <text>💊</text>
+      </view>
+      <view class="card-content">
+        <text class="card-title">用药记录</text>
+        <text class="card-desc">{{medicationCount}}条记录</text>
+      </view>
+      <view class="card-arrow">›</view>
+    </view>
+
+    <view class="health-card" bindtap="goToWeight">
+      <view class="card-icon weight-icon">
+        <text>⚖️</text>
+      </view>
+      <view class="card-content">
+        <text class="card-title">体重记录</text>
+        <text class="card-desc">{{weightCount}}条记录</text>
+      </view>
+      <view class="card-arrow">›</view>
+    </view>
+  </view>
+
+  <!-- 健康提醒列表 -->
+  <view class="reminder-section">
+    <view class="section-header">
+      <text class="section-title">温馨提醒 🐾</text>
+      <text class="section-more" bindtap="goToReminder">全部 ›</text>
+    </view>
+    
+    <view class="reminder-list" wx:if="{{reminders.length > 0}}">
+      <view 
+        class="reminder-item" 
+        wx:for="{{reminders}}" 
+        wx:key="id"
+        bindtap="handleReminder"
+        data-id="{{item.reminderId}}"
+      >
+        <view class="reminder-left">
+          <view class="reminder-tag reminder-tag-{{item.type}}">
+            <text>{{item.typeText}}</text>
+          </view>
+          <view class="reminder-info">
+            <text class="reminder-title">{{item.title}}</text>
+            <text class="reminder-date">{{item.remindTime}}</text>
+          </view>
+        </view>
+        <view class="reminder-status {{item.status}}">
+          <text wx:if="{{item.status === 'pending'}}">待完成</text>
+          <text wx:elif="{{item.status === 'done'}}">已完成</text>
+          <text wx:else>已过期</text>
+        </view>
+      </view>
+    </view>
+    
+    <view class="empty-reminder" wx:else>
+      <text class="empty-icon">🔔</text>
+      <text class="empty-text">暂无温馨提醒</text>
+      <view class="empty-action" bindtap="goToAddReminder">
+        <text>添加健康提醒 🐾</text>
+      </view>
+    </view>
+  </view>
+</view>
+
+<!-- 底部导航栏占位 -->
+<view class="tab-bar-placeholder"></view>

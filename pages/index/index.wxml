@@ -1,0 +1,185 @@
+<!--index.wxml-->
+<view class="container">
+  <!-- 顶部导航栏 -->
+  <view class="nav-bar">
+    <view class="pet-selector" bindtap="showPetSelector">
+      <image class="pet-avatar" src="{{currentPet.avatarUrl || '/assets/images/default-pet.png'}}" mode="aspectFill"></image>
+      <text class="pet-name">{{currentPet.name || '我的小毛孩'}}</text>
+      <text class="arrow">▾</text>
+    </view>
+    <view class="user-avatar" bindtap="goToProfile">
+      <image src="{{userInfo.avatarUrl || '/assets/images/default-avatar.png'}}" mode="aspectFill"></image>
+    </view>
+  </view>
+
+  <!-- 健康提醒卡片 -->
+  <view class="reminder-card" wx:if="{{reminder}}" bindtap="goToHealth">
+    <text class="reminder-icon">{{reminder.icon}}</text>
+    <view class="reminder-content">
+      <text class="reminder-title">{{reminder.title}}</text>
+      <text class="reminder-desc">{{reminder.content}}</text>
+    </view>
+    <text class="reminder-arrow">›</text>
+  </view>
+
+  <!-- 时光轴 -->
+  <view class="timeline-section">
+    <view class="section-header">
+      <text class="section-title">温暖时光轴 🐾</text>
+      <!-- <text class="section-filter" bindtap="showFilter">筛选</text> -->
+    </view>
+
+    <!-- 记录列表 -->
+    <scroll-view 
+      class="record-list" 
+      scroll-y 
+      bindscrolltolower="loadMore"
+      refresher-enabled 
+      refresher-triggered="{{isRefreshing}}"
+      bindrefresherrefresh="onRefresh"
+    >
+      <!-- 记录卡片 -->
+      <view 
+        class="record-card" 
+        wx:for="{{records}}" 
+        wx:key="recordId"
+        bindtap="goToRecordDetail"
+        data-id="{{item.recordId}}"
+      >
+        <!-- 图片区域 -->
+        <view class="record-media">
+          <image 
+            class="record-image" 
+            src="{{item.mediaUrls[0]}}" 
+            mode="aspectFill"
+            wx:if="{{item.mediaUrls.length > 0}}"
+          ></image>
+          <!-- <view class="record-video" wx:if="{{item.recordType === 2}}">
+            <text class="play-icon">▶</text>
+          </view> -->
+          <view class="record-more" wx:if="{{item.mediaUrls.length > 1}}">
+            <text>+{{item.mediaUrls.length - 1}}</text>
+          </view>
+        </view>
+
+        <!-- 内容区域 -->
+        <view class="record-content">
+          <!-- 心情标签 -->
+          <view class="mood-tag" wx:if="{{item.moodTag}}">
+            <text>{{item.moodTag}}</text>
+          </view>
+
+          <!-- 文字内容 -->
+          <text class="record-text" wx:if="{{item.content}}">{{item.content}}</text>
+
+          <!-- 元数据 -->
+          <view class="record-meta">
+            <text class="meta-item" wx:if="{{item.location}}">{{item.location}}</text>
+            <text class="meta-dot" wx:if="{{item.location && item.weather}}">·</text>
+            <text class="meta-item" wx:if="{{item.weather}}">{{item.weather}}</text>
+            <text class="meta-dot" wx:if="{{item.weather}}">·</text>
+            <text class="meta-item highlight">第{{item.petAgeDays}}天</text>
+          </view>
+
+          <!-- 日期 -->
+          <text class="record-date">{{item.createTime}}</text>
+        </view>
+
+        <!-- 操作栏 -->
+        <!-- <view class="record-actions">
+          <view class="action-btn" catchtap="toggleLike" data-id="{{item.id}}">
+            <text class="action-icon">{{item.isLiked ? '❤️' : '🤍'}}</text>
+            <text class="action-count">{{item.likeCount || 0}}</text>
+          </view>
+          <view class="action-btn" catchtap="goToComment" data-id="{{item.id}}">
+            <text class="action-icon">💬</text>
+            <text class="action-count">{{item.commentCount || 0}}</text>
+          </view>
+        </view> -->
+				
+      </view>
+
+      <!-- 加载更多 -->
+      <view class="load-more" wx:if="{{hasMore}}">
+        <text wx:if="{{isLoading}}">加载中...</text>
+        <text wx:else>上拉加载更多</text>
+      </view>
+
+      <!-- 没有更多 -->
+      <view class="no-more" wx:if="{{!hasMore && records.length > 0}}">
+        <text>已经到底啦~</text>
+      </view>
+
+      <!-- 空状态 -->
+      <view class="empty-state" wx:if="{{records.length === 0 && !isLoading}}">
+        <image class="empty-image" src="/assets/images/empty-record.png" mode="aspectFit"></image>
+        <text class="empty-title">还没有记录哦 ~</text>
+        <text class="empty-desc">点击下方按钮，开始记录你和TA的每一个温暖瞬间 🐾</text>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 悬浮按钮 -->
+  <view class="fab-button" bindtap="showRecordOptions">
+    <text class="fab-icon">🐾</text>
+  </view>
+
+  <!-- 记录方式选择弹窗 -->
+  <view class="record-modal" wx:if="{{showRecordModal}}" bindtap="hideRecordOptions">
+    <view class="record-modal-content" catchtap="">
+      <view class="modal-header">
+        <text class="modal-title">选择记录方式</text>
+      </view>
+      <view class="modal-options">
+        <view class="option-item" bindtap="goToMoodBubble">
+          <text class="option-icon">💭</text>
+          <text class="option-name">心情气泡</text>
+          <text class="option-desc">快速记录此刻心情</text>
+        </view>
+        <view class="option-item" bindtap="goToWriteDiary">
+          <text class="option-icon">📝</text>
+          <text class="option-name">写日记</text>
+          <text class="option-desc">记录详细的故事</text>
+        </view>
+        <view class="option-item" bindtap="goToDailyQuestion">
+          <text class="option-icon">🎯</text>
+          <text class="option-name">今日问答</text>
+          <text class="option-desc">回答一个问题</text>
+        </view>
+        <view class="option-item" bindtap="goToMilestone">
+          <text class="option-icon">🏆</text>
+          <text class="option-name">记录里程碑</text>
+          <text class="option-desc">记录重要时刻</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 宠物选择弹窗 -->
+  <view class="pet-modal" wx:if="{{showPetModal}}" bindtap="hidePetSelector">
+    <view class="pet-modal-content" catchtap="">
+      <view class="modal-header">
+        <text class="modal-title">选择宠物</text>
+      </view>
+      <scroll-view class="pet-list" scroll-y>
+        <view 
+          class="pet-item {{item.petId === currentPet.petId ? 'active' : ''}}" 
+          wx:for="{{petList}}" 
+          wx:key="petId"
+          bindtap="selectPet"
+          data-pet="{{item}}"
+        >
+          <image class="pet-item-avatar" src="{{item.avatarUrl}}" mode="aspectFill"></image>
+          <text class="pet-item-name">{{item.name}}</text>
+          <text class="pet-item-check" wx:if="{{item.petId === currentPet.petId}}">✓</text>
+        </view>
+      </scroll-view>
+      <view class="add-pet-btn" bindtap="goToAddPet">
+        <text class="add-icon">🐾</text>
+        <text class="add-text">迎接新成员</text>
+      </view>
+    </view>
+  </view>
+
+
+</view>

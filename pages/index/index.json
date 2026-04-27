@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "爪印记忆",
+  "navigationBarBackgroundColor": "#FFFFFF",
+  "navigationBarTextStyle": "black",
+  "backgroundColor": "#F5F7FA",
+  "enablePullDownRefresh": false,
+  "usingComponents": {}
+}

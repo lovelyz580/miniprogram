@@ -1,0 +1,142 @@
+<!--daily-question.wxml-->
+<view class="container">
+  <!-- 顶部标题 -->
+  <view class="header">
+    <view class="header-content">
+      <text class="header-icon">💭</text>
+      <view class="header-text">
+        <text class="header-title">今日问答</text>
+        <text class="header-date">{{todayDate}}</text>
+      </view>
+    </view>
+    <view class="header-pet" wx:if="{{currentPet}}">
+      <image class="pet-avatar" src="{{currentPet.avatarUrl || '/assets/images/default-pet.png'}}" mode="aspectFill"></image>
+      <text class="pet-name">{{currentPet.name}}</text>
+    </view>
+  </view>
+
+  <!-- 今日问题卡片 -->
+  <view class="question-card" wx:if="{{currentQuestion && !isAnswered}}">
+    <view class="question-type">
+      <text class="type-tag">{{currentQuestion.questionType}}</text>
+    </view>
+    <text class="question-text">{{currentQuestion.questionContent}}</text>
+    <view class="question-tip">
+      <text>💡 回答越详细，越能记录更多美好回忆</text>
+    </view>
+  </view>
+
+  <!-- 回答区域 -->
+  <view class="answer-section" wx:if="{{currentQuestion && !isAnswered}}">
+    <textarea 
+      class="answer-input"
+      placeholder="在这里写下你的回答..."
+      maxlength="2000"
+      bindinput="onAnswerInput"
+      value="{{answerText}}"
+    ></textarea>
+    <view class="answer-footer">
+      <text class="word-count">{{answerText.length}} / 2000</text>
+    </view>
+
+    <!-- 添加配图 -->
+    <view class="image-section">
+      <view class="image-header">
+        <text class="section-label">添加配图（可选）</text>
+        <text class="image-tip" wx:if="{{images.length > 0}}">{{images.length}}/9张</text>
+      </view>
+      <view class="image-grid">
+        <view 
+          class="image-item" 
+          wx:for="{{images}}" 
+          wx:key="index"
+        >
+          <image src="{{item}}" mode="aspectFill" class="image-preview"></image>
+          <view class="image-delete" bindtap="deleteImage" data-index="{{index}}">
+            <text>×</text>
+          </view>
+        </view>
+        <view class="add-image-btn" bindtap="chooseImage" wx:if="{{images.length < 9}}">
+          <text class="add-icon">+</text>
+          <text class="add-text">添加照片</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 提交按钮 -->
+    <view class="submit-btn {{answerText ? 'active' : ''}}" bindtap="submitAnswer">
+      <text>提交回答</text>
+    </view>
+  </view>
+
+  <!-- 已回答状态 -->
+  <view class="answered-section" wx:if="{{isAnswered}}">
+    <view class="answered-card">
+      <view class="answered-badge">
+        <text class="badge-icon">✓</text>
+        <text class="badge-text">已回答</text>
+      </view>
+      <text class="answered-question">{{currentQuestion.questionContent}}</text>
+      <text class="answered-text">{{myAnswer.answerContent}}</text>
+      <view class="answered-images" wx:if="{{myAnswer.images.length > 0}}">
+        <image 
+          wx:for="{{myAnswer.images}}" 
+          wx:key="index"
+          src="{{item}}" 
+          mode="aspectFill" 
+          class="answered-image"
+          bindtap="previewAnswerImage"
+          data-index="{{index}}"
+        ></image>
+      </view>
+      <view class="answered-time">
+        <text>回答于 {{myAnswer.createTime}}</text>
+      </view>
+    </view>
+
+    <!-- 换一个问题 -->
+    <view class="change-btn" bindtap="getNextQuestion">
+      <text>换一个随机问题</text>
+    </view>
+  </view>
+
+  <!-- 历史问答入口 -->
+  <view class="history-section" bindtap="goToHistory">
+    <view class="history-content">
+      <text class="history-icon">📚</text>
+      <view class="history-info">
+        <text class="history-title">历史问答</text>
+        <text class="history-count">已回答 {{answeredCount}} 个问题</text>
+      </view>
+    </view>
+    <text class="history-arrow">›</text>
+  </view>
+
+  <!-- 问题日历入口 -->
+  <view class="calendar-section" bindtap="goToCalendar">
+    <view class="calendar-content">
+      <text class="calendar-icon">📅</text>
+      <view class="calendar-info">
+        <text class="calendar-title">问答日历</text>
+        <text class="calendar-desc">查看每日问答记录</text>
+      </view>
+    </view>
+    <text class="calendar-arrow">›</text>
+  </view>
+
+  <!-- 问题库统计 -->
+  <view class="stats-section">
+    <view class="stats-card">
+      <text class="stats-number">{{totalQuestions}}</text>
+      <text class="stats-label">问题总数</text>
+    </view>
+    <view class="stats-card">
+      <text class="stats-number">{{answeredCount}}</text>
+      <text class="stats-label">已回答</text>
+    </view>
+    <view class="stats-card">
+      <text class="stats-number">{{streakDays}}</text>
+      <text class="stats-label">连续天数</text>
+    </view>
+  </view>
+</view>

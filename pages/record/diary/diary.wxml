@@ -1,0 +1,206 @@
+<!--diary.wxml-->
+<view class="container">
+  <!-- 顶部导航 -->
+  <view class="nav-bar">
+    <text class="nav-cancel" bindtap="onCancel">取消</text>
+    <text class="nav-title">写篇小日记 🐾</text>
+    <text class="nav-publish {{canPublish ? 'active' : ''}}" bindtap="onPublish">保存回忆</text>
+  </view>
+
+  <!-- 日期选择 -->
+  <view class="date-selector" bindtap="showDatePicker">
+    <text class="date-icon">📅</text>
+    <text class="date-text">{{selectedDate}}</text>
+    <text class="date-arrow">›</text>
+  </view>
+
+  <!-- 关联宠物 -->
+  <view class="pet-selector" bindtap="showPetPicker">
+    <text class="pet-icon">🐾</text>
+    <image class="pet-avatar" src="{{selectedPet.avatarUrl || '/assets/images/default-pet.png'}}" mode="aspectFill"></image>
+    <text class="pet-name">{{selectedPet.name || '选择小毛孩'}}</text>
+    <text class="pet-arrow">›</text>
+  </view>
+
+  <!-- 富文本编辑器 -->
+  <view class="editor-section">
+    <textarea 
+      class="content-editor"
+      placeholder="记录今天和{{selectedPet.name || 'TA'}}的温暖时光..."
+      maxlength="5000"
+      bindinput="onContentInput"
+      value="{{content}}"
+    ></textarea>
+    
+    <!-- 格式工具栏 -->
+    <view class="format-toolbar">
+      <!-- <view class="format-btn {{isBold ? 'active' : ''}}" bindtap="toggleBold">
+        <text>B</text>
+      </view>
+      <view class="format-btn {{isItalic ? 'active' : ''}}" bindtap="toggleItalic">
+        <text style="font-style: italic;">I</text>
+      </view>
+      <view class="format-btn {{isList ? 'active' : ''}}" bindtap="toggleList">
+        <text>☰</text>
+      </view> -->
+      <view class="format-separator"></view>
+      <view class="format-btn" bindtap="insertEmoji">
+        <text>😊</text>
+      </view>
+    </view>
+
+    <!-- 字数统计 -->
+    <view class="word-count">
+      <text>{{content.length}} / 5000</text>
+    </view>
+  </view>
+
+  <!-- 媒体区域 -->
+  <view class="media-section">
+    <view class="media-header">
+      <text class="section-title">珍贵的画面</text>
+      <text class="media-tip">最多9张哦</text>
+    </view>
+    
+    <view class="media-grid">
+      <view 
+        class="media-item" 
+        wx:for="{{mediaList}}" 
+        wx:key="index"
+      >
+        <video 
+          wx:if="{{item.type === 'video'}}" 
+          src="{{item.url}}" 
+          class="media-preview"
+        ></video>
+        <image 
+          wx:else 
+          src="{{item.url}}" 
+          mode="aspectFill" 
+          class="media-preview"
+          bindtap="previewImage"
+          data-index="{{index}}"
+        ></image>
+        <view class="media-delete" bindtap="deleteMedia" data-index="{{index}}">
+          <text>×</text>
+        </view>
+      </view>
+      
+      <!-- 添加按钮 -->
+      <view class="add-media-btn" bindtap="showMediaPicker" wx:if="{{mediaList.length < 9}}">
+        <text class="add-icon">📷</text>
+        <text class="add-text">留影纪念</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 标签选择 -->
+  <view class="tag-section">
+    <text class="section-title">添加标签</text>
+    <view class="tag-list">
+      <view 
+        class="tag-item {{selectedTag === item.label ? 'active' : ''}}"
+        wx:for="{{tagOptions}}"
+        wx:key="label"
+        bindtap="selectTag"
+        data-value="{{item.label}}"
+      >
+        <text>{{item.label}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 位置信息 -->
+  <view class="location-section" bindtap="getLocation">
+    <text class="location-icon">📍</text>
+    <text class="location-text">{{location || '添加位置'}}</text>
+    <text class="location-arrow" wx:if="{{!location}}">›</text>
+    <text class="location-clear" wx:else bindtap="clearLocation">×</text>
+  </view>
+
+  <!-- 底部操作栏 -->
+  <view class="bottom-bar">
+    <view class="action-item" bindtap="saveDraft">
+      <text class="action-icon">📝</text>
+      <text class="action-text">保存草稿</text>
+    </view>
+    <view class="action-item" bindtap="onPreview">
+      <text class="action-icon">👁</text>
+      <text class="action-text">预览</text>
+    </view>
+  </view>
+</view>
+
+<!-- 日期选择器弹窗 -->
+<view class="picker-modal {{showDatePickerModal ? 'show' : ''}}">
+  <view class="picker-mask" bindtap="hideDatePicker"></view>
+  <view class="picker-content">
+    <view class="picker-header">
+      <text bindtap="hideDatePicker">取消</text>
+      <text class="picker-title">选择日期</text>
+      <text bindtap="confirmDate">确定</text>
+    </view>
+    <picker-view 
+      class="date-picker"
+      value="{{datePickerValue}}"
+      bindchange="onDateChange"
+    >
+      <picker-view-column>
+        <view class="picker-item" wx:for="{{years}}" wx:key="*this">{{item}}年</view>
+      </picker-view-column>
+      <picker-view-column>
+        <view class="picker-item" wx:for="{{months}}" wx:key="*this">{{item}}月</view>
+      </picker-view-column>
+      <picker-view-column>
+        <view class="picker-item" wx:for="{{days}}" wx:key="*this">{{item}}日</view>
+      </picker-view-column>
+    </picker-view>
+  </view>
+</view>
+
+<!-- 宠物选择弹窗 -->
+<view class="pet-picker-modal {{showPetPickerModal ? 'show' : ''}}">
+  <view class="picker-mask" bindtap="hidePetPicker"></view>
+  <view class="picker-content pet-picker-content">
+    <view class="picker-header">
+      <text class="picker-title">选择小毛孩</text>
+    </view>
+    <view class="pet-list">
+      <view 
+        class="pet-option {{selectedPet.petId === item.petId ? 'active' : ''}}"
+        wx:for="{{petList}}"
+        wx:key="petId"
+        bindtap="selectPet"
+        data-pet="{{item}}"
+      >
+        <image class="pet-option-avatar" src="{{item.avatarUrl || '/assets/images/default-pet.png'}}" mode="aspectFill"></image>
+        <text class="pet-option-name">{{item.name}}</text>
+        <text class="pet-option-check" wx:if="{{selectedPet.petId === item.petId}}">✓</text>
+      </view>
+    </view>
+    <view class="pet-picker-footer">
+      <text bindtap="goToAddPet">🐾 迎接新成员</text>
+    </view>
+  </view>
+</view>
+
+<!-- 媒体选择弹窗 -->
+<view class="media-picker-modal {{showMediaPickerModal ? 'show' : ''}}">
+  <view class="picker-mask" bindtap="hideMediaPicker"></view>
+  <view class="picker-content">
+    <view class="picker-header">
+      <text class="picker-title">添加媒体</text>
+    </view>
+    <view class="media-options">
+      <view class="media-option" bindtap="chooseImage">
+        <text class="media-option-icon">📷</text>
+        <text class="media-option-text">照片</text>
+      </view>
+      <view class="media-option" bindtap="chooseVideo">
+        <text class="media-option-icon">🎬</text>
+        <text class="media-option-text">视频</text>
+      </view>
+    </view>
+    <view class="media-picker-cancel" bindtap="hideMediaPicker">取消</view>
+  </view>
+</view>

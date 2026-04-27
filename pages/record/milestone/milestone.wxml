@@ -1,0 +1,224 @@
+<!--milestone.wxml-->
+<view class="container">
+  <!-- 顶部导航 -->
+  <view class="nav-bar">
+    <text class="nav-cancel" bindtap="onCancel">取消</text>
+    <text class="nav-title">记录里程碑</text>
+    <text class="nav-save {{canSave ? 'active' : ''}}" bindtap="onSave">保存</text>
+  </view>
+
+  <!-- 日期选择 -->
+  <view class="date-section">
+    <view class="section-title">发生日期</view>
+    <view class="date-selector" bindtap="showDatePicker">
+      <text class="date-icon">📅</text>
+      <text class="date-text">{{selectedDate}}</text>
+      <text class="date-arrow">›</text>
+    </view>
+  </view>
+
+  <!-- 关联宠物 -->
+  <view class="pet-section">
+    <view class="section-title">选择宠物</view>
+    <view class="pet-card {{selectedPet ? 'active' : ''}}" bindtap="showPetPicker">
+      <image class="pet-avatar" src="{{selectedPet.avatarUrl || '/assets/images/default-pet.png'}}" mode="aspectFill"></image>
+      <view class="pet-info">
+        <text class="pet-name">{{selectedPet.name || '请选择宠物'}}</text>
+        <text class="pet-breed" wx:if="{{selectedPet}}">{{selectedPet.breed}}</text>
+      </view>
+      <text class="pet-arrow">›</text>
+    </view>
+  </view>
+
+  <!-- 里程碑类型 -->
+  <view class="type-section">
+    <view class="section-title">里程碑类型</view>
+    <view class="type-tabs">
+      <view 
+        class="type-tab {{milestoneType === 'preset' ? 'active' : ''}}"
+        bindtap="switchType"
+        data-type="preset"
+      >
+        预设类型
+      </view>
+      <view 
+        class="type-tab {{milestoneType === 'custom' ? 'active' : ''}}"
+        bindtap="switchType"
+        data-type="custom"
+      >
+        自定义
+      </view>
+    </view>
+
+    <!-- 预设里程碑类型 -->
+    <view class="preset-list" wx:if="{{milestoneType === 'preset'}}">
+      <view 
+        class="preset-item {{selectedPreset === item.name ? 'active' : ''}}"
+        wx:for="{{presetMilestones}}"
+        wx:key="name"
+        bindtap="selectPreset"
+        data-item="{{item}}"
+      >
+        <text class="preset-icon">{{item.icon}}</text>
+        <text class="preset-name">{{item.name}}</text>
+      </view>
+    </view>
+
+    <!-- 自定义里程碑 -->
+    <view class="custom-form" wx:if="{{milestoneType === 'custom'}}">
+      <view class="form-item">
+        <text class="form-label">里程碑名称</text>
+        <input 
+          class="form-input"
+          placeholder="请输入里程碑名称"
+          bindinput="onCustomNameInput"
+          value="{{customName}}"
+        />
+      </view>
+      <view class="form-item">
+        <text class="form-label">选择图标</text>
+        <view class="icon-picker">
+          <view 
+            class="icon-option {{selectedIcon === item ? 'active' : ''}}"
+            wx:for="{{iconOptions}}"
+            wx:key="*this"
+            bindtap="selectIcon"
+            data-icon="{{item}}"
+          >
+            <text>{{item}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 照片/视频 -->
+  <view class="media-section">
+    <view class="section-title">添加照片/视频</view>
+    <view class="media-grid">
+      <view 
+        class="media-item" 
+        wx:for="{{mediaList}}" 
+        wx:key="index"
+      >
+        <video 
+          wx:if="{{item.type === 'video'}}" 
+          src="{{item.url}}" 
+          class="media-preview"
+          poster="{{item.thumbnail}}"
+        ></video>
+        <image 
+          wx:else 
+          src="{{item.url}}" 
+          mode="aspectFill" 
+          class="media-preview"
+          bindtap="previewImage"
+          data-index="{{index}}"
+        ></image>
+        <view class="media-delete" bindtap="deleteMedia" data-index="{{index}}">
+          <text>×</text>
+        </view>
+      </view>
+      
+      <view class="add-media-btn" bindtap="showMediaPicker" wx:if="{{mediaList.length < 9}}">
+        <text class="add-icon">+</text>
+        <text class="add-text">添加</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 备注说明 -->
+  <view class="remark-section">
+    <view class="section-title">备注说明</view>
+    <textarea 
+      class="remark-input"
+      placeholder="记录下这个里程碑的更多细节..."
+      maxlength="1000"
+      bindinput="onRemarkInput"
+      value="{{remark}}"
+    ></textarea>
+    <text class="remark-count">{{remark.length}} / 1000</text>
+  </view>
+
+  <!-- 宠龄显示 -->
+  <view class="pet-age-section" wx:if="{{selectedPet && selectedDate}}">
+    <view class="pet-age-badge">
+      <text class="age-icon">🎂</text>
+      <text class="age-text">当时 {{petName}} {{petAgeAtDate}}</text>
+    </view>
+  </view>
+</view>
+
+<!-- 日期选择器弹窗 -->
+<view class="picker-modal {{showDatePickerModal ? 'show' : ''}}">
+  <view class="picker-mask" bindtap="hideDatePicker"></view>
+  <view class="picker-content">
+    <view class="picker-header">
+      <text bindtap="hideDatePicker">取消</text>
+      <text class="picker-title">选择日期</text>
+      <text bindtap="confirmDate">确定</text>
+    </view>
+    <picker-view 
+      class="date-picker"
+      value="{{datePickerValue}}"
+      bindchange="onDateChange"
+    >
+      <picker-view-column>
+        <view class="picker-item" wx:for="{{years}}" wx:key="*this">{{item}}年</view>
+      </picker-view-column>
+      <picker-view-column>
+        <view class="picker-item" wx:for="{{months}}" wx:key="*this">{{item}}月</view>
+      </picker-view-column>
+      <picker-view-column>
+        <view class="picker-item" wx:for="{{days}}" wx:key="*this">{{item}}日</view>
+      </picker-view-column>
+    </picker-view>
+  </view>
+</view>
+
+<!-- 宠物选择弹窗 -->
+<view class="pet-picker-modal {{showPetPickerModal ? 'show' : ''}}">
+  <view class="picker-mask" bindtap="hidePetPicker"></view>
+  <view class="picker-content pet-picker-content">
+    <view class="picker-header">
+      <text class="picker-title">选择宠物</text>
+    </view>
+    <view class="pet-list">
+      <view 
+        class="pet-option {{selectedPet.petId === item.petId ? 'active' : ''}}"
+        wx:for="{{petList}}"
+        wx:key="petId"
+        bindtap="selectPet"
+        data-pet="{{item}}"
+      >
+        <image class="pet-option-avatar" src="{{item.avatarUrl || '/assets/images/default-pet.png'}}" mode="aspectFill"></image>
+        <text class="pet-option-name">{{item.name}}</text>
+        <text class="pet-option-check" wx:if="{{selectedPet.petId === item.petId}}">✓</text>
+      </view>
+    </view>
+    <view class="pet-picker-footer">
+      <text bindtap="goToAddPet">添加新宠物</text>
+    </view>
+  </view>
+</view>
+
+<!-- 媒体选择弹窗 -->
+<view class="media-picker-modal {{showMediaPickerModal ? 'show' : ''}}">
+  <view class="picker-mask" bindtap="hideMediaPicker"></view>
+  <view class="picker-content">
+    <view class="picker-header">
+      <text class="picker-title">添加媒体</text>
+    </view>
+    <view class="media-options">
+      <view class="media-option" bindtap="chooseImage">
+        <text class="media-option-icon">📷</text>
+        <text class="media-option-text">照片</text>
+      </view>
+      <view class="media-option" bindtap="chooseVideo">
+        <text class="media-option-icon">🎬</text>
+        <text class="media-option-text">视频</text>
+      </view>
+    </view>
+    <view class="media-picker-cancel" bindtap="hideMediaPicker">取消</view>
+  </view>
+</view>

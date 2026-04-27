@@ -1,0 +1,537 @@
+/* pages/health/weight.wxss */
+
+/* 页面容器 */
+.container {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+	background-color: #FFFBF5;
+	padding-bottom: 160rpx;
+}
+
+/* 当前体重卡片 */
+.current-weight-card {
+	margin: 20rpx 30rpx;
+	padding: 40rpx;
+	background: linear-gradient(135deg, #FFB74D 0%, #FF8A65 100%);
+	border-radius: 24rpx;
+	text-align: center;
+	box-shadow: 0 8rpx 24rpx rgba(255, 138, 101, 0.3);
+}
+
+.weight-display {
+	display: flex;
+	align-items: baseline;
+	justify-content: center;
+}
+
+.weight-value {
+	font-size: 96rpx;
+	font-weight: 700;
+	color: #FFFFFF;
+}
+
+.weight-unit {
+	font-size: 36rpx;
+	color: rgba(255, 255, 255, 0.8);
+	margin-left: 12rpx;
+}
+
+.weight-meta {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-top: 20rpx;
+	gap: 30rpx;
+}
+
+.record-date {
+	font-size: 26rpx;
+	color: rgba(255, 255, 255, 0.8);
+}
+
+.weight-change {
+	font-size: 26rpx;
+	padding: 6rpx 16rpx;
+	background-color: rgba(255, 255, 255, 0.2);
+	border-radius: 20rpx;
+	color: #FFFFFF;
+}
+
+.weight-change.up {
+	background-color: rgba(255, 107, 107, 0.3);
+}
+
+.weight-change.down {
+	background-color: rgba(82, 196, 26, 0.3);
+}
+
+/* 健康体重范围 */
+.healthy-range {
+	margin: 20rpx 30rpx;
+	padding: 30rpx;
+	background-color: #FFFFFF;
+	border-radius: 24rpx;
+	box-shadow: 0 8rpx 24rpx rgba(180, 160, 140, 0.08);
+}
+
+.range-bar {
+	height: 16rpx;
+	background: linear-gradient(to right, #B3E5FC, #52C41A, #FF6B6B);
+	border-radius: 8rpx;
+	position: relative;
+	margin-bottom: 16rpx;
+}
+
+.range-indicator {
+	position: absolute;
+	top: -8rpx;
+	width: 32rpx;
+	height: 32rpx;
+	background-color: #FF8A65;
+	border: 4rpx solid #FFFFFF;
+	border-radius: 50%;
+	box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.2);
+	transform: translateX(-50%);
+}
+
+.range-labels {
+	display: flex;
+	justify-content: space-between;
+	padding: 0 20rpx;
+	margin-bottom: 8rpx;
+	position: relative;
+}
+
+.range-label {
+	font-size: 24rpx;
+	color: #999999;
+	width: 33.33%;
+	text-align: center;
+}
+
+.range-label:first-child {
+	text-align: left;
+}
+
+.range-label:last-child {
+	text-align: right;
+}
+
+.range-label.range-optimal {
+	color: #52C41A;
+	font-weight: 600;
+}
+
+.range-values {
+	display: flex;
+	justify-content: space-between;
+	font-size: 22rpx;
+	color: #666666;
+	margin-bottom: 16rpx;
+	padding: 0 20rpx;
+}
+
+.range-values text {
+	width: 33.33%;
+	text-align: center;
+}
+
+.range-values text:first-child {
+	text-align: left;
+}
+
+.range-values text:last-child {
+	text-align: right;
+}
+
+.range-tip {
+	text-align: center;
+	padding-top: 16rpx;
+	border-top: 1rpx solid #F0F0F0;
+}
+
+.range-tip text {
+	font-size: 26rpx;
+	color: #52C41A;
+}
+
+.range-tip text.warning {
+	color: #FF6B6B;
+}
+
+/* 趋势图 */
+.trend-section {
+	margin: 20rpx 30rpx;
+	padding: 24rpx;
+	background-color: #FFFFFF;
+	border-radius: 24rpx;
+	box-shadow: 0 8rpx 24rpx rgba(180, 160, 140, 0.08);
+}
+
+.section-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 20rpx;
+}
+
+.section-title {
+	font-size: 30rpx;
+	font-weight: 600;
+	color: #333333;
+}
+
+.time-tabs {
+	display: flex;
+	gap: 12rpx;
+	align-items: center;
+}
+
+.time-tab {
+	padding: 8rpx 20rpx;
+	font-size: 24rpx;
+	color: #999999;
+	border-radius: 20rpx;
+	line-height: 1;
+	white-space: nowrap;
+}
+
+.time-tab.active {
+	background-color: #FFF0E5;
+	color: #FF8A65;
+	font-weight: 600;
+}
+
+.trend-chart {
+	width: 100%;
+	height: 220rpx;
+	margin-bottom: 20rpx;
+}
+
+.trend-stats {
+	display: flex;
+	justify-content: space-around;
+	padding-top: 20rpx;
+	border-top: 1rpx solid #F0F0F0;
+}
+
+.stat-item {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	flex: 1;
+}
+
+.stat-label {
+	font-size: 24rpx;
+	color: #999999;
+	margin-bottom: 12rpx;
+}
+
+.stat-value {
+	font-size: 32rpx;
+	font-weight: 600;
+	color: #333333;
+	line-height: 1;
+}
+
+/* 记录列表 */
+.record-section {
+	margin: 20rpx 30rpx;
+}
+
+.section-count {
+	font-size: 24rpx;
+	color: #999999;
+}
+
+.record-list {
+	margin-top: 16rpx;
+	background-color: #FFFFFF;
+	border-radius: 24rpx;
+	overflow: hidden;
+	box-shadow: 0 8rpx 24rpx rgba(180, 160, 140, 0.08);
+}
+
+.record-item {
+	display: flex;
+	align-items: center;
+	padding: 24rpx 30rpx;
+	border-bottom: 1rpx solid #F0F0F0;
+}
+
+.record-item:last-child {
+	border-bottom: none;
+}
+
+.record-date-col {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	width: 80rpx;
+	margin-right: 24rpx;
+	flex-shrink: 0;
+}
+
+.record-day {
+	font-size: 36rpx;
+	font-weight: 600;
+	color: #333333;
+	line-height: 1;
+}
+
+.record-month {
+	font-size: 22rpx;
+	color: #999999;
+	margin-top: 4rpx;
+}
+
+.record-weight-col {
+	display: flex;
+	align-items: baseline;
+	width: 140rpx;
+	flex-shrink: 0;
+}
+
+.record-weight {
+	font-size: 40rpx;
+	font-weight: 600;
+	color: #FF8A65;
+	line-height: 1;
+}
+
+.record-unit {
+	font-size: 24rpx;
+	color: #999999;
+	margin-left: 8rpx;
+}
+
+.record-note-col {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	min-width: 0;
+	margin-right: 24rpx;
+}
+
+.record-note {
+	font-size: 26rpx;
+	color: #666666;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.record-health {
+	font-size: 22rpx;
+	color: #52C41A;
+	margin-top: 4rpx;
+}
+
+.record-actions {
+	display: flex;
+	gap: 24rpx;
+	flex-shrink: 0;
+	align-items: center;
+}
+
+.edit-btn {
+	font-size: 26rpx;
+	color: #FF8A65;
+}
+
+.delete-btn {
+	font-size: 26rpx;
+	color: #FF6B6B;
+}
+
+/* 空状态 */
+.empty-state {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 60rpx 0;
+	background-color: #FFFFFF;
+	border-radius: 24rpx;
+	box-shadow: 0 8rpx 24rpx rgba(180, 160, 140, 0.08);
+}
+
+.empty-icon {
+	font-size: 80rpx;
+	margin-bottom: 20rpx;
+}
+
+.empty-title {
+	font-size: 30rpx;
+	font-weight: 600;
+	color: #333333;
+	margin-bottom: 12rpx;
+}
+
+.empty-desc {
+	font-size: 26rpx;
+	color: #999999;
+}
+
+/* 加载更多 */
+.load-more {
+	text-align: center;
+	padding: 30rpx;
+	color: #999999;
+	font-size: 26rpx;
+}
+
+/* 添加按钮 */
+.add-btn {
+	position: fixed;
+	right: 40rpx;
+	bottom: 180rpx;
+	width: 110rpx;
+	height: 110rpx;
+	border-radius: 50%;
+	background: linear-gradient(135deg, #FFB74D 0%, #FF8A65 100%);
+	box-shadow: 0 8rpx 24rpx rgba(255, 138, 101, 0.4);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.add-icon {
+	font-size: 60rpx;
+	color: #FFFFFF;
+	font-weight: 300;
+}
+
+/* 底部导航栏占位 */
+.tab-bar-placeholder {
+	height: 100rpx;
+}
+
+/* 弹窗 */
+.modal-mask {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(0, 0, 0, 0.5);
+	z-index: 999;
+	display: flex;
+	align-items: flex-end;
+}
+
+.modal-content {
+	width: 100%;
+	background-color: #FFFFFF;
+	border-radius: 24rpx 24rpx 0 0;
+	padding-bottom: env(safe-area-inset-bottom);
+}
+
+.modal-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 30rpx;
+	border-bottom: 1rpx solid #F0F0F0;
+}
+
+.modal-title {
+	font-size: 32rpx;
+	font-weight: 600;
+	color: #333333;
+}
+
+.modal-close {
+	font-size: 48rpx;
+	color: #999999;
+	font-weight: 300;
+}
+
+.modal-body {
+	padding: 30rpx;
+}
+
+.input-group {
+	margin-bottom: 30rpx;
+}
+
+.input-label {
+	font-size: 28rpx;
+	color: #666666;
+	display: block;
+	margin-bottom: 12rpx;
+}
+
+.weight-input {
+	height: 88rpx;
+	padding: 0 24rpx;
+	background-color: #F5F7FA;
+	border-radius: 12rpx;
+	font-size: 32rpx;
+}
+
+.date-picker {
+	height: 88rpx;
+	padding: 0 24rpx;
+	background-color: #FFFBF5;
+	border-radius: 12rpx;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	font-size: 30rpx;
+	color: #333333;
+}
+
+.arrow {
+	font-size: 32rpx;
+	color: #999999;
+}
+
+.note-input {
+	height: 88rpx;
+	padding: 0 24rpx;
+	background-color: #F5F7FA;
+	border-radius: 12rpx;
+	font-size: 30rpx;
+}
+
+.modal-footer {
+	display: flex;
+	padding: 30rpx;
+	gap: 20rpx;
+}
+
+.cancel-btn {
+	flex: 1;
+	height: 88rpx;
+	line-height: 88rpx;
+	background-color: #F5F7FA;
+	color: #666666;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0;
+	font-size: 30rpx;
+	border-radius: 44rpx;
+	border: none;
+}
+
+.confirm-btn {
+	flex: 1;
+	height: 88rpx;
+	line-height: 88rpx;
+	background: linear-gradient(135deg, #FFB74D 0%, #FF8A65 100%);
+	color: #FFFFFF;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0;
+	font-size: 30rpx;
+	border-radius: 44rpx;
+	border: none;
+	box-shadow: 0 4rpx 12rpx rgba(255, 138, 101, 0.3);
+}

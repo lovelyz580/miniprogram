@@ -1,0 +1,160 @@
+<!--question-calendar.wxml-->
+<!--问答日历页面-->
+<wxs module="utils">
+function contains(arr, item) {
+    return arr && arr.indexOf(item) !== -1;
+  }
+  module.exports.contains = contains;
+</wxs>
+
+<view class="container">
+  <!-- 顶部标题 -->
+  <view class="header">
+    <view class="header-content">
+      <text class="header-icon">📅</text>
+      <view class="header-text">
+        <text class="header-title">问答日历</text>
+        <text class="header-subtitle">{{currentYear}}年{{currentMonth}}月</text>
+      </view>
+    </view>
+    <!-- 宠物选择 -->
+    <picker 
+      mode="selector" 
+      range="{{petList}}" 
+      range-key="name" 
+      bindchange="onPetChange"
+    >
+      <view class="pet-picker">
+        <image class="pet-avatar" src="{{currentPet.avatarUrl || '/assets/images/default-pet.png'}}" mode="aspectFill"></image>
+        <text class="pet-name">{{currentPet.name}}</text>
+        <text class="arrow">▼</text>
+      </view>
+    </picker>
+  </view>
+
+  <!-- 月度统计 -->
+  <view class="month-stats">
+    <view class="stat-item">
+      <text class="stat-value">{{monthAnswered}}</text>
+      <text class="stat-label">已记录</text>
+    </view>
+    <view class="stat-divider"></view>
+    <view class="stat-item">
+      <text class="stat-value">{{monthTotal}}</text>
+      <text class="stat-label">当月天数</text>
+    </view>
+  </view>
+
+  <!-- 日历区域 -->
+  <view class="calendar-section">
+    <!-- 月份切换 -->
+    <view class="month-switch">
+      <view class="switch-btn prev" bindtap="prevMonth">
+        <text class="switch-icon">‹</text>
+      </view>
+      <text class="month-text">{{currentYear}}年{{currentMonth}}月</text>
+      <view class="switch-btn next" bindtap="nextMonth">
+        <text class="switch-icon">›</text>
+      </view>
+    </view>
+
+    <!-- 星期标题 -->
+    <view class="week-header">
+      <text class="week-item" wx:for="{{weekDays}}" wx:key="index">{{item}}</text>
+    </view>
+
+    <!-- 日历主体 -->
+    <view class="calendar-body">
+      <view 
+        class="calendar-day {{!item.isCurrentMonth ? 'not-current' : ''}} 
+				{{item.isToday ? 'today' : ''}}
+				 {{selectedDate === item.date ? 'selected' : ''}} 
+				 {{utils.contains(answerDates,item.date) ? 'has-answer' : ''}}"
+        wx:for="{{calendarDays}}"
+        wx:key="index"
+        bindtap="onDateTap"
+        data-date="{{item.date}}"
+      >
+        <text class="day-number">{{item.day}}</text>
+        <!-- 有回答记录标记 -->
+        <view class="answer-dot" wx:if="{{utils.contains(answerDates,item.date)}}">
+					</view>
+					
+      </view>
+    </view>
+
+    <!-- 日历说明 -->
+    <view class="calendar-tip">
+      <view class="tip-item">
+        <view class="tip-dot today"></view>
+        <text class="tip-text">今天</text>
+      </view>
+      <view class="tip-item">
+        <view class="tip-dot answered"></view>
+        <text class="tip-text">有回答记录</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 选中日期的回答列表 -->
+  <view class="answers-section" wx:if="{{selectedDate}}">
+    <view class="section-header">
+      <text class="section-title">{{selectedDate}} 的回答</text>
+      <text class="answer-count" wx:if="{{selectedAnswers.length > 0}}">{{selectedAnswers.length}}条</text>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{selectedAnswers.length === 0 && !loading}}">
+      <text class="empty-icon">📝</text>
+      <text class="empty-text">这天还没有回答哦</text>
+      <view class="empty-btn" bindtap="goToTodayQuestion">
+        <text>去回答</text>
+      </view>
+    </view>
+
+    <!-- 回答列表 -->
+    <view class="answer-list">
+      <view 
+        class="answer-item"
+        wx:for="{{selectedAnswers}}"
+        wx:key="answerId"
+        bindtap="viewAnswerDetail"
+        data-answer="{{item}}"
+      >
+        <view class="answer-question">
+          <text class="question-icon">❓</text>
+          <text class="question-text">{{item.question || item.questionContent}}</text>
+        </view>
+        <view class="answer-content">
+          <text class="content-text">{{item.content || item.answerContent}}</text>
+        </view>
+        <view class="answer-images" wx:if="{{item.images && item.images.length > 0}}">
+          <image 
+            wx:for="{{item.images}}"
+            wx:for-item="imgItem"
+            wx:for-index="imgIndex"
+            wx:key="imgIndex"
+            src="{{imgItem}}"
+            mode="aspectFill"
+            class="answer-image"
+            bindtap="previewImage"
+            data-images="{{item.images}}"
+            data-current="{{imgItem}}"
+          ></image>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部快捷入口 -->
+  <view class="quick-actions">
+    <view class="action-btn" bindtap="goToHistory">
+      <text class="action-icon">📚</text>
+      <text class="action-text">历史回答</text>
+    </view>
+    <view class="action-btn primary" bindtap="goToTodayQuestion">
+      <text class="action-icon">✏️</text>
+      <text class="action-text">今日问答</text>
+    </view>
+  </view>
+</view>

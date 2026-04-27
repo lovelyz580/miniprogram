@@ -1,0 +1,188 @@
+<!-- pages/health/medication/medication.wxml -->
+<view class="container">
+  <!-- 顶部统计 -->
+  <view class="stats-bar">
+    <view class="stat-item">
+      <text class="stat-value">{{totalCount}}</text>
+      <text class="stat-label">用药总数</text>
+    </view>
+    <view class="stat-item ongoing">
+      <text class="stat-value">{{ongoingCount}}</text>
+      <text class="stat-label">进行中</text>
+    </view>
+    <view class="stat-item completed">
+      <text class="stat-value">{{completedCount}}</text>
+      <text class="stat-label">已完成</text>
+    </view>
+  </view>
+
+  <!-- 状态筛选 -->
+  <view class="filter-bar">
+    <view
+      class="filter-item {{statusFilter === 'all' ? 'active' : ''}}"
+      bindtap="changeFilter"
+      data-status="all"
+    >
+      <text>全部</text>
+    </view>
+    <view
+      class="filter-item {{statusFilter === 'ongoing' ? 'active' : ''}}"
+      bindtap="changeFilter"
+      data-status="ongoing"
+    >
+      <text>进行中</text>
+    </view>
+    <view
+      class="filter-item {{statusFilter === 'completed' ? 'active' : ''}}"
+      bindtap="changeFilter"
+      data-status="completed"
+    >
+      <text>已完成</text>
+    </view>
+  </view>
+
+  <!-- 用药记录列表 -->
+  <scroll-view 
+    class="record-list" 
+    scroll-y
+    bindscrolltolower="loadMore"
+    refresher-enabled 
+    refresher-triggered="{{isRefreshing}}"
+    bindrefresherrefresh="onRefresh"
+  >
+    <!-- 时间线头部 -->
+    <!-- <view class="timeline-header">
+      <view class="timeline-line"></view>
+      <text class="timeline-title">用药记录</text>
+      <view class="timeline-line"></view>
+    </view> -->
+
+    <view class="record-item" wx:for="{{records}}" wx:key="id">
+      <!-- 时间线节点 -->
+      <view class="timeline-node">
+        <view class="node-dot {{item.isOngoing ? 'ongoing' : ''}}"></view>
+        <view class="node-line"></view>
+      </view>
+
+      <!-- 记录卡片 -->
+      <view class="record-card" bindtap="showRecordDetail" data-record="{{item}}">
+        <view class="record-header">
+          <view class="medication-tag">
+            <text>{{item.medicationType}}</text>
+          </view>
+          <view class="status-badge {{item.isOngoing}}">
+            <text wx:if="{{item.isOngoing=='not_started'}}">未开始</text>
+						<text wx:if="{{item.isOngoing=='ongoing'}}">进行中</text>
+						<text wx:if="{{item.isOngoing=='completed'}}">已完成</text>
+          </view>
+        </view>
+
+        <view class="record-body">
+          <view class="medication-name-row">
+            <text class="medication-icon">💊</text>
+            <text class="medication-name">{{item.medicationName}}</text>
+          </view>
+
+          <!-- 进度条（进行中的显示） -->
+          <view class="progress-section" wx:if="{{item.isOngoing}}">
+            <view class="progress-bar">
+              <view class="progress-fill" style="width: {{item.progress}}%"></view>
+            </view>
+            <text class="progress-text">{{item.progress}}%</text>
+          </view>
+
+          <view class="record-detail" wx:if="{{item.frequency}}">
+            <text class="detail-label">用药频次：</text>
+            <text class="detail-value">{{item.frequency}}</text>
+          </view>
+          <view class="record-detail" wx:if="{{item.dosage}}">
+            <text class="detail-label">每日用量：</text>
+            <text class="detail-value">{{item.dosage}}</text>
+          </view>
+          <view class="record-detail" wx:if="{{item.hospital}}">
+            <text class="detail-label">医院/医生：</text>
+            <text class="detail-value">{{item.hospital}}</text>
+          </view>
+        </view>
+
+        <view class="record-footer">
+          <text class="record-date">
+            {{item.startDate}}{{item.endDate ? ' 至 ' + item.endDate : ' 长期'}}
+          </text>
+        </view>
+
+        <!-- 操作按钮 -->
+        <view class="record-actions">
+          <text class="action-btn reminder" catchtap="setReminder" data-record="{{item}}">🔔 提醒</text>
+          <text class="action-btn delete" catchtap="deleteRecord" data-id="{{item.recordId}}">🗑️ 删除</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 加载状态 -->
+    <view class="load-more" wx:if="{{records.length > 0}}">
+      <text wx:if="{{hasMore}}">加载中...</text>
+      <text wx:else>没有更多了</text>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{records.length === 0 && !isLoading}}">
+      <text class="empty-icon">💊</text>
+      <text class="empty-title">暂无用药记录</text>
+      <text class="empty-desc">点击下方按钮添加第一条记录</text>
+    </view>
+  </scroll-view>
+
+  <!-- 添加按钮 -->
+  <view class="add-btn" bindtap="goToAdd">
+    <text class="add-icon">+</text>
+  </view>
+
+  <!-- 详情弹窗 -->
+  <view class="detail-modal" wx:if="{{showDetail}}" bindtap="closeDetail">
+    <view class="detail-content" catchtap="preventBubble">
+      <view class="detail-header">
+        <text class="detail-title">用药详情</text>
+        <text class="detail-close" bindtap="closeDetail">×</text>
+      </view>
+
+      <view class="detail-body" wx:if="{{currentRecord}}">
+        <view class="detail-item">
+          <text class="detail-label">药品名称</text>
+          <text class="detail-value">{{currentRecord.medicationName}}</text>
+        </view>
+        <view class="detail-item">
+          <text class="detail-label">用药类型</text>
+          <text class="detail-value">{{currentRecord.medicationType}}</text>
+        </view>
+        <view class="detail-item">
+          <text class="detail-label">开始日期</text>
+          <text class="detail-value">{{currentRecord.startDate}}</text>
+        </view>
+        <view class="detail-item" wx:if="{{currentRecord.endDate}}">
+          <text class="detail-label">结束日期</text>
+          <text class="detail-value">{{currentRecord.endDate}}</text>
+        </view>
+        <view class="detail-item" wx:if="{{currentRecord.dosage}}">
+          <text class="detail-label">每日用量</text>
+          <text class="detail-value">{{currentRecord.dosage}}</text>
+        </view>
+        <view class="detail-item" wx:if="{{currentRecord.frequency}}">
+          <text class="detail-label">用药频次</text>
+          <text class="detail-value">{{currentRecord.frequency}}</text>
+        </view>
+        <view class="detail-item" wx:if="{{currentRecord.hospital}}">
+          <text class="detail-label">医院/医生</text>
+          <text class="detail-value">{{currentRecord.hospital}}</text>
+        </view>
+        <view class="detail-item" wx:if="{{currentRecord.note}}">
+          <text class="detail-label">备注</text>
+          <text class="detail-value">{{currentRecord.note}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部导航栏占位 -->
+  <view class="tab-bar-placeholder"></view>
+</view>

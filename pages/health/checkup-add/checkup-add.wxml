@@ -1,0 +1,212 @@
+<!-- pages/health/checkup-add/checkup-add.wxml -->
+<view class="container">
+  <!-- 宠物信息卡片 -->
+  <view class="pet-info-card" wx:if="{{currentPet}}">
+    <image class="pet-avatar" src="{{currentPet.avatar || '/assets/images/pet-default.png'}}" mode="aspectFill"></image>
+    <view class="pet-detail">
+      <text class="pet-name">{{currentPet.name}}</text>
+      <text class="pet-breed">{{currentPet.breed || currentPet.species}}</text>
+    </view>
+  </view>
+
+  <!-- 基本信息区域 -->
+  <view class="form-section">
+    <view class="section-title">基本信息</view>
+
+    <!-- 体检类型 -->
+    <view class="form-item {{errors.checkupType ? 'error' : ''}}">
+      <view class="form-label">
+        <text class="required">*</text>
+        <text>体检类型</text>
+      </view>
+      <picker 
+        mode="selector" 
+        range="{{checkupTypes}}" 
+        bindchange="onCheckupTypeChange"
+      >
+        <view class="form-picker">
+          <text class="{{checkupType ? '' : 'placeholder'}}">{{checkupType || '请选择体检类型'}}</text>
+          <text class="arrow">›</text>
+        </view>
+      </picker>
+      <text class="error-tip" wx:if="{{errors.checkupType}}">{{errors.checkupType}}</text>
+    </view>
+
+    <!-- 体检标题 -->
+    <view class="form-item {{errors.checkupTitle ? 'error' : ''}}">
+      <view class="form-label">
+        <text class="required">*</text>
+        <text>体检标题</text>
+      </view>
+      <input 
+        class="form-input" 
+        type="text" 
+        placeholder="如：2024年度体检、幼宠基础检查" 
+        value="{{checkupTitle}}"
+        bindinput="onCheckupTitleInput"
+      />
+      <text class="error-tip" wx:if="{{errors.checkupTitle}}">{{errors.checkupTitle}}</text>
+    </view>
+
+    <!-- 体检日期 -->
+    <view class="form-item {{errors.checkupDate ? 'error' : ''}}">
+      <view class="form-label">
+        <text class="required">*</text>
+        <text>体检日期</text>
+      </view>
+      <picker mode="date" value="{{checkupDate}}" bindchange="onCheckupDateChange">
+        <view class="form-picker">
+          <text class="{{checkupDate ? '' : 'placeholder'}}">{{checkupDate || '请选择体检日期'}}</text>
+          <text class="arrow">›</text>
+        </view>
+      </picker>
+      <text class="error-tip" wx:if="{{errors.checkupDate}}">{{errors.checkupDate}}</text>
+    </view>
+  </view>
+
+  <!-- 健康数据区域 -->
+  <view class="form-section">
+    <view class="section-title">健康数据</view>
+
+    <!-- 体重 -->
+    <view class="form-item {{errors.weight ? 'error' : ''}}">
+      <view class="form-label">
+        <text>体重 (kg)</text>
+      </view>
+      <input 
+        class="form-input" 
+        type="digit" 
+        placeholder="请输入体重" 
+        value="{{weight}}"
+        bindinput="onWeightInput"
+      />
+      <text class="error-tip" wx:if="{{errors.weight}}">{{errors.weight}}</text>
+    </view>
+
+    <!-- 体温 -->
+    <view class="form-item {{errors.temperature ? 'error' : ''}}">
+      <view class="form-label">
+        <text>体温 (℃)</text>
+      </view>
+      <input 
+        class="form-input" 
+        type="digit" 
+        placeholder="请输入体温" 
+        value="{{temperature}}"
+        bindinput="onTemperatureInput"
+      />
+      <text class="error-tip" wx:if="{{errors.temperature}}">{{errors.temperature}}</text>
+    </view>
+
+    <!-- 医院名称 -->
+    <view class="form-item">
+      <view class="form-label">
+        <text>医院名称</text>
+      </view>
+      <input 
+        class="form-input" 
+        type="text" 
+        placeholder="请输入体检医院名称" 
+        value="{{hospital}}"
+        bindinput="onHospitalInput"
+      />
+    </view>
+  </view>
+
+  <!-- 体检结果区域 -->
+  <view class="form-section">
+    <view class="section-title">体检结果</view>
+
+    <!-- 体检结果 -->
+    <view class="form-item">
+      <view class="form-label">
+        <text>体检结果</text>
+      </view>
+      <textarea 
+        class="form-textarea" 
+        placeholder="请输入体检结果或医生建议" 
+        value="{{result}}"
+        bindinput="onResultInput"
+        maxlength="500"
+      ></textarea>
+      <text class="char-count">{{result.length}}/500</text>
+    </view>
+
+    <!-- 附件上传 -->
+    <view class="form-item">
+      <view class="form-label">
+        <text>附件上传</text>
+      </view>
+      <view class="upload-container">
+        <view class="upload-list">
+          <view 
+            class="upload-item" 
+            wx:for="{{attachments}}" 
+            wx:key="index"
+          >
+            <image 
+              class="upload-image" 
+              src="{{item.url}}" 
+              mode="aspectFill"
+              bindtap="previewAttachment"
+              data-index="{{index}}"
+            ></image>
+            <view class="upload-progress" wx:if="{{item.uploading}}">
+              <view class="progress-bar" style="width: {{item.progress}}%"></view>
+            </view>
+            <view 
+              class="upload-delete" 
+              bindtap="deleteAttachment"
+              data-index="{{index}}"
+            >
+              <text>×</text>
+            </view>
+          </view>
+          
+          <!-- 添加按钮 -->
+          <view 
+            class="upload-add" 
+            bindtap="chooseImage"
+            wx:if="{{attachments.length < 9}}"
+          >
+            <text class="add-icon">🐾</text>
+            <text class="add-text">添加照片</text>
+          </view>
+        </view>
+        <text class="upload-hint">最多上传9张图片，支持体检报告、化验单等</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 备注区域 -->
+  <view class="form-section">
+    <view class="section-title">备注信息</view>
+
+    <view class="form-item">
+      <textarea 
+        class="form-textarea" 
+        placeholder="添加备注信息（可选）" 
+        value="{{note}}"
+        bindinput="onNoteInput"
+        maxlength="200"
+      ></textarea>
+      <text class="char-count">{{note.length}}/200</text>
+    </view>
+  </view>
+
+  <!-- 底部操作区域 -->
+  <view class="bottom-actions">
+    <button class="btn-draft" bindtap="saveDraft">存为草稿</button>
+    <button 
+      class="btn-submit {{isSubmitting ? 'disabled' : ''}}" 
+      bindtap="submitForm"
+      disabled="{{isSubmitting}}"
+    >
+      <text wx:if="{{isSubmitting}}">保存中...</text>
+      <text wx:else>保存记录</text>
+    </button>
+  </view>
+
+  <!-- 底部导航栏占位 -->
+  <view class="tab-bar-placeholder"></view>
+</view>

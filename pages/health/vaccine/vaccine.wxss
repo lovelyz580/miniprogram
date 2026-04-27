@@ -1,0 +1,281 @@
+/* pages/health/vaccine.wxss */
+
+/* 页面容器 */
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #FFFBF5;
+  padding-bottom: 140rpx;
+}
+
+/* 顶部统计栏 */
+.stats-bar {
+  display: flex;
+  padding: 30rpx;
+  background: linear-gradient(135deg, #FFB74D 0%, #FF8A65 100%);
+}
+
+.stat-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stat-value {
+  font-size: 48rpx;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.stat-label {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.8);
+  margin-top: 8rpx;
+}
+
+/* 下次接种提醒 */
+.next-reminder {
+  display: flex;
+  align-items: center;
+  margin: 24rpx 30rpx;
+  padding: 24rpx;
+  background-color: #FFFFFF;
+  border-radius: 24rpx;
+  box-shadow: 0 8rpx 24rpx rgba(180, 160, 140, 0.08);
+  border-left: 8rpx solid #FF8A65;
+}
+
+.reminder-badge {
+  padding: 8rpx 16rpx;
+  background-color: #FFF0E5;
+  color: #FF8A65;
+  font-size: 22rpx;
+  border-radius: 8rpx;
+  margin-right: 20rpx;
+  font-weight: 600;
+}
+
+.reminder-content {
+  flex: 1;
+}
+
+.vaccine-name {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333333;
+  display: block;
+}
+
+.vaccine-date {
+  font-size: 24rpx;
+  color: #666666;
+  margin-top: 4rpx;
+  display: block;
+}
+
+.reminder-arrow {
+  font-size: 32rpx;
+  color: #999999;
+}
+
+/* 记录列表 */
+.record-list {
+  flex: 1;
+  padding: 0 30rpx;
+}
+
+/* 时间线头部 */
+.timeline-header {
+  display: flex;
+  align-items: center;
+  padding: 30rpx 0;
+}
+
+.timeline-line {
+  flex: 1;
+  height: 1rpx;
+  background-color: #E6E6E6;
+}
+
+.timeline-title {
+  font-size: 28rpx;
+  color: #999999;
+  padding: 0 20rpx;
+}
+
+/* 记录项 */
+.record-item {
+  display: flex;
+  margin-bottom: 30rpx;
+	margin-right: 40rpx;
+}
+
+.timeline-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 20rpx;
+}
+
+.node-dot {
+  width: 20rpx;
+  height: 20rpx;
+  border-radius: 50%;
+  background-color: #FF8A65;
+  border: 4rpx solid #FFF0E5;
+}
+
+.node-line {
+  flex: 1;
+  width: 2rpx;
+  background-color: #E6E6E6;
+  margin-top: 8rpx;
+}
+
+.record-card {
+  flex: 1;
+  background-color: #FFFFFF;
+  border-radius: 24rpx;
+  padding: 30rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 8rpx 24rpx rgba(180, 160, 140, 0.08);
+}
+
+.record-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.vaccine-tag {
+  padding: 8rpx 16rpx;
+  background-color: #FFF0E5;
+  color: #FF8A65;
+  font-size: 22rpx;
+  border-radius: 8rpx;
+}
+
+.record-date {
+  font-size: 24rpx;
+  color: #999999;
+}
+
+.record-body {
+  margin-bottom: 16rpx;
+}
+
+.vaccine-name-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12rpx;
+}
+
+.vaccine-icon {
+  font-size: 32rpx;
+  margin-right: 12rpx;
+}
+
+.vaccine-name {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333333;
+}
+
+.record-detail {
+  display: flex;
+  font-size: 26rpx;
+  color: #666666;
+  margin-top: 8rpx;
+}
+
+.detail-label {
+  color: #999999;
+}
+
+.detail-value {
+  color: #333333;
+}
+
+.record-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 16rpx;
+  border-top: 1rpx solid #F0F0F0;
+}
+
+.record-age {
+  font-size: 24rpx;
+  color: #999999;
+}
+
+.record-note {
+  font-size: 24rpx;
+  color: #666666;
+  max-width: 400rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 加载更多 */
+.load-more {
+  text-align: center;
+  padding: 30rpx;
+  color: #999999;
+  font-size: 26rpx;
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 100rpx 0;
+}
+
+.empty-icon {
+  font-size: 120rpx;
+  margin-bottom: 30rpx;
+}
+
+.empty-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 16rpx;
+}
+
+.empty-desc {
+  font-size: 28rpx;
+  color: #999999;
+}
+
+/* 添加按钮 */
+.add-btn {
+  position: fixed;
+  right: 40rpx;
+  bottom: 180rpx;
+  width: 110rpx;
+  height: 110rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #FFB74D 0%, #FF8A65 100%);
+  box-shadow: 0 8rpx 24rpx rgba(255, 138, 101, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.add-icon {
+  font-size: 60rpx;
+  color: #FFFFFF;
+  font-weight: 300;
+}
+
+/* 底部导航栏占位 */
+.tab-bar-placeholder {
+  height: 100rpx;
+}

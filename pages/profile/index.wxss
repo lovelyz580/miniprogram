@@ -1,0 +1,348 @@
+/* pages/profile/index.wxss */
+
+/* 页面容器 */
+.container {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+	background-color: #FFFBF5;
+	padding-bottom: 140rpx;
+}
+
+/* 用户信息卡片 */
+.user-card {
+	display: flex;
+	align-items: center;
+	padding: 40rpx 30rpx;
+	background: linear-gradient(135deg, #FFFFFF 0%, #FFF9F5 100%);
+	margin: 24rpx;
+	border-radius: 32rpx;
+	box-shadow: 0 8rpx 24rpx rgba(180, 160, 140, 0.08);
+}
+
+.user-avatar-wrapper {
+	position: relative;
+	flex-shrink: 0;
+	margin: 0;
+	margin-right: 30rpx;
+	padding: 0;
+	background-color: transparent;
+	line-height: normal;
+	width: 140rpx !important;
+	height: 140rpx !important;
+	min-height: 140rpx !important;
+	border-radius: 50%;
+	overflow: hidden;
+}
+
+.user-avatar-wrapper::after {
+	border: none;
+}
+
+.user-avatar {
+	width: 100%;
+	height: 100%;
+	background-color: #E6E6E6;
+	display: block;
+}
+
+.avatar-edit {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	height: 40rpx;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: rgba(0, 0, 0, 0.5);
+	color: #FFFFFF;
+	font-size: 20rpx;
+}
+
+.user-info {
+	flex: 1;
+}
+
+.user-name-row {
+	display: flex;
+	align-items: center;
+}
+
+.user-name {
+	font-size: 36rpx;
+	font-weight: 600;
+	color: #333333;
+}
+
+.vip-badge {
+	margin-left: 12rpx;
+	padding: 6rpx 12rpx;
+	background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+	color: #FFFFFF;
+	font-size: 20rpx;
+	font-weight: 600;
+	border-radius: 8rpx;
+}
+
+.user-phone {
+	font-size: 28rpx;
+	color: #999999;
+	margin-top: 8rpx;
+	display: block;
+}
+
+.login-tip {
+	font-size: 28rpx;
+	color: #FF8A65;
+	margin-top: 8rpx;
+	font-weight: 600;
+}
+
+/* 宠物列表 */
+.pet-section {
+	margin: 20rpx;
+}
+
+.section-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 20rpx;
+}
+
+.section-title {
+	font-size: 30rpx;
+	font-weight: 600;
+	color: #333333;
+}
+
+.section-action {
+	font-size: 28rpx;
+	color: #FF8A65;
+	font-weight: 600;
+}
+
+.pet-list {
+	display: flex;
+	white-space: nowrap;
+	padding-bottom: 10rpx;
+}
+
+.pet-card {
+	display: inline-flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-between;
+	width: 240rpx;
+	padding: 24rpx 20rpx;
+	background-color: #FFFFFF;
+	border-radius: 24rpx;
+	margin-right: 20rpx;
+	position: relative;
+	box-shadow: 0 4rpx 16rpx rgba(180, 160, 140, 0.06);
+	border: 2rpx solid transparent;
+}
+
+.pet-content {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	flex: 1;
+}
+
+.pet-edit-btn {
+	width: 50rpx;
+	height: 50rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 50%;
+	background-color: #FFF0E5;
+	margin-left: 8rpx;
+}
+
+.pet-edit-btn text {
+	font-size: 28rpx;
+}
+
+.pet-card.active {
+	border: 2rpx solid #FF8A65;
+	background-color: #FFF9F5;
+}
+
+.pet-card .pet-avatar {
+	width: 100rpx;
+	height: 100rpx;
+	border-radius: 50%;
+	background-color: #E6E6E6;
+	margin-bottom: 12rpx;
+}
+
+.pet-card .pet-name {
+	font-size: 28rpx;
+	font-weight: 600;
+	color: #333333;
+	margin-bottom: 4rpx;
+}
+
+.pet-card .pet-breed {
+	font-size: 22rpx;
+	color: #999999;
+}
+
+.current-badge {
+	position: absolute;
+	top: 12rpx;
+	right: 12rpx;
+	padding: 4rpx 12rpx;
+	background: linear-gradient(135deg, #FFB74D 0%, #FF8A65 100%);
+	color: #FFFFFF;
+	font-size: 18rpx;
+	border-radius: 10rpx;
+}
+
+.add-card {
+	background-color: #FFFBF5;
+	border: 2rpx dashed #FFDAB9;
+}
+
+.add-icon {
+	width: 100rpx;
+	height: 100rpx;
+	border-radius: 50%;
+	background-color: #FFF0E5;
+	color: #FF8A65;
+	font-size: 40rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-bottom: 12rpx;
+}
+
+.add-text {
+	font-size: 26rpx;
+	color: #999999;
+}
+
+/* 功能菜单 */
+.menu-section {
+	margin: 24rpx;
+	background-color: #FFFFFF;
+	border-radius: 24rpx;
+	overflow: hidden;
+	box-shadow: 0 8rpx 24rpx rgba(180, 160, 140, 0.08);
+}
+
+.menu-item {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 32rpx 30rpx;
+	border-bottom: 1rpx solid #F0F0F0;
+}
+
+.menu-item:last-child {
+	border-bottom: none;
+}
+
+.menu-left {
+	display: flex;
+	align-items: center;
+}
+
+.menu-icon {
+	font-size: 40rpx;
+	margin-right: 20rpx;
+}
+
+.menu-text {
+	font-size: 30rpx;
+	color: #333333;
+}
+
+.menu-arrow {
+	font-size: 32rpx;
+	color: #CCCCCC;
+}
+
+/* 会员入口 */
+.vip-section {
+	margin: 20rpx;
+}
+
+.vip-banner {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 30rpx;
+	background: linear-gradient(135deg, #1A1A2E 0%, #16213E 100%);
+	border-radius: 16rpx;
+}
+
+.vip-title {
+	font-size: 32rpx;
+	font-weight: 600;
+	color: #FFD700;
+	display: block;
+}
+
+.vip-desc {
+	font-size: 24rpx;
+	color: rgba(255, 255, 255, 0.7);
+	margin-top: 8rpx;
+	display: block;
+}
+
+.vip-btn {
+	padding: 16rpx 30rpx;
+	background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+	color: #1A1A2E;
+	font-size: 26rpx;
+	font-weight: 600;
+	border-radius: 30rpx;
+}
+
+/* 退出登录 */
+.logout-section {
+	/* margin: 30rpx 20rpx; */
+	flex: 1;
+	height: 88rpx;
+	line-height: 88rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0;
+}
+
+.logout-btn {
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 96rpx;
+	line-height: 96rpx;
+	background-color: #FFFFFF;
+	color: #FF6B6B;
+	font-size: 32rpx;
+	font-weight: 600;
+	border-radius: 48rpx;
+	border: none;
+	box-shadow: 0 8rpx 24rpx rgba(180, 160, 140, 0.08);
+}
+
+/* 版本信息 */
+.version-info {
+	text-align: center;
+	padding: 30rpx;
+}
+
+.version-info text {
+	font-size: 24rpx;
+	color: #CCCCCC;
+}
+
+/* 底部导航栏占位 */
+.tab-bar-placeholder {
+	height: 100rpx;
+}

@@ -1,0 +1,243 @@
+<!--memory-box.wxml-->
+<view class="container">
+  <!-- 顶部标题 -->
+  <view class="header">
+    <text class="header-title">记忆盒子</text>
+    <text class="header-desc">保存与它有关的珍贵纪念品</text>
+  </view>
+
+  <!-- 统计信息 -->
+  <view class="stats-section">
+    <view class="stat-card">
+      <text class="stat-number">{{totalCount}}</text>
+      <text class="stat-label">纪念品数量</text>
+    </view>
+    <view class="stat-card">
+      <text class="stat-number">{{categoryCount}}</text>
+      <text class="stat-label">分类数量</text>
+    </view>
+  </view>
+
+  <!-- 分类筛选 -->
+  <view class="category-section">
+    <scroll-view class="category-scroll" scroll-x>
+      <view 
+        class="category-item {{selectedCategory === 'all' ? 'active' : ''}}"
+        bindtap="selectCategory"
+        data-category="all"
+      >
+        <text>全部</text>
+      </view>
+      <view 
+        class="category-item {{selectedCategory === item.value ? 'active' : ''}}"
+        wx:for="{{categories}}"
+        wx:key="value"
+        bindtap="selectCategory"
+        data-category="{{item.value}}"
+      >
+        <text class="category-icon">{{item.icon}}</text>
+        <text class="category-name">{{item.name}}</text>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 纪念品列表 -->
+  <scroll-view 
+    class="item-list"
+    scroll-y
+    bindscrolltolower="loadMore"
+  >
+    <view 
+      class="item-card"
+      wx:for="{{items}}"
+      wx:key="id"
+      bindtap="goToDetail"
+      data-id="{{item.id}}"
+    >
+      <view class="item-media">
+        <image 
+          wx:if="{{item.photoUrl}}"
+          src="{{item.photoUrl}}" 
+          mode="aspectFill" 
+          class="item-image"
+        ></image>
+        <view class="item-placeholder" wx:else>
+          <text class="placeholder-icon">{{getCategoryIcon(item.category)}}</text>
+        </view>
+      </view>
+      
+      <view class="item-content">
+        <view class="item-header">
+          <view class="item-category">
+            <text class="category-tag">{{item.categoryName}}</text>
+          </view>
+          <text class="item-date">{{item.createTime}}</text>
+        </view>
+        
+        <text class="item-name">{{item.name}}</text>
+        
+        <view class="item-desc" wx:if="{{item.description}}">
+          <text>{{item.description}}</text>
+        </view>
+        
+        <view class="item-footer">
+          <view class="item-location" wx:if="{{item.location}}">
+            <text class="location-icon">📍</text>
+            <text class="location-text">{{item.location}}</text>
+          </view>
+          <view class="item-actions">
+            <text class="action-btn" catchtap="onEdit" data-id="{{item.id}}">编辑</text>
+            <text class="action-btn danger" catchtap="onDelete" data-id="{{item.id}}">删除</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{items.length === 0 && !isLoading}}">
+      <text class="empty-icon">📦</text>
+      <text class="empty-text">还没有纪念品</text>
+      <text class="empty-desc">点击下方添加按钮，保存第一份纪念品</text>
+    </view>
+
+    <!-- 加载更多 -->
+    <view class="load-more" wx:if="{{hasMore && items.length > 0}}">
+      <text wx:if="{{isLoading}}">加载中...</text>
+      <text wx:else bindtap="loadMore">加载更多</text>
+    </view>
+  </scroll-view>
+
+  <!-- 添加按钮 -->
+  <view class="fab-container">
+    <view class="fab-btn" bindtap="showAddOptions">
+      <text class="fab-icon">+</text>
+    </view>
+  </view>
+</view>
+
+<!-- 添加/编辑纪念品弹窗 -->
+<view class="add-modal {{showAddModal ? 'show' : ''}}">
+  <view class="add-mask" bindtap="hideAddModal"></view>
+  <view class="add-content">
+    <view class="add-header">
+      <text class="add-title">{{isEditing ? '编辑纪念品' : '添加纪念品'}}</text>
+      <text class="add-close" bindtap="hideAddModal">×</text>
+    </view>
+    
+    <scroll-view class="add-form" scroll-y>
+      <!-- 名称 -->
+      <view class="form-item">
+        <text class="form-label">名称 <text class="required">*</text></text>
+        <input 
+          class="form-input"
+          placeholder="如：胎毛、脐带、掉的乳牙"
+          bindinput="onNameInput"
+          value="{{formData.name}}"
+          maxlength="50"
+        />
+      </view>
+
+      <!-- 分类 -->
+      <view class="form-item">
+        <text class="form-label">分类 <text class="required">*</text></text>
+        <view class="category-picker">
+          <view 
+            class="category-option {{formData.category === item.value ? 'active' : ''}}"
+            wx:for="{{categories}}"
+            wx:key="value"
+            bindtap="selectFormCategory"
+            data-category="{{item.value}}"
+          >
+            <text class="option-icon">{{item.icon}}</text>
+            <text class="option-name">{{item.name}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 照片 -->
+      <view class="form-item">
+        <text class="form-label">照片</text>
+        <view class="photo-upload" bindtap="choosePhoto">
+          <image 
+            wx:if="{{formData.photoUrl}}"
+            src="{{formData.photoUrl}}"
+            mode="aspectFill"
+            class="upload-preview"
+          ></image>
+          <view class="upload-placeholder" wx:else>
+            <text class="upload-icon">📷</text>
+            <text class="upload-text">添加照片</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 描述 -->
+      <view class="form-item vertical">
+        <text class="form-label">描述说明</text>
+        <textarea 
+          class="form-textarea"
+          placeholder="记录这份纪念品的来历..."
+          bindinput="onDescInput"
+          value="{{formData.description}}"
+          maxlength="500"
+        ></textarea>
+      </view>
+
+      <!-- 存放位置 -->
+      <view class="form-item">
+        <text class="form-label">存放位置</text>
+        <input 
+          class="form-input"
+          placeholder="如：卧室抽屉、书房柜子"
+          bindinput="onLocationInput"
+          value="{{formData.location}}"
+          maxlength="100"
+        />
+      </view>
+
+      <!-- 获得日期 -->
+      <view class="form-item">
+        <text class="form-label">获得日期</text>
+        <view class="form-picker" bindtap="showDatePicker">
+          <text class="{{formData.obtainDate ? '' : 'placeholder'}}">
+            {{formData.obtainDate || '选择日期'}}
+          </text>
+          <text class="picker-arrow">›</text>
+        </view>
+      </view>
+    </scroll-view>
+
+    <view class="add-footer">
+      <view class="save-btn {{canSave ? 'active' : ''}}" bindtap="onSave">
+        <text>保存</text>
+      </view>
+    </view>
+  </view>
+</view>
+
+<!-- 日期选择器 -->
+<view class="picker-modal {{showDatePickerModal ? 'show' : ''}}">
+  <view class="picker-mask" bindtap="hideDatePicker"></view>
+  <view class="picker-content">
+    <view class="picker-header">
+      <text bindtap="hideDatePicker">取消</text>
+      <text class="picker-title">选择日期</text>
+      <text bindtap="confirmDate">确定</text>
+    </view>
+    <picker-view 
+      class="date-picker"
+      value="{{datePickerValue}}"
+      bindchange="onDateChange"
+    >
+      <picker-view-column>
+        <view class="picker-item" wx:for="{{years}}" wx:key="*this">{{item}}年</view>
+      </picker-view-column>
+      <picker-view-column>
+        <view class="picker-item" wx:for="{{months}}" wx:key="*this">{{item}}月</view>
+      </picker-view-column>
+      <picker-view-column>
+        <view class="picker-item" wx:for="{{days}}" wx:key="*this">{{item}}日</view>
+      </picker-view-column>
+    </picker-view>
+  </view>
+</view>

@@ -1,0 +1,154 @@
+<!-- pages/health/vaccine-add/vaccine-add.wxml -->
+<view class="container">
+  <!-- 宠物信息卡片 -->
+  <view class="pet-info-card" wx:if="{{currentPet}}">
+    <image class="pet-avatar" src="{{currentPet.avatarUrl || '/assets/images/pet-default.png'}}" mode="aspectFill"></image>
+    <view class="pet-detail">
+      <text class="pet-name">{{currentPet.name}}</text>
+      <text class="pet-breed">{{currentPet.breed || currentPet.species}}</text>
+    </view>
+  </view>
+
+  <!-- 表单区域 -->
+  <view class="form-section">
+    <view class="section-title">疫苗信息</view>
+
+    <!-- 疫苗名称 -->
+    <view class="form-item {{errors.vaccineName ? 'error' : ''}}">
+      <view class="form-label">
+        <text class="required">*</text>
+        <text>疫苗名称</text>
+      </view>
+      <input 
+        class="form-input" 
+        type="text" 
+        placeholder="如：犬瘟热疫苗、狂犬疫苗" 
+        value="{{vaccineName}}"
+        bindinput="onVaccineNameInput"
+      />
+      <text class="error-tip" wx:if="{{errors.vaccineName}}">{{errors.vaccineName}}</text>
+    </view>
+
+    <!-- 疫苗类型 -->
+    <view class="form-item {{errors.vaccineType ? 'error' : ''}}">
+      <view class="form-label">
+        <text class="required">*</text>
+        <text>疫苗类型</text>
+      </view>
+      <picker 
+        mode="selector" 
+        range="{{vaccineTypes}}" 
+        bindchange="onVaccineTypeChange"
+      >
+        <view class="form-picker">
+          <text class="{{vaccineType ? '' : 'placeholder'}}">{{vaccineType || '请选择疫苗类型'}}</text>
+          <text class="arrow">›</text>
+        </view>
+      </picker>
+      <text class="error-tip" wx:if="{{errors.vaccineType}}">{{errors.vaccineType}}</text>
+    </view>
+
+    <!-- 接种日期 -->
+    <view class="form-item {{errors.vaccineDate ? 'error' : ''}}">
+      <view class="form-label">
+        <text class="required">*</text>
+        <text>接种日期</text>
+      </view>
+      <picker mode="date" value="{{vaccineDate}}" bindchange="onVaccineDateChange">
+        <view class="form-picker">
+          <text class="{{vaccineDate ? '' : 'placeholder'}}">{{vaccineDate || '请选择接种日期'}}</text>
+          <text class="arrow">›</text>
+        </view>
+      </picker>
+      <text class="error-tip" wx:if="{{errors.vaccineDate}}">{{errors.vaccineDate}}</text>
+    </view>
+
+    <!-- 医院名称 -->
+    <view class="form-item">
+      <view class="form-label">
+        <text>医院名称</text>
+      </view>
+      <input 
+        class="form-input" 
+        type="text" 
+        placeholder="请输入接种医院名称" 
+        value="{{hospital}}"
+        bindinput="onHospitalInput"
+      />
+    </view>
+
+    <!-- 医生姓名 -->
+    <view class="form-item">
+      <view class="form-label">
+        <text>医生姓名</text>
+      </view>
+      <input 
+        class="form-input" 
+        type="text" 
+        placeholder="请输入接种医生姓名" 
+        value="{{doctor}}"
+        bindinput="onDoctorInput"
+      />
+    </view>
+
+    <!-- 疫苗批号 -->
+    <view class="form-item">
+      <view class="form-label">
+        <text>疫苗批号</text>
+      </view>
+      <input 
+        class="form-input" 
+        type="text" 
+        placeholder="请输入疫苗批号（可选）" 
+        value="{{batchNo}}"
+        bindinput="onBatchNoInput"
+      />
+    </view>
+
+    <!-- 下次接种日期 -->
+    <view class="form-item">
+      <view class="form-label">
+        <text>下次接种日期</text>
+      </view>
+      <picker mode="date" value="{{nextDate}}" bindchange="onNextDateChange">
+        <view class="form-picker">
+          <text class="{{nextDate ? '' : 'placeholder'}}">{{nextDate || '请选择下次接种日期'}}</text>
+          <text class="arrow">›</text>
+        </view>
+      </picker>
+      <text class="form-hint">可设置下次接种提醒</text>
+    </view>
+  </view>
+
+  <!-- 备注区域 -->
+  <view class="form-section">
+    <view class="section-title">备注信息</view>
+
+    <view class="form-item">
+      <textarea 
+        class="form-textarea" 
+        placeholder="添加备注信息（可选）" 
+        value="{{notes}}"
+        bindinput="onNoteInput"
+        maxlength="200"
+      ></textarea>
+      <text class="char-count">{{notes.length}}/200</text>
+    </view>
+  </view>
+
+  <!-- 底部操作区域 -->
+  <view class="bottom-actions">
+    <button class="btn-draft" bindtap="saveDraft">存为草稿</button>
+    <button 
+      class="btn-submit {{isSubmitting ? 'disabled' : ''}}" 
+      bindtap="submitForm"
+      disabled="{{isSubmitting}}"
+    >
+      <text wx:if="{{isSubmitting}}">保存中...</text>
+      <text wx:else>保存记录</text>
+    </button>
+  </view>
+
+  <!-- 底部导航栏占位 -->
+  <view class="tab-bar-placeholder"></view>
+</view>

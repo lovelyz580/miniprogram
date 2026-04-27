@@ -1,0 +1,374 @@
+/* edit.wxss */
+
+/* 页面容器 */
+.container {
+  min-height: 100vh;
+  background-color: #F5F7FA;
+  padding-bottom: 40rpx;
+}
+
+/* 顶部导航栏 */
+.nav-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx 30rpx;
+  background-color: #FFFFFF;
+  border-bottom: 1rpx solid #EEEEEE;
+}
+
+.nav-back {
+  font-size: 48rpx;
+  color: #333333;
+  font-weight: bold;
+}
+
+.nav-title {
+  font-size: 34rpx;
+  font-weight: 600;
+  color: #333333;
+}
+
+.nav-save {
+  font-size: 28rpx;
+  color: #CCCCCC;
+  padding: 10rpx 24rpx;
+  border-radius: 32rpx;
+  background-color: #F5F7FA;
+}
+
+.nav-save.active {
+  color: #FFFFFF;
+  background-color: #3366CC;
+}
+
+/* 头像区域 */
+.avatar-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60rpx;
+  background-color: #FFFFFF;
+}
+
+.avatar-wrapper {
+  position: relative;
+  width: 200rpx;
+  height: 200rpx;
+}
+
+.avatar-image {
+  width: 200rpx;
+  height: 200rpx;
+  border-radius: 50%;
+  border: 6rpx solid #FFFFFF;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.1);
+}
+
+.avatar-edit {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 60rpx;
+  height: 60rpx;
+  background-color: #3366CC;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  font-size: 28rpx;
+  border: 4rpx solid #FFFFFF;
+}
+
+.avatar-tip {
+  font-size: 24rpx;
+  color: #999999;
+  margin-top: 20rpx;
+}
+
+/* 表单区域 */
+.form-section {
+  margin-top: 20rpx;
+  padding: 30rpx;
+  background-color: #FFFFFF;
+}
+
+.form-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 30rpx;
+  padding-bottom: 20rpx;
+  border-bottom: 1rpx solid #EEEEEE;
+}
+
+.form-item {
+  display: flex;
+  align-items: center;
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid #F5F7FA;
+}
+
+.form-item.vertical {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.form-item:last-child {
+  border-bottom: none;
+}
+
+.form-label {
+  width: 180rpx;
+  font-size: 28rpx;
+  color: #333333;
+  flex-shrink: 0;
+}
+
+.required {
+  color: #FF4D4F;
+}
+
+.form-input {
+  flex: 1;
+  font-size: 28rpx;
+  color: #333333;
+  text-align: right;
+}
+
+.form-input.placeholder,
+.form-picker .placeholder {
+  color: #CCCCCC;
+}
+
+.form-picker {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  font-size: 28rpx;
+  color: #333333;
+}
+
+.picker-arrow {
+  font-size: 32rpx;
+  color: #CCCCCC;
+  margin-left: 12rpx;
+}
+
+/* 性别选择 */
+.gender-selector {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.gender-option {
+  display: flex;
+  align-items: center;
+  padding: 12rpx 24rpx;
+  border-radius: 32rpx;
+  margin-left: 20rpx;
+  background-color: #F5F7FA;
+}
+
+.gender-option.active {
+  background-color: #E6F0FF;
+}
+
+.gender-icon {
+  font-size: 28rpx;
+  margin-right: 8rpx;
+}
+
+.gender-text {
+  font-size: 26rpx;
+  color: #666666;
+}
+
+.gender-option.active .gender-text {
+  color: #3366CC;
+}
+
+/* 宠物类型选择 */
+.type-selector {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.type-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16rpx 24rpx;
+  border-radius: 16rpx;
+  margin-left: 16rpx;
+  background-color: #F5F7FA;
+}
+
+.type-option.active {
+  background-color: #E6F0FF;
+}
+
+.type-icon {
+  font-size: 40rpx;
+  margin-bottom: 4rpx;
+}
+
+.type-text {
+  font-size: 22rpx;
+  color: #666666;
+}
+
+.type-option.active .type-text {
+  color: #3366CC;
+}
+
+/* 开关 */
+.switch-wrap {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* 文本域 */
+.form-textarea {
+  width: 100%;
+  min-height: 160rpx;
+  padding: 20rpx;
+  background-color: #F5F7FA;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  line-height: 1.6;
+  margin-top: 16rpx;
+}
+
+/* 宠龄信息 */
+.age-section {
+  display: flex;
+  margin: 20rpx 30rpx;
+  padding: 30rpx;
+  background-color: #FFFFFF;
+  border-radius: 16rpx;
+}
+
+.age-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.age-label {
+  font-size: 24rpx;
+  color: #999999;
+  margin-bottom: 8rpx;
+}
+
+.age-value {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #3366CC;
+}
+
+/* 删除按钮 */
+.delete-section {
+  margin: 40rpx 30rpx;
+}
+
+.delete-btn {
+  padding: 28rpx;
+  text-align: center;
+  border: 2rpx solid #FF4D4F;
+  border-radius: 44rpx;
+}
+
+.delete-btn text {
+  font-size: 30rpx;
+  color: #FF4D4F;
+}
+
+/* 弹窗样式 */
+.picker-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  visibility: hidden;
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.picker-modal.show {
+  visibility: visible;
+  opacity: 1;
+}
+
+.picker-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.picker-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #FFFFFF;
+  border-radius: 24rpx 24rpx 0 0;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.picker-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 30rpx;
+  border-bottom: 1rpx solid #EEEEEE;
+  font-size: 30rpx;
+  color: #3366CC;
+}
+
+.picker-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333333;
+}
+
+/* 品种选择器 */
+.breed-picker {
+  height: 300rpx;
+}
+
+.picker-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+}
+
+.custom-breed {
+  padding: 20rpx 30rpx;
+  border-top: 1rpx solid #EEEEEE;
+}
+
+.custom-input {
+  width: 100%;
+  padding: 20rpx;
+  background-color: #F5F7FA;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+}
+
+/* 日期选择器 */
+.date-picker {
+  height: 400rpx;
+}

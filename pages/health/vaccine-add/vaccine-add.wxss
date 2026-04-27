@@ -1,0 +1,212 @@
+/* pages/health/vaccine-add/vaccine-add.wxss */
+
+/* 页面容器 */
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #FFFBF5;
+  padding-bottom: 160rpx;
+}
+
+/* 宠物信息卡片 */
+.pet-info-card {
+  display: flex;
+  align-items: center;
+  margin: 20rpx 30rpx;
+  padding: 24rpx;
+  background-color: #FFFFFF;
+  border-radius: 24rpx;
+  box-shadow: 0 8rpx 24rpx rgba(180, 160, 140, 0.08);
+}
+
+.pet-avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  margin-right: 20rpx;
+  background-color: #FFFBF5;
+}
+
+.pet-detail {
+  display: flex;
+  flex-direction: column;
+}
+
+.pet-name {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 4rpx;
+}
+
+.pet-breed {
+  font-size: 24rpx;
+  color: #999999;
+}
+
+/* 表单区域 */
+.form-section {
+  margin: 20rpx 30rpx;
+  padding: 24rpx;
+  background-color: #FFFFFF;
+  border-radius: 24rpx;
+  box-shadow: 0 8rpx 24rpx rgba(180, 160, 140, 0.08);
+}
+
+.section-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 24rpx;
+  padding-bottom: 16rpx;
+  border-bottom: 1rpx solid #F0F0F0;
+}
+
+/* 表单项 */
+.form-item {
+  margin-bottom: 30rpx;
+}
+
+.form-item:last-child {
+  margin-bottom: 0;
+}
+
+.form-label {
+  font-size: 28rpx;
+  color: #666666;
+  margin-bottom: 12rpx;
+  display: flex;
+  align-items: center;
+}
+
+.required {
+  color: #FF6B6B;
+  margin-right: 4rpx;
+}
+
+.form-input {
+  height: 88rpx;
+  padding: 0 24rpx;
+  background-color: #FFFBF5;
+  border-radius: 12rpx;
+  font-size: 30rpx;
+  color: #333333;
+}
+
+.form-picker {
+  height: 88rpx;
+  padding: 0 24rpx;
+  background-color: #FFFBF5;
+  border-radius: 12rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 30rpx;
+  color: #333333;
+}
+
+.form-picker .placeholder {
+  color: #BBBBBB;
+}
+
+.arrow {
+  font-size: 32rpx;
+  color: #999999;
+}
+
+.form-hint {
+  font-size: 22rpx;
+  color: #999999;
+  margin-top: 8rpx;
+}
+
+.form-textarea {
+  width: 100%;
+  height: 160rpx;
+  padding: 24rpx;
+  background-color: #FFFBF5;
+  border-radius: 12rpx;
+  font-size: 30rpx;
+  color: #333333;
+  box-sizing: border-box;
+}
+
+.char-count {
+  font-size: 22rpx;
+  color: #999999;
+  text-align: right;
+  margin-top: 8rpx;
+}
+
+/* 错误状态 */
+.form-item.error .form-input,
+.form-item.error .form-picker,
+.form-item.error .form-textarea {
+  border: 2rpx solid #FF6B6B;
+}
+
+.error-tip {
+  font-size: 22rpx;
+  color: #FF6B6B;
+  margin-top: 8rpx;
+}
+
+/* 底部操作区域 */
+.bottom-actions {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  padding: 20rpx 30rpx;
+  padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
+  background-color: #FFFFFF;
+  box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.05);
+  z-index: 100;
+}
+
+.btn-draft {
+  flex: 1;
+  height: 88rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  font-size: 32rpx;
+  color: #FF8A65;
+  background-color: #FFF0E5;
+  border-radius: 44rpx;
+  margin-right: 20rpx;
+}
+
+.btn-draft:active {
+  background-color: #E8E8E8;
+}
+
+.btn-submit {
+  flex: 1;
+  height: 88rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  font-size: 32rpx;
+  color: #FFFFFF;
+  background: linear-gradient(135deg, #FFB74D 0%, #FF8A65 100%);
+  border-radius: 44rpx;
+  box-shadow: 0 4rpx 12rpx rgba(255, 138, 101, 0.3);
+}
+
+.btn-submit:active {
+  opacity: 0.9;
+}
+
+.btn-submit.disabled {
+  background: #CCCCCC;
+}
+
+/* 底部导航栏占位 */
+.tab-bar-placeholder {
+  height: 100rpx;
+}

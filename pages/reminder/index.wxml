@@ -1,0 +1,154 @@
+<!-- pages/reminder/index.wxml -->
+<view class="container">
+  <!-- 分类筛选 -->
+  <view class="filter-bar">
+    <view class="filter-tabs">
+      <view 
+        class="filter-tab {{currentCategory === 'all' ? 'active' : ''}}" 
+        bindtap="switchCategory" 
+        data-category="all"
+      >
+        <text>全部</text>
+      </view>
+      <view 
+        class="filter-tab {{currentCategory === 'vaccine' ? 'active' : ''}}" 
+        bindtap="switchCategory" 
+        data-category="vaccine"
+      >
+        <text>💉疫苗</text>
+      </view>
+      <view 
+        class="filter-tab {{currentCategory === 'checkup' ? 'active' : ''}}" 
+        bindtap="switchCategory" 
+        data-category="checkup"
+      >
+        <text>🩺体检</text>
+      </view>
+      <view 
+        class="filter-tab {{currentCategory === 'medication' ? 'active' : ''}}" 
+        bindtap="switchCategory" 
+        data-category="medication"
+      >
+        <text>💊用药</text>
+      </view>
+      <view 
+        class="filter-tab {{currentCategory === 'other' ? 'active' : ''}}" 
+        bindtap="switchCategory" 
+        data-category="other"
+      >
+        <text>📌其他</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 提醒列表 -->
+  <scroll-view 
+    class="reminder-list" 
+    scroll-y
+    bindscrolltolower="loadMore"
+    refresher-enabled 
+    refresher-triggered="{{isRefreshing}}"
+    bindrefresherrefresh="onRefresh"
+  >
+    <!-- 待完成提醒 -->
+    <view class="reminder-group" wx:if="{{pendingList.length > 0}}">
+      <view class="group-header">
+        <text class="group-title">待完成</text>
+        <text class="group-count">{{pendingList.length}}</text>
+      </view>
+      
+      <view 
+        class="reminder-item {{item.isOverdue ? 'overdue' : ''}}" 
+        wx:for="{{pendingList}}" 
+        wx:key="id"
+      >
+        <view class="item-checkbox" catchtap="toggleComplete" data-id="{{item.id}}">
+          <view class="checkbox {{item.isCompleted ? 'checked' : ''}}">
+            <text wx:if="{{item.isCompleted}}">✓</text>
+          </view>
+        </view>
+        
+        <view class="item-content" bindtap="showDetail" data-id="{{item.id}}">
+          <view class="item-header">
+            <view class="category-tag category-tag-{{item.category}}">
+              <text>{{item.categoryText}}</text>
+            </view>
+            <text class="item-date {{item.isOverdue ? 'overdue' : ''}}">
+              {{item.isOverdue ? '已逾期' : item.remindDate}}
+            </text>
+          </view>
+          <text class="item-title">{{item.title}}</text>
+          <text class="item-desc" wx:if="{{item.description}}">{{item.description}}</text>
+          <view class="item-footer">
+            <text class="pet-name" wx:if="{{item.petName}}">🐾 {{item.petName}}</text>
+            <text class="repeat-info" wx:if="{{item.isRepeat}}">
+              {{item.repeatText}}
+            </text>
+          </view>
+        </view>
+        
+        <view class="item-actions">
+          <text class="action-edit" catchtap="editReminder" data-id="{{item.id}}">编辑</text>
+          <text class="action-delete" catchtap="deleteReminder" data-id="{{item.id}}">删除</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 已完成提醒 -->
+    <view class="reminder-group completed-group" wx:if="{{completedList.length > 0}}">
+      <view class="group-header" bindtap="toggleCompleted">
+        <text class="group-title">已完成</text>
+        <text class="group-count">{{completedList.length}}</text>
+        <text class="toggle-icon {{showCompleted ? 'expanded' : ''}}">›</text>
+      </view>
+      
+      <view class="completed-list" wx:if="{{showCompleted}}">
+        <view 
+          class="reminder-item completed" 
+          wx:for="{{completedList}}" 
+          wx:key="id"
+        >
+          <view class="item-checkbox" catchtap="toggleComplete" data-id="{{item.id}}">
+            <view class="checkbox checked">
+              <text>✓</text>
+            </view>
+          </view>
+          
+          <view class="item-content">
+            <view class="item-header">
+              <view class="category-tag category-tag-{{item.category}}">
+                <text>{{item.categoryText}}</text>
+              </view>
+              <text class="item-date completed-date">{{item.completedDate}}</text>
+            </view>
+            <text class="item-title">{{item.title}}</text>
+          </view>
+          
+          <view class="item-actions">
+            <text class="action-delete" catchtap="deleteReminder" data-id="{{item.id}}">删除</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{pendingList.length === 0 && completedList.length === 0 && !isLoading}}">
+      <text class="empty-icon">🔔</text>
+      <text class="empty-title">暂无提醒</text>
+      <text class="empty-desc">点击下方按钮添加提醒</text>
+    </view>
+
+    <!-- 加载状态 -->
+    <view class="load-more" wx:if="{{hasMore && pendingList.length > 0}}">
+      <text>加载更多...</text>
+    </view>
+  </scroll-view>
+
+  <!-- 添加按钮 -->
+  <view class="add-btn" bindtap="goToAdd">
+    <text class="add-icon">+</text>
+  </view>
+
+  <!-- 底部导航栏占位 -->
+  <view class="tab-bar-placeholder"></view>
+</view>

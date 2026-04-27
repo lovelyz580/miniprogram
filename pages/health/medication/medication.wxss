@@ -1,0 +1,522 @@
+/* pages/health/medication/medication.wxss */
+
+/* 页面容器 */
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #F5F7FA;
+  padding-bottom: 20rpx;
+}
+
+/* 顶部统计 - 优化版 */
+.stats-bar {
+  display: flex;
+  justify-content: space-around;
+  margin: 20rpx 30rpx;
+  padding: 32rpx 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 20rpx;
+  box-shadow: 0 8rpx 24rpx rgba(102, 126, 234, 0.15);
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.stat-item .stat-value {
+  font-size: 56rpx;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin-bottom: 6rpx;
+  text-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+}
+
+.stat-item .stat-label {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.85);
+  letter-spacing: 1rpx;
+}
+
+.stat-item.ongoing .stat-value {
+  color: #FFE066;
+}
+
+.stat-item.completed .stat-value {
+  color: #95DE64;
+}
+
+/* 状态筛选 - 优化版 */
+.filter-bar {
+  display: flex;
+  margin: 0 30rpx 20rpx;
+  background-color: #FFFFFF;
+  border-radius: 16rpx;
+  padding: 8rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
+}
+
+.filter-item {
+  flex: 1;
+  text-align: center;
+  padding: 14rpx 0;
+  font-size: 28rpx;
+  color: #666666;
+  border-radius: 12rpx;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 500;
+}
+
+.filter-item.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #FFFFFF;
+  box-shadow: 0 4rpx 12rpx rgba(102, 126, 234, 0.3);
+  transform: scale(1.02);
+}
+
+/* 记录列表 - 优化版 */
+.record-list {
+  flex: 1;
+  padding: 0 30rpx;
+}
+
+/* 时间线头部 */
+.timeline-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24rpx 0 32rpx;
+}
+
+.timeline-line {
+  flex: 1;
+  height: 1rpx;
+  background: linear-gradient(90deg, transparent, #E8E8E8, transparent);
+}
+
+.timeline-title {
+  font-size: 28rpx;
+  color: #999999;
+  padding: 0 32rpx;
+  font-weight: 500;
+  letter-spacing: 2rpx;
+}
+
+/* 记录项 */
+.record-item {
+  display: flex;
+  margin-bottom: 24rpx;
+	margin-right: 40rpx;
+}
+
+.timeline-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 24rpx;
+  flex-shrink: 0;
+}
+
+.node-dot {
+  width: 24rpx;
+  height: 24rpx;
+  border-radius: 50%;
+  background-color: #CCCCCC;
+  flex-shrink: 0;
+  border: 4rpx solid #FFFFFF;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.node-dot.ongoing {
+  background: linear-gradient(135deg, #FF9500, #FFB84D);
+  box-shadow: 0 0 16rpx rgba(255, 149, 0, 0.5);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 16rpx rgba(255, 149, 0, 0.5);
+  }
+  50% {
+    transform: scale(1.1);
+    box-shadow: 0 0 24rpx rgba(255, 149, 0, 0.7);
+  }
+}
+
+.node-line {
+  flex: 1;
+  width: 3rpx;
+  background: linear-gradient(180deg, #E8E8E8, transparent);
+  margin-top: 12rpx;
+  border-radius: 2rpx;
+}
+
+/* 记录卡片 - 优化版 */
+.record-card {
+  flex: 1;
+  background-color: #FFFFFF;
+  border-radius: 20rpx;
+  padding: 28rpx;
+  margin-bottom: 0;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.record-card:active {
+  transform: translateY(-2rpx);
+  box-shadow: 0 8rpx 28rpx rgba(0, 0, 0, 0.1);
+}
+
+.record-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18rpx;
+}
+
+.medication-tag {
+  background: linear-gradient(135deg, #E6F0FF 0%, #F0F7FF 100%);
+  padding: 8rpx 18rpx;
+  border-radius: 12rpx;
+  border: 1rpx solid rgba(51, 102, 204, 0.1);
+}
+
+.medication-tag text {
+  font-size: 22rpx;
+  color: #3366CC;
+  font-weight: 500;
+}
+
+.status-badge {
+  padding: 8rpx 18rpx;
+  border-radius: 12rpx;
+  font-size: 22rpx;
+  font-weight: 500;
+}
+
+.status-badge.ongoing {
+  background: linear-gradient(135deg, #FFF4E6 0%, #FFF9F0 100%);
+  color: #FF9500;
+  border: 1rpx solid rgba(255, 149, 0, 0.2);
+}
+
+.status-badge.completed {
+  background: linear-gradient(135deg, #F6FFED 0%, #FBFFF7 100%);
+  color: #52C41A;
+  border: 1rpx solid rgba(82, 196, 26, 0.2);
+}
+.status-badge.not_started {
+  background: linear-gradient(135deg, #F6FFED 0%, #FBFFF7 100%);
+  color: #6001fa;
+  border: 1rpx solid rgba(82, 196, 26, 0.2);
+}
+.stat-item.completed .stat-value {
+  color: #6001fa;
+}
+.record-body {
+  margin-bottom: 18rpx;
+}
+
+.medication-name-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 18rpx;
+}
+
+.medication-icon {
+  font-size: 40rpx;
+  margin-right: 14rpx;
+  filter: drop-shadow(0 2rpx 4rpx rgba(0, 0, 0, 0.1));
+}
+
+.medication-name {
+  font-size: 34rpx;
+  font-weight: 600;
+  color: #333333;
+  letter-spacing: 0.5rpx;
+}
+
+/* 进度条 - 优化版 */
+.progress-section {
+  display: flex;
+  align-items: center;
+  margin-bottom: 18rpx;
+  padding: 12rpx 16rpx;
+  background: linear-gradient(135deg, #FFF9F0 0%, #FFF4E6 100%);
+  border-radius: 12rpx;
+}
+
+.progress-bar {
+  flex: 1;
+  height: 10rpx;
+  background-color: rgba(255, 149, 0, 0.15);
+  border-radius: 10rpx;
+  margin-right: 16rpx;
+  overflow: hidden;
+  box-shadow: inset 0 2rpx 4rpx rgba(0, 0, 0, 0.05);
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #FF9500, #FFB84D);
+  border-radius: 10rpx;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2rpx 8rpx rgba(255, 149, 0, 0.4);
+}
+
+.progress-text {
+  font-size: 24rpx;
+  color: #FF9500;
+  flex-shrink: 0;
+  font-weight: 600;
+  min-width: 60rpx;
+  text-align: right;
+}
+
+.record-detail {
+  display: flex;
+  font-size: 26rpx;
+  margin-bottom: 10rpx;
+  padding: 8rpx 0;
+}
+
+.detail-label {
+  color: #999999;
+  flex-shrink: 0;
+  margin-right: 8rpx;
+}
+
+.detail-value {
+  color: #333333;
+  font-weight: 500;
+}
+
+.record-footer {
+  padding-top: 18rpx;
+  border-top: 1rpx solid #F5F5F5;
+}
+
+.record-date {
+  font-size: 24rpx;
+  color: #999999;
+  font-weight: 500;
+}
+
+/* 操作按钮 - 优化版 */
+.record-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 28rpx;
+  margin-top: 18rpx;
+  padding-top: 18rpx;
+  border-top: 1rpx solid #F5F5F5;
+}
+
+.action-btn {
+  font-size: 26rpx;
+  padding: 8rpx 20rpx;
+  border-radius: 12rpx;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.action-btn.reminder {
+  color: #3366CC;
+  background-color: rgba(51, 102, 204, 0.08);
+}
+
+.action-btn.reminder:active {
+  background-color: rgba(51, 102, 204, 0.15);
+}
+
+.action-btn.delete {
+  color: #FF6B6B;
+  background-color: rgba(255, 107, 107, 0.08);
+}
+
+.action-btn.delete:active {
+  background-color: rgba(255, 107, 107, 0.15);
+}
+
+/* 空状态 - 优化版 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 140rpx 0 120rpx;
+  background-color: #FFFFFF;
+  border-radius: 20rpx;
+  margin-top: 20rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
+}
+
+.empty-icon {
+  font-size: 120rpx;
+  margin-bottom: 28rpx;
+  opacity: 0.6;
+  filter: drop-shadow(0 4rpx 12rpx rgba(0, 0, 0, 0.1));
+}
+
+.empty-title {
+  font-size: 34rpx;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 12rpx;
+  letter-spacing: 0.5rpx;
+}
+
+.empty-desc {
+  font-size: 28rpx;
+  color: #999999;
+  letter-spacing: 0.5rpx;
+}
+
+/* 加载更多 - 优化版 */
+.load-more {
+  text-align: center;
+  padding: 36rpx;
+  color: #999999;
+  font-size: 26rpx;
+}
+
+/* 添加按钮 - 优化版 */
+.add-btn {
+  position: fixed;
+  right: 40rpx;
+  bottom: 180rpx;
+  width: 108rpx;
+  height: 108rpx;
+  border-radius: 54rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  box-shadow: 0 12rpx 28rpx rgba(102, 126, 234, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 100;
+}
+
+.add-btn:active {
+  transform: scale(0.95);
+  box-shadow: 0 8rpx 20rpx rgba(102, 126, 234, 0.3);
+}
+
+.add-icon {
+  font-size: 64rpx;
+  color: #FFFFFF;
+  font-weight: 300;
+  text-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+}
+
+/* 详情弹窗 - 优化版 */
+.detail-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8rpx);
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.detail-content {
+  width: 90%;
+  max-height: 80vh;
+  background-color: #FFFFFF;
+  border-radius: 28rpx;
+  overflow: hidden;
+  box-shadow: 0 12rpx 48rpx rgba(0, 0, 0, 0.15);
+  animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(40rpx);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 32rpx;
+  border-bottom: 1rpx solid #F5F5F5;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.detail-title {
+  font-size: 34rpx;
+  font-weight: 600;
+  color: #FFFFFF;
+  letter-spacing: 0.5rpx;
+}
+
+.detail-close {
+  font-size: 52rpx;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 300;
+  line-height: 1;
+}
+
+.detail-body {
+  padding: 32rpx;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.detail-item {
+  margin-bottom: 28rpx;
+  padding-bottom: 20rpx;
+  border-bottom: 1rpx solid #F8F8F8;
+}
+
+.detail-item:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.detail-label {
+  font-size: 26rpx;
+  color: #999999;
+  margin-bottom: 12rpx;
+  display: block;
+  font-weight: 500;
+  letter-spacing: 0.5rpx;
+}
+
+.detail-value {
+  font-size: 30rpx;
+  color: #333333;
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+/* 底部导航栏占位 */
+.tab-bar-placeholder {
+  height: 100rpx;
+}

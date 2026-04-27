@@ -1,0 +1,182 @@
+<!--album.wxml-->
+<view class="container">
+  <!-- 顶部标题 -->
+  <view class="header">
+    <view class="header-content">
+      <view class="pet-info">
+        <image class="pet-avatar" src="{{pet.avatarUrl || '/assets/images/default-pet.png'}}" mode="aspectFill"></image>
+        <view class="pet-details">
+          <text class="pet-name">{{pet.name}}</text>
+          <text class="pet-dates">{{pet.birthDate}} - {{pet.deceasedDate}}</text>
+        </view>
+      </view>
+    </view>
+    <view class="header-bg">
+      <text class="memorial-icon">🕯️</text>
+    </view>
+  </view>
+
+  <!-- 纪念语 -->
+  <view class="memorial-message">
+    <text class="message-text">{{memorialMessage}}</text>
+  </view>
+
+  <!-- 照片墙 -->
+  <view class="photos-section">
+    <view class="section-header">
+      <text class="section-title">时光相册</text>
+      <text class="photo-count">{{photos.length}} 张照片</text>
+    </view>
+    
+    <view class="photo-grid">
+      <view 
+        class="photo-item"
+        wx:for="{{photos}}"
+        wx:key="id"
+        bindtap="previewPhoto"
+        data-index="{{index}}"
+      >
+        <image src="{{item.url}}" mode="aspectFill" class="photo-image"></image>
+        <view class="photo-overlay">
+          <text class="photo-date">{{item.date}}</text>
+        </view>
+      </view>
+      
+      <view class="add-photo-btn" bindtap="addPhoto" wx:if="{{photos.length < 100}}">
+        <text class="add-icon">+</text>
+        <text class="add-text">添加照片</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 时间线 -->
+  <view class="timeline-section">
+    <view class="section-header">
+      <text class="section-title">生命时间线</text>
+    </view>
+    
+    <view class="timeline">
+      <view 
+        class="timeline-item"
+        wx:for="{{timeline}}"
+        wx:key="id"
+      >
+        <view class="timeline-dot {{item.isFirst ? 'first' : ''}}"></view>
+        <view class="timeline-content">
+          <text class="timeline-date">{{item.date}}</text>
+          <text class="timeline-title">{{item.title}}</text>
+          <text class="timeline-desc" wx:if="{{item.description}}">{{item.description}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 重要时刻 -->
+  <view class="milestones-section">
+    <view class="section-header">
+      <text class="section-title">重要时刻</text>
+    </view>
+    
+    <view class="milestones-list">
+      <view 
+        class="milestone-item"
+        wx:for="{{milestones}}"
+        wx:key="id"
+      >
+        <text class="milestone-icon">{{item.icon}}</text>
+        <view class="milestone-content">
+          <text class="milestone-name">{{item.name}}</text>
+          <text class="milestone-date">{{item.date}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 操作区域 -->
+  <view class="actions-section">
+    <view class="action-btn" bindtap="generatePoster">
+      <text class="action-icon">📱</text>
+      <text class="action-text">生成纪念海报</text>
+    </view>
+    <view class="action-btn" bindtap="shareAlbum">
+      <text class="action-icon">📤</text>
+      <text class="action-text">分享纪念册</text>
+    </view>
+    <view class="action-btn" bindtap="writeMemory">
+      <text class="action-icon">💭</text>
+      <text class="action-text">写下思念</text>
+    </view>
+  </view>
+
+  <!-- 思念墙 -->
+  <view class="memorial-wall">
+    <view class="section-header">
+      <text class="section-title">思念墙</text>
+      <text class="more-btn" bindtap="viewAllMemories">查看全部</text>
+    </view>
+    
+    <view class="memories-list">
+      <view 
+        class="memory-item"
+        wx:for="{{memories}}"
+        wx:key="id"
+      >
+        <image class="memory-avatar" src="{{item.avatarUrl}}" mode="aspectFill"></image>
+        <view class="memory-content">
+          <view class="memory-header">
+            <text class="memory-name">{{item.userName}}</text>
+            <text class="memory-time">{{item.createTime}}</text>
+          </view>
+          <text class="memory-text">{{item.content}}</text>
+        </view>
+      </view>
+    </view>
+    
+    <view class="input-memory" bindtap="writeMemory">
+      <text class="input-placeholder">写下一句思念...</text>
+    </view>
+  </view>
+</view>
+
+<!-- 照片选择弹窗 -->
+<view class="picker-modal {{showPickerModal ? 'show' : ''}}">
+  <view class="picker-mask" bindtap="hidePicker"></view>
+  <view class="picker-content">
+    <view class="picker-header">
+      <text class="picker-title">添加照片</text>
+    </view>
+    <view class="picker-options">
+      <view class="picker-option" bindtap="chooseFromAlbum">
+        <text class="option-icon">📷</text>
+        <text class="option-text">从相册选择</text>
+      </view>
+      <view class="picker-option" bindtap="takePhoto">
+        <text class="option-icon">📸</text>
+        <text class="option-text">拍照</text>
+      </view>
+    </view>
+    <view class="picker-cancel" bindtap="hidePicker">取消</view>
+  </view>
+</view>
+
+<!-- 思念输入弹窗 -->
+<view class="memory-modal {{showMemoryModal ? 'show' : ''}}">
+  <view class="memory-mask" bindtap="hideMemoryModal"></view>
+  <view class="memory-content">
+    <view class="memory-header">
+      <text class="memory-cancel" bindtap="hideMemoryModal">取消</text>
+      <text class="memory-title">写下思念</text>
+      <text class="memory-submit {{memoryText ? 'active' : ''}}" bindtap="submitMemory">发布</text>
+    </view>
+    <textarea 
+      class="memory-input"
+      placeholder="在这个特别的日子里，你想起了什么..."
+      maxlength="500"
+      bindinput="onMemoryInput"
+      value="{{memoryText}}"
+    ></textarea>
+    <view class="memory-footer">
+      <text class="memory-count">{{memoryText.length}} / 500</text>
+    </view>
+  </view>
+</view>

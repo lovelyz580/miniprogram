@@ -1,0 +1,23 @@
+{
+	"condition": {
+		"miniprogram": {
+			"list": [
+				{
+					"name": "登录",
+					"pathName": "pages/health/vaccine/vaccine",
+					"query": "",
+					"scene": null,
+					"launchMode": "default"
+				},
+				{
+					"name": "添加",
+					"pathName": "pages/record/mood-bubble/mood-bubble",
+					"query": "",
+					"scene": null,
+					"launchMode": "default"
+				}
+			]
+		}
+	},
+	"libVersion": "3.15.1"
+}

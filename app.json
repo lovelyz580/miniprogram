@@ -1,0 +1,76 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/record/mood-bubble/mood-bubble",
+    "pages/record/diary/diary",
+    "pages/record/daily-question/daily-question",
+		"pages/record/question-history/question-history",
+    "pages/record/question-calendar/question-calendar",
+    "pages/record/milestone/milestone",
+    "pages/record/detail/detail",
+    "pages/record/list/list",
+    "pages/health/index/index",
+    "pages/health/vaccine/vaccine",
+		"pages/health/vaccine-add/vaccine-add",
+    "pages/health/checkup/checkup",
+		"pages/health/checkup-add/checkup-add",
+    "pages/health/medication/medication",
+		"pages/health/medication-add/medication-add",
+    "pages/health/weight/weight",
+    "pages/reminder/index",
+    "pages/profile/index",
+    "pages/profile/settings",
+    "pages/pet/add/add",
+    "pages/pet/edit/edit",
+    "pages/memorial/album",
+    "pages/memorial/memory-box",
+    "pages/login/login",
+    "pages/webview/webview"
+  ],
+  "window": {
+    "navigationBarTitleText": "爪印记忆",
+    "navigationBarBackgroundColor": "#FFFBF5",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#FFFBF5",
+    "backgroundTextStyle": "dark"
+  },
+  "tabBar": {
+    "color": "#BDB3AC",
+    "selectedColor": "#FF8A65",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "assets/icons/home.png",
+        "selectedIconPath": "assets/icons/home-active.png"
+      },
+      {
+        "pagePath": "pages/health/index/index",
+        "text": "健康",
+        "iconPath": "assets/icons/health.png",
+        "selectedIconPath": "assets/icons/health-active.png"
+      },
+
+     
+      {
+        "pagePath": "pages/profile/index",
+        "text": "我的",
+        "iconPath": "assets/icons/profile.png",
+        "selectedIconPath": "assets/icons/profile-active.png"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "permission": {
+    "scope.userLocation": {
+      "desc": "用于记录宠物活动位置"
+    }
+  },
+  "requiredPrivateInfos": [
+    "getLocation",
+    "chooseLocation"
+  ]
+}

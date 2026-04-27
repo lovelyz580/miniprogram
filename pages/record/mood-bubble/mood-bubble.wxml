@@ -1,0 +1,148 @@
+<!--mood-bubble.wxml-->
+<view class="container">
+  <!-- 顶部导航 -->
+  <view class="header">
+    <view class="back-btn" bindtap="goBack">
+      <text class="back-icon">←</text>
+    </view>
+    <text class="header-title">心情气泡</text>
+    <view class="publish-btn {{canPublish ? '' : 'disabled'}}" bindtap="publish">
+      <text>记录下来</text>
+    </view>
+  </view>
+
+  <!-- 心情标签选择 -->
+  <view class="section">
+    <view class="section-title">今天的心情是...</view>
+    <view class="mood-tags">
+      <view 
+        class="mood-tag {{selectedTag === item.name ? 'selected' : ''}}" 
+        wx:for="{{moodTags}}" 
+        wx:key="id"
+        bindtap="selectTag"
+        data-tag="{{item.name}}"
+        style="background-color: {{selectedTag === item.name ? item.activeColor : item.bgColor}};"
+      >
+        <text class="tag-emoji">{{item.emoji}}</text>
+        <text class="tag-name" style="color: {{selectedTag === item.name ? item.activeTextColor : item.textColor}};">{{item.name}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 图片选择 -->
+  <view class="section">
+    <view class="section-title">添加照片</view>
+    <view class="media-area">
+      <!-- 已选图片 -->
+      <view class="media-item" wx:for="{{mediaList}}" wx:key="index">
+        <image src="{{item}}" mode="aspectFill" bindtap="previewImage" data-url="{{item}}"></image>
+        <view class="media-delete" catchtap="deleteMedia" data-index="{{index}}">
+          <text>×</text>
+        </view>
+      </view>
+      <!-- 添加按钮 -->
+      <view class="media-add" wx:if="{{mediaList.length < 9}}" bindtap="chooseMedia">
+        <text class="add-icon">📷</text>
+        <text class="add-text">留影纪念</text>
+      </view>
+    </view>
+    <text class="media-tip">最多添加9张珍贵画面哦</text>
+  </view>
+
+  <!-- 文字内容 -->
+  <view class="section">
+    <view class="section-title">说点什么吧（可选）</view>
+    <textarea 
+      class="content-input"
+      placeholder="记录此刻的心情..."
+      maxlength="500"
+      value="{{content}}"
+      bindinput="onContentInput"
+    ></textarea>
+    <text class="content-count">{{content.length}}/500</text>
+  </view>
+
+  <!-- 自动获取的信息 -->
+  <view class="section info-section">
+    <view class="info-item" bindtap="toggleLocation">
+      <view class="info-left">
+        <text class="info-icon">📍</text>
+        <text class="info-label">位置</text>
+      </view>
+      <view class="info-right">
+        <text class="info-value" wx:if="{{location}}">{{location}}</text>
+        <text class="info-value placeholder" wx:else>获取中...</text>
+        <text class="info-toggle">{{enableLocation ? '✓' : '×'}}</text>
+      </view>
+    </view>
+    
+    <view class="info-item" bindtap="toggleWeather">
+      <view class="info-left">
+        <text class="info-icon">🌤️</text>
+        <text class="info-label">天气</text>
+      </view>
+      <view class="info-right">
+        <text class="info-value" wx:if="{{weather}}">{{weather}}</text>
+        <text class="info-value placeholder" wx:else>获取中...</text>
+        <text class="info-toggle">{{enableWeather ? '✓' : '×'}}</text>
+      </view>
+    </view>
+    
+    <view class="info-item">
+      <view class="info-left">
+        <text class="info-icon">📅</text>
+        <text class="info-label">宠龄</text>
+      </view>
+      <view class="info-right">
+        <text class="info-value highlight">第{{petAgeDays}}天</text>
+      </view>
+    </view>
+    
+    <view class="info-item">
+      <view class="info-left">
+        <text class="info-icon">🐶</text>
+        <text class="info-label">宠物</text>
+      </view>
+      <view class="info-right">
+        <image class="pet-avatar-small" src="{{currentPet.avatarUrl}}"></image>
+        <text class="info-value">{{currentPet.name}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 发布预览 -->
+  <view class="preview-card">
+    <view class="preview-header">
+      <text class="preview-title">发布预览</text>
+    </view>
+    <view class="preview-content">
+      <view class="preview-tag" wx:if="{{selectedTag}}">
+        <text>{{selectedMoodTag.emoji}} {{selectedTag}}</text>
+      </view>
+      <view class="preview-images" wx:if="{{mediaList.length > 0}}">
+        <image 
+          class="preview-image" 
+          src="{{mediaList[0]}}" 
+          mode="aspectFill"
+        ></image>
+        <view class="preview-more" wx:if="{{mediaList.length > 1}}">
+          <text>+{{mediaList.length - 1}}</text>
+        </view>
+      </view>
+      <view class="preview-meta" wx:if="{{location || weather || petAgeDays}}">
+        <text wx:if="{{location}}">{{location}}</text>
+        <text wx:if="{{location && weather}}">·</text>
+        <text wx:if="{{weather}}">{{weather}}</text>
+        <text wx:if="{{weather}}">·</text>
+        <text class="highlight">第{{petAgeDays}}天</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="loading-mask" wx:if="{{isPublishing}}">
+    <view class="loading-content">
+      <view class="loading-spinner"></view>
+      <text class="loading-text">正在收录...</text>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,221 @@
+<!-- pages/health/medication-add/medication-add.wxml -->
+<view class="container">
+  <!-- 宠物信息卡片 -->
+  <view class="pet-info-card" wx:if="{{currentPet}}">
+    <image class="pet-avatar" src="{{currentPet.avatarUrl || '/assets/images/pet-default.png'}}" mode="aspectFill"></image>
+    <view class="pet-detail">
+      <text class="pet-name">{{currentPet.name}}</text>
+      <text class="pet-breed">{{currentPet.breed || currentPet.species}}</text>
+    </view>
+  </view>
+
+  <!-- 用药信息区域 -->
+  <view class="form-section">
+    <view class="section-title">用药信息</view>
+
+    <!-- 药品名称 -->
+    <view class="form-item {{errors.medicationName ? 'error' : ''}}">
+      <view class="form-label">
+        <text class="required">*</text>
+        <text>药品名称</text>
+      </view>
+      <input 
+        class="form-input" 
+        type="text" 
+        placeholder="请输入药品名称" 
+        value="{{medicationName}}"
+        bindinput="onMedicationNameInput"
+      />
+      <text class="error-tip" wx:if="{{errors.medicationName}}">{{errors.medicationName}}</text>
+    </view>
+
+    <!-- 用药类型 -->
+    <view class="form-item {{errors.medicationType ? 'error' : ''}}">
+      <view class="form-label">
+        <text class="required">*</text>
+        <text>用药类型</text>
+      </view>
+      <picker 
+        mode="selector" 
+        range="{{medicationTypes}}" 
+        bindchange="onMedicationTypeChange"
+      >
+        <view class="form-picker">
+          <text class="{{medicationType ? '' : 'placeholder'}}">{{medicationType || '请选择用药类型'}}</text>
+          <text class="arrow">›</text>
+        </view>
+      </picker>
+      <text class="error-tip" wx:if="{{errors.medicationType}}">{{errors.medicationType}}</text>
+    </view>
+
+    <!-- 用药频次 -->
+    <view class="form-item {{errors.frequency ? 'error' : ''}}">
+      <view class="form-label">
+        <text class="required">*</text>
+        <text>用药频次</text>
+      </view>
+      <picker 
+        mode="selector" 
+        range="{{frequencyOptions}}" 
+        bindchange="onFrequencyChange"
+      >
+        <view class="form-picker">
+          <text class="{{frequency ? '' : 'placeholder'}}">{{frequency || '请选择用药频次'}}</text>
+          <text class="arrow">›</text>
+        </view>
+      </picker>
+      <text class="error-tip" wx:if="{{errors.frequency}}">{{errors.frequency}}</text>
+    </view>
+
+    <!-- 每日用量 -->
+    <view class="form-item">
+      <view class="form-label">
+        <text>每日用量</text>
+      </view>
+      <input 
+        class="form-input" 
+        type="text" 
+        placeholder="如：1片、5ml、半支" 
+        value="{{dosage}}"
+        bindinput="onDosageInput"
+      />
+    </view>
+  </view>
+
+  <!-- 用药周期区域 -->
+  <view class="form-section">
+    <view class="section-title">用药周期</view>
+
+    <!-- 开始日期 -->
+    <view class="form-item {{errors.startDate ? 'error' : ''}}">
+      <view class="form-label">
+        <text class="required">*</text>
+        <text>开始日期</text>
+      </view>
+      <picker mode="date" value="{{startDate}}" bindchange="onStartDateChange">
+        <view class="form-picker">
+          <text class="{{startDate ? '' : 'placeholder'}}">{{startDate || '请选择开始日期'}}</text>
+          <text class="arrow">›</text>
+        </view>
+      </picker>
+      <text class="error-tip" wx:if="{{errors.startDate}}">{{errors.startDate}}</text>
+    </view>
+
+    <!-- 结束日期 -->
+    <view class="form-item {{errors.endDate ? 'error' : ''}}">
+      <view class="form-label">
+        <text>结束日期</text>
+      </view>
+      <picker mode="date" value="{{endDate}}" bindchange="onEndDateChange">
+        <view class="form-picker">
+          <text class="{{endDate ? '' : 'placeholder'}}">{{endDate || '长期用药（不设置结束日期）'}}</text>
+          <text class="arrow">›</text>
+        </view>
+      </picker>
+      <text class="error-tip" wx:if="{{errors.endDate}}">{{errors.endDate}}</text>
+      <text class="form-hint">留空表示长期用药</text>
+    </view>
+  </view>
+
+  <!-- 提醒设置区域 -->
+  <view class="form-section">
+    <view class="section-title">提醒设置</view>
+
+    <!-- 提醒开关 -->
+    <view class="form-item reminder-toggle">
+      <view class="form-label">
+        <text>启用用药提醒</text>
+      </view>
+      <switch 
+        checked="{{enableReminder}}" 
+        bindchange="onReminderToggle"
+        color="#FF8A65"
+      />
+    </view>
+
+    <!-- 提醒时间（当启用提醒时显示） -->
+    <view class="reminder-settings" wx:if="{{enableReminder}}">
+      <!-- 提醒时间 -->
+      <view class="form-item">
+        <view class="form-label">
+          <text>提醒时间</text>
+        </view>
+        <picker mode="time" value="{{reminderTime}}" bindchange="onReminderTimeChange">
+          <view class="form-picker">
+            <text>{{reminderTime}}</text>
+            <text class="arrow">›</text>
+          </view>
+        </picker>
+      </view>
+
+      <!-- 提醒日期 -->
+      <view class="form-item">
+        <view class="form-label">
+          <text>重复日期</text>
+        </view>
+        <view class="weekday-selector">
+          <view 
+            class="weekday-item {{item ? 'selected' : ''}}" 
+            wx:for="{{reminderDays}}" 
+            wx:key="index"
+            bindtap="toggleReminderDay"
+            data-index="{{index}}"
+          >
+            <text>{{['一', '二', '三', '四', '五', '六', '日'][index]}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 医疗信息区域 -->
+  <view class="form-section">
+    <view class="section-title">医疗信息</view>
+
+    <!-- 医院/医生 -->
+    <view class="form-item">
+      <view class="form-label">
+        <text>医院/医生</text>
+      </view>
+      <input 
+        class="form-input" 
+        type="text" 
+        placeholder="请输入医院或医生名称" 
+        value="{{hospital}}"
+        bindinput="onHospitalInput"
+      />
+    </view>
+  </view>
+
+  <!-- 备注区域 -->
+  <view class="form-section">
+    <view class="section-title">备注信息</view>
+
+    <view class="form-item">
+      <textarea 
+        class="form-textarea" 
+        placeholder="添加备注信息（可选）" 
+        value="{{notes}}"
+        bindinput="onNoteInput"
+        maxlength="200"
+      ></textarea>
+      <text class="char-count">{{notes.length}}/200</text>
+    </view>
+  </view>
+
+  <!-- 底部操作区域 -->
+  <view class="bottom-actions">
+    <button class="btn-draft" bindtap="saveDraft">存为草稿</button>
+    <button 
+      class="btn-submit {{isSubmitting ? 'disabled' : ''}}" 
+      bindtap="submitForm"
+      disabled="{{isSubmitting}}"
+    >
+      <text wx:if="{{isSubmitting}}">保存中...</text>
+      <text wx:else>保存记录</text>
+    </button>
+  </view>
+
+  <!-- 底部导航栏占位 -->
+  <view class="tab-bar-placeholder"></view>
+</view>

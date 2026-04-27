@@ -1,0 +1,207 @@
+<!--login.wxml-->
+<view class="container">
+  <!-- 背景装饰 -->
+  <view class="bg-decoration">
+    <view class="deco-circle circle1"></view>
+    <view class="deco-circle circle2"></view>
+    <view class="deco-circle circle3"></view>
+  </view>
+
+  <!-- Logo区域 -->
+  <view class="logo-section">
+    <view class="logo-wrapper">
+      <image class="logo-image" src="/assets/images/logo.png" mode="aspectFit"></image>
+    </view>
+    <text class="app-name">爪印记忆</text>
+    <text class="app-slogan">记录与爱宠的每一个美好瞬间</text>
+  </view>
+
+  <!-- 功能介绍 -->
+  <view class="features-section">
+    <view class="feature-item">
+      <text class="feature-icon">📸</text>
+      <view class="feature-text">
+        <text class="feature-title">记录成长</text>
+        <text class="feature-desc">用照片和文字记录宠物每一天的成长变化</text>
+      </view>
+    </view>
+    <view class="feature-item">
+      <text class="feature-icon">💊</text>
+      <view class="feature-text">
+        <text class="feature-title">健康提醒</text>
+        <text class="feature-desc">疫苗、体检、驱虫等健康事项准时提醒</text>
+      </view>
+    </view>
+    <view class="feature-item">
+      <text class="feature-icon">📅</text>
+      <view class="feature-text">
+        <text class="feature-title">时光轴</text>
+        <text class="feature-desc">按时间线展示珍贵回忆，随时回顾美好</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 协议说明 -->
+  <view class="agreement-section">
+    <view class="agreement-check" bindtap="toggleAgreement">
+      <view class="checkbox {{isAgree ? 'checked' : ''}}">
+        <text wx:if="{{isAgree}}">✓</text>
+      </view>
+      <view class="agreement-text">
+        <text>我已阅读并同意</text>
+        <text class="link" bindtap="showUserAgreement">《用户协议》</text>
+        <text>和</text>
+        <text class="link" bindtap="showPrivacyPolicy">《隐私政策》</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 登录按钮 -->
+  <view class="login-section">
+    <button 
+      class="login-btn {{isAgree ? 'active' : ''}}"
+      bindtap="onLogin"
+      disabled="{{!isAgree || isLogging}}"
+      hover-class="{{isAgree ? 'hover' : ''}}"
+    >
+      <image 
+        class="wechat-icon" 
+        src="/assets/images/wechat.png" 
+        mode="aspectFit"
+        wx:if="{{!isLogging}}"
+      ></image>
+      <text class="login-text">{{isLogging ? '登录中...' : '微信一键登录'}}</text>
+    </button>
+    
+    <!-- 备选登录方式 -->
+    <view class="alternative-login">
+      <view class="divider">
+        <view class="divider-line"></view>
+        <text class="divider-text">其他登录方式</text>
+        <view class="divider-line"></view>
+      </view>
+      <view class="alt-options">
+        <view class="alt-option" bindtap="onPhoneLogin">
+          <text class="alt-icon">📱</text>
+          <text class="alt-text">手机号登录</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 游客入口 -->
+  <view class="visitor-section">
+    <text class="visitor-btn" bindtap="onVisitorAccess">暂不登录，先去逛逛🐾</text>
+  </view>
+</view>
+
+<!-- 用户协议弹窗 -->
+<view class="modal {{showUserAgreement ? 'show' : ''}}">
+  <view class="modal-mask" bindtap="hideUserAgreement"></view>
+  <view class="modal-content">
+    <view class="modal-header">
+      <text class="modal-title">用户协议</text>
+      <text class="modal-close" bindtap="hideUserAgreement">×</text>
+    </view>
+    <scroll-view class="modal-body" scroll-y>
+      <text class="agreement-content">
+        【首部及导言】
+
+        欢迎使用"爪印记忆"！
+
+        为使用"爪印记忆"服务（以下简称"本服务"），您应当阅读并遵守《用户协议》（以下简称"本协议"）以及本服务不时公示之全部规则。您一经注册或使用本服务，即视为您已阅读并同意接受本协议及本服务相关规则之约束。
+
+        【服务内容】
+
+        1. 本服务仅向您提供宠物记录、健康管理、社交互动等服务（以下简称"本服务"）。
+        
+        2. 您理解并同意，本服务可能会对接入的第三方服务（如微信）产生依赖。
+        
+        3. 因技术条件限制，本服务不对服务的可用性、可靠性做出任何承诺。
+
+        【用户注册】
+
+        您理解并承诺，您所填写的信息必须真实有效。
+
+        【用户使用规范】
+
+        1. 您不得利用本服务制作、复制、发布、传播含有下列内容的信息：
+           (a) 反对宪法所确定的基本原则的；
+           (b) 危害国家安全，泄露国家秘密，颠覆国家政权，破坏国家统一的；
+           (c) 损害国家荣誉和利益的；
+           (d) 煽动民族仇恨、民族歧视，破坏民族团结的；
+           (e) 破坏国家宗教政策，宣扬邪教和封建迷信的；
+           (f) 散布谣言，扰乱社会秩序，破坏社会稳定的；
+           (g) 散布淫秽、色情、赌博、暴力、凶杀、恐怖或者教唆犯罪的；
+           (h) 侮辱或者诽谤他人，侵害他人合法权益的；
+           (i) 含有法律、行政法规禁止的其他内容的。
+
+        【协议修改】
+
+        我们可能适时修订本协议条款，修订后会在本服务显著位置提示您。您的继续使用行为视为同意接受修订后的协议。
+
+        【争议解决】
+
+        本协议的解释及争议解决均适用中华人民共和国法律。如双方发生争议且无法协商解决的，应提交服务提供方所在地有管辖权的人民法院诉讼解决。
+      </text>
+    </scroll-view>
+  </view>
+</view>
+
+<!-- 隐私政策弹窗 -->
+<view class="modal {{showPrivacyPolicy ? 'show' : ''}}">
+  <view class="modal-mask" bindtap="hidePrivacyPolicy"></view>
+  <view class="modal-content">
+    <view class="modal-header">
+      <text class="modal-title">隐私政策</text>
+      <text class="modal-close" bindtap="hidePrivacyPolicy">×</text>
+    </view>
+    <scroll-view class="modal-body" scroll-y>
+      <text class="agreement-content">
+        【收集信息的说明】
+
+        我们收集您的以下信息以提供服务：
+
+        1. 设备信息：设备型号、操作系统版本等，用于优化服务体验。
+
+        2. 位置信息：获取您的位置以添加记录的位置标签，您可随时关闭此权限。
+
+        3. 宠物信息：您主动填写的宠物资料，包括名字、照片、健康信息等。
+
+        4. 使用记录：您使用本服务产生的记录内容、互动行为等。
+
+        【信息使用】
+
+        我们仅在以下情况下使用您的信息：
+        - 提供、维护和改进我们的服务
+        - 开发新的功能
+        - 响应您的请求
+        - 向您发送服务通知
+
+        【信息共享】
+
+        除以下情况外，我们不会与第三方共享您的个人信息：
+        - 获得您的明确同意
+        - 根据法律法规的要求
+        - 保护我们的合法权益
+
+        【信息安全】
+
+        我们采取多种安全措施保护您的信息安全，包括数据加密、访问控制等。但互联网传输存在固有风险，我们无法保证绝对安全。
+
+        【您的权利】
+
+        您有权：
+        - 访问您的个人信息
+        - 更正不准确的信息
+        - 删除您的个人信息
+        - 撤回同意
+        - 注销账户
+
+        【联系我们】
+
+        如您对本隐私政策有任何疑问，请通过应用内客服联系我们。
+      </text>
+    </scroll-view>
+  </view>
+</view>
