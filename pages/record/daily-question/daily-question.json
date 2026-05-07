@@ -1,7 +1,7 @@
 {
   "usingComponents": {},
   "navigationBarTitleText": "今日问答",
-  "navigationBarBackgroundColor": "#3366CC",
-  "navigationBarTextStyle": "white",
+  "navigationBarBackgroundColor": "#FFFFFF",
+  "navigationBarTextStyle": "black",
   "backgroundColor": "#F5F7FA"
 }

@@ -8,23 +8,36 @@
       </view>
       <view class="header-text">
         <text class="header-title">今日问答</text>
-        <text class="header-date">{{todayDate}}</text>
+        <text class="header-subtitle">记录与{{currentPet.name || 'TA'}}的点滴对话</text>
       </view>
     </view>
     <view class="header-pet" wx:if="{{currentPet}}">
       <image class="pet-avatar" src="{{currentPet.avatarUrl || '/assets/images/default-pet.png'}}" mode="aspectFill"></image>
-      <text class="pet-name">{{currentPet.name}}</text>
     </view>
+  </view>
+  
+  <!-- 日期标签 -->
+  <view class="date-tag">
+    <text class="date-icon">📅</text>
+    <text class="date-text">{{todayDate}}</text>
   </view>
 
   <!-- 今日问题卡片 -->
   <view class="question-card" wx:if="{{currentQuestion && !isAnswered}}">
-    <view class="question-type">
-      <text class="type-tag">{{currentQuestion.questionType}}</text>
+    <view class="question-header">
+      <view class="question-type">
+        <text class="type-tag">{{currentQuestion.questionType}}</text>
+      </view>
+      <text class="question-number">问题 #{{questionId}}</text>
     </view>
-    <text class="question-text">{{currentQuestion.questionContent}}</text>
+    <view class="question-content">
+      <text class="question-mark">"</text>
+      <text class="question-text">{{currentQuestion.questionContent}}</text>
+      <text class="question-mark">"</text>
+    </view>
     <view class="question-tip">
-      <text>💡 回答越详细，越能记录更多美好回忆</text>
+      <text class="tip-icon">💡</text>
+      <text class="tip-text">回答越详细，越能记录更多美好回忆</text>
     </view>
   </view>
 
@@ -102,47 +115,52 @@
     </view>
   </view>
 
-  <!-- 历史问答入口 -->
-  <view class="history-section" bindtap="goToHistory">
-    <view class="history-content">
-      <view class="nav-entry-icon-wrap">
-        <text class="history-icon">📚</text>
+  <!-- 快捷入口 -->
+  <view class="quick-nav">
+    <view class="nav-item" bindtap="goToHistory">
+      <view class="nav-icon-wrap">
+        <text class="nav-icon">📚</text>
       </view>
-      <view class="history-info">
-        <text class="history-title">历史问答</text>
-        <text class="history-count">已回答 {{answeredCount}} 个问题</text>
+      <view class="nav-info">
+        <text class="nav-title">历史问答</text>
+        <text class="nav-desc">已回答 {{answeredCount}} 个</text>
       </view>
+      <text class="nav-arrow">›</text>
     </view>
-    <text class="history-arrow">›</text>
-  </view>
 
-  <!-- 问题日历入口 -->
-  <view class="calendar-section" bindtap="goToCalendar">
-    <view class="calendar-content">
-      <view class="nav-entry-icon-wrap">
-        <text class="calendar-icon">📅</text>
+    <view class="nav-item" bindtap="goToCalendar">
+      <view class="nav-icon-wrap">
+        <text class="nav-icon">📅</text>
       </view>
-      <view class="calendar-info">
-        <text class="calendar-title">问答日历</text>
-        <text class="calendar-desc">查看每日问答记录</text>
+      <view class="nav-info">
+        <text class="nav-title">问答日历</text>
+        <text class="nav-desc">查看记录</text>
       </view>
+      <text class="nav-arrow">›</text>
     </view>
-    <text class="calendar-arrow">›</text>
   </view>
 
   <!-- 问题库统计 -->
   <view class="stats-section">
-    <view class="stats-card">
-      <text class="stats-number">{{totalQuestions}}</text>
-      <text class="stats-label">问题总数</text>
+    <view class="stats-header">
+      <text class="stats-title">我的问答数据 📊</text>
     </view>
-    <view class="stats-card">
-      <text class="stats-number">{{answeredCount}}</text>
-      <text class="stats-label">已回答</text>
-    </view>
-    <view class="stats-card">
-      <text class="stats-number">{{streakDays}}</text>
-      <text class="stats-label">连续天数</text>
+    <view class="stats-grid">
+      <view class="stats-card">
+        <text class="stats-icon">📝</text>
+        <text class="stats-number">{{totalQuestions}}</text>
+        <text class="stats-label">问题总数</text>
+      </view>
+      <view class="stats-card">
+        <text class="stats-icon">✅</text>
+        <text class="stats-number">{{answeredCount}}</text>
+        <text class="stats-label">已回答</text>
+      </view>
+      <view class="stats-card">
+        <text class="stats-icon">🔥</text>
+        <text class="stats-number">{{streakDays}}</text>
+        <text class="stats-label">连续天数</text>
+      </view>
     </view>
   </view>
 </view>
