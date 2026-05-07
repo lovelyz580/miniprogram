@@ -133,12 +133,12 @@ Page({
       // 获取体重记录
       const weightRes = await request({
         url: urls.getWeightList,
-        method: 'GET',
+        method: 'POST',
         data: { petId, page: 1, pageSize: 10 }
       })
       
       if (weightRes.code === 200) {
-        const weightRecords = weightRes.data || []
+        const weightRecords = weightRes.rows || []
         const weightTrend = weightRecords.map(r => ({
           date: r.createTime,
           weight: r.weight
@@ -339,14 +339,14 @@ drawWeightChart() {
   },
 
   goToReminder() {
-    wx.switchTab({
-      url: '/pages/reminder/index'
+    wx.navigateTo({
+      url: '/pages/reminder/index/index'
     })
   },
 
   goToAddReminder() {
     wx.navigateTo({
-      url: '/pages/reminder/add'
+      url: '/pages/reminder/add/add'
     })
   },
 

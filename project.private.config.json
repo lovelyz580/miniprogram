@@ -4,8 +4,8 @@
 			"list": [
 				{
 					"name": "登录",
-					"pathName": "pages/health/vaccine/vaccine",
-					"query": "",
+					"pathName": "pages/record/mood-bubble/mood-bubble",
+					"query": "id=e5392f46064745ac817eca5848600bc7",
 					"scene": null,
 					"launchMode": "default"
 				},

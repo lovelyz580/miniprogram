@@ -111,7 +111,7 @@ Page({
         method: 'POST',
         data: { code }
       })
-      debugger
+      // debugger
       if (res.code === 200) {
         // 保存 token 和用户信息
         // wx.setStorageSync('token', res.data.token)

@@ -5,6 +5,7 @@ const {
 } = require('../../../utils/request')
 const {
 	formatTime,
+	UploadImages,
 	calculatePetAge
 } = require('../../../utils/util')
 const urls = require('../../../utils/api')
@@ -218,23 +219,23 @@ Page({
 
 	// 获取天气
 	async getWeather() {
-		if (this.data.latitude ==='' || this.data.longitude ==='') {
+		if (this.data.latitude === '' || this.data.longitude === '') {
 			return
 		}
-		let location = this.data.latitude+","+this.data.longitude
+		let location = this.data.latitude + "," + this.data.longitude
 		try {
 			// 调用天气API
 			const res = await request({
 				url: urls.weather,
 				method: 'GET',
-				data:{
-					key:'YBTBZ-IF7WK-MTMJN-AYYGS-XV4OV-XWBBT',
-					location:location
+				data: {
+					key: 'YBTBZ-IF7WK-MTMJN-AYYGS-XV4OV-XWBBT',
+					location: location
 				}
 			})
-			debugger
+			// debugger
 			if (res.code === 200) {
-				
+
 				const weather = `${res.data.text} ${res.data.temp}℃`
 				this.setData({
 					weather
@@ -314,7 +315,7 @@ Page({
 
 	// 切换位置
 	toggleLocation() {
-		debugger
+		// debugger
 		const enableLocation = !this.data.enableLocation
 		this.setData({
 			enableLocation
@@ -326,14 +327,14 @@ Page({
 					console.log('经纬度：', res.latitude, res.longitude);
 					this.setData({
 						location: res.name,
-						enableLocation:true
+						enableLocation: true
 					})
 				}
 			})
 		} else {
 			this.setData({
 				location: '',
-				enableLocation:false
+				enableLocation: false
 			})
 		}
 	},
@@ -368,8 +369,12 @@ Page({
 		})
 
 		try {
-			// 1. 上传媒体文件
-			const mediaUrls = await this.uploadMedia();
+			// 上传图片
+			const mediaUrls = await UploadImages({
+				tempFiles: this.data.mediaList
+			});
+			console.log(mediaUrls)
+
 			// debugger
 			// 2. 创建记录
 			const res = await request({
@@ -417,32 +422,7 @@ Page({
 		}
 	},
 
-	// 上传媒体
-	async uploadMedia() {
-		const uploadPromises = this.data.mediaList.map((filePath, index) => {
-			return new Promise((resolve, reject) => {
-				wx.uploadFile({
-					url: urls.upload,
-					filePath,
-					name: 'file',
-					header: {
-						"Content-Type": "multipart/form-data"
-					},
-					success: (res) => {
-						const data = JSON.parse(res.data)
-						if (data.code === 200) {
-							resolve(data.data.url)
-						} else {
-							reject(new Error('上传失败'))
-						}
-					},
-					fail: reject
-				})
-			})
-		})
 
-		return Promise.all(uploadPromises)
-	},
 
 	// 返回
 	goBack() {

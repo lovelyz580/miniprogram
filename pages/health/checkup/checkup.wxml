@@ -45,8 +45,8 @@
     refresher-triggered="{{isRefreshing}}"
     bindrefresherrefresh="onRefresh"
   >
-    <view class="record-item" wx:for="{{records}}" wx:key="id">
-      <view class="record-card" bindtap="showDetail" data-id="{{item.id}}">
+    <view class="record-item" wx:for="{{records}}" wx:key="recordId">
+      <view class="record-card" bindtap="showDetail" data-id="{{item.recordId}}">
         <!-- 记录头部 -->
         <view class="record-header">
           <view class="checkup-type-badge">

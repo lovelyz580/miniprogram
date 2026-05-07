@@ -28,7 +28,7 @@
       <text class="record-time">{{record.createTime}}</text>
     </view>
     <view class="pet-badge" >
-      <image class="pet-avatar" src="{{record.petAvatarUrl || '/assets/images/default-pet.png'}}" mode="aspectFill"></image>
+      <image class="pet-avatar" src="{{record.avatarUrl || '/assets/images/default-pet.png'}}" mode="aspectFill"></image>
       <text class="pet-name">{{record.petName}}</text>
     </view>
   </view>

@@ -102,12 +102,12 @@ Page({
 		const {
 			avatarUrl
 		} = e.detail;
-		debugger
+		// debugger
 		this.uploadAvatar(avatarUrl)
 	},
 	//选择头像
 	chooseAvatar(e) {
-		debugger
+		// debugger
 		wx.chooseImage({
 			count: 1,
 			sizeType: ['compressed'],
@@ -135,7 +135,7 @@ Page({
 				},
 				success: (res) => {
 					const res_1 = JSON.parse(res.data);
-					debugger
+					// debugger
 					if (res_1.code === 200) {
 						this.updateUseravatarUrl(res_1);
 					}
@@ -156,7 +156,7 @@ Page({
 	 * @param {*} res 
 	 */
 	updateUseravatarUrl(res) {
-		const avatarUrl = urls.baseUrl + res.data.url;
+		const avatarUrl = urls.imgUrl + res.data.url;
 		const userInfo = {
 			...this.data.userInfo,
 			avatarUrl: avatarUrl

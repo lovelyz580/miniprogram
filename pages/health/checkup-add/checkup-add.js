@@ -1,8 +1,8 @@
 // pages/health/checkup-add/checkup-add.js
 const app = getApp()
 const { request } = require('../../../utils/request')
-const { formatTime } = require('../../../utils/util')
-
+const { formatTime,UploadImages, calculatePetAgeFormat } = require('../../../utils/util')
+const urls = require('../../../utils/api')
 Page({
   data: {
     // 宠物信息
@@ -50,10 +50,9 @@ Page({
 
   // 获取宠物信息
   getPetInfo() {
-    const currentPetId = wx.getStorageSync('currentPetId')
+    const petId = wx.getStorageSync('petId')
     const petList = wx.getStorageSync('petList') || []
-    const currentPet = petList.find(p => p.id === currentPetId) || petList[0]
-
+    const currentPet = petList.find(p => p.petId === petId) || petList[0]
     if (currentPet) {
       this.setData({ 
         currentPet,
@@ -158,10 +157,6 @@ Page({
           attachments: [...this.data.attachments, ...newFiles]
         })
 
-        // 模拟上传
-        newFiles.forEach((file, index) => {
-          this.uploadFile(file.url, this.data.attachments.length - newFiles.length + index)
-        })
       },
       fail: (err) => {
         console.error('选择图片失败', err)
@@ -172,48 +167,6 @@ Page({
       }
     })
   },
-
-  // 上传文件
-  async uploadFile(filePath, index) {
-    try {
-      // 模拟上传进度
-      const interval = setInterval(() => {
-        const attachments = this.data.attachments
-        if (attachments[index] && attachments[index].uploading) {
-          attachments[index].progress = Math.min((attachments[index].progress || 0) + 20, 90)
-          this.setData({ attachments })
-        }
-      }, 300)
-
-      // 实际项目中使用真实上传接口
-      // const res = await wx.uploadFile({
-      //   url: app.globalData.apiBaseUrl + '/api/upload',
-      //   filePath: filePath,
-      //   name: 'file',
-      //   header: { Authorization: wx.getStorageSync('token') }
-      // })
-
-      // 模拟上传完成
-      setTimeout(() => {
-        clearInterval(interval)
-        const attachments = this.data.attachments
-        if (attachments[index]) {
-          attachments[index].uploading = false
-          attachments[index].progress = 100
-          // 模拟返回的URL
-          attachments[index].url = filePath
-          this.setData({ attachments })
-        }
-      }, 1500)
-
-    } catch (err) {
-      console.error('上传文件失败', err)
-      // 移除上传失败的文件
-      const attachments = this.data.attachments.filter((_, i) => i !== index)
-      this.setData({ attachments })
-    }
-  },
-
   // 删除附件
   deleteAttachment(e) {
     const index = e.currentTarget.dataset.index
@@ -253,7 +206,15 @@ Page({
       })
       return
     }
-
+		let images = [];
+		let mediaList= this.data.attachments
+		mediaList.map(i => (
+			images.push(i.url)
+		))
+			// 上传图片
+			const imageUrls = await UploadImages({
+				tempFiles: images
+			});
     // 检查是否有正在上传的文件
     const uploadingFiles = attachments.filter(item => item.uploading)
     if (uploadingFiles.length > 0) {
@@ -268,23 +229,23 @@ Page({
 
     try {
       const res = await request({
-        url: '/api/health/checkup/add',
+        url: urls.checkupadd,
         method: 'POST',
         data: {
-          petId: currentPet.id,
+          petId: currentPet.petId,
           checkupType,
           checkupTitle: checkupTitle.trim(),
           checkupDate,
           weight: weight ? parseFloat(weight) : null,
           temperature: temperature ? parseFloat(temperature) : null,
-          hospital: hospital.trim(),
-          result: result.trim(),
-          attachments: attachments.map(item => item.url),
-          note: note.trim()
+          hospitalName: hospital.trim(),
+          resultSummary: result.trim(),
+          reportUrls: imageUrls.join(','),
+          notes: note.trim()
         }
       })
 
-      if (res.code === 0) {
+      if (res.code === 200) {
         wx.showToast({
           title: '添加成功',
           icon: 'success'
@@ -292,7 +253,7 @@ Page({
 
         // 触发上一个页面刷新
         const pages = getCurrentPages()
-        const checkupPage = pages.find(p => p.route === 'pages/health/checkup')
+        const checkupPage = pages.find(p => p.route === 'pages/health/checkup/checkup')
         if (checkupPage) {
           checkupPage.refreshData()
         }

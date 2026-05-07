@@ -11,30 +11,30 @@
         <text>全部</text>
       </view>
       <view 
-        class="filter-tab {{currentCategory === 'vaccine' ? 'active' : ''}}" 
+        class="filter-tab {{currentCategory === '1' ? 'active' : ''}}" 
         bindtap="switchCategory" 
-        data-category="vaccine"
+        data-category="1"
       >
         <text>💉疫苗</text>
       </view>
       <view 
-        class="filter-tab {{currentCategory === 'checkup' ? 'active' : ''}}" 
+        class="filter-tab {{currentCategory === '2' ? 'active' : ''}}" 
         bindtap="switchCategory" 
-        data-category="checkup"
+        data-category="2"
       >
         <text>🩺体检</text>
       </view>
       <view 
-        class="filter-tab {{currentCategory === 'medication' ? 'active' : ''}}" 
+        class="filter-tab {{currentCategory === '3' ? 'active' : ''}}" 
         bindtap="switchCategory" 
-        data-category="medication"
+        data-category="3"
       >
         <text>💊用药</text>
       </view>
       <view 
-        class="filter-tab {{currentCategory === 'other' ? 'active' : ''}}" 
+        class="filter-tab {{currentCategory === '4' ? 'active' : ''}}" 
         bindtap="switchCategory" 
-        data-category="other"
+        data-category="4"
       >
         <text>📌其他</text>
       </view>
@@ -62,13 +62,13 @@
         wx:for="{{pendingList}}" 
         wx:key="id"
       >
-        <view class="item-checkbox" catchtap="toggleComplete" data-id="{{item.id}}">
+        <view class="item-checkbox" catchtap="toggleComplete" data-id="{{item.reminderId}}">
           <view class="checkbox {{item.isCompleted ? 'checked' : ''}}">
             <text wx:if="{{item.isCompleted}}">✓</text>
           </view>
         </view>
         
-        <view class="item-content" bindtap="showDetail" data-id="{{item.id}}">
+        <view class="item-content" bindtap="showDetail" data-id="{{item.reminderId}}">
           <view class="item-header">
             <view class="category-tag category-tag-{{item.category}}">
               <text>{{item.categoryText}}</text>
@@ -88,8 +88,8 @@
         </view>
         
         <view class="item-actions">
-          <text class="action-edit" catchtap="editReminder" data-id="{{item.id}}">编辑</text>
-          <text class="action-delete" catchtap="deleteReminder" data-id="{{item.id}}">删除</text>
+          <text class="action-edit" catchtap="editReminder" data-id="{{item.reminderId}}">编辑</text>
+          <text class="action-delete" catchtap="deleteReminder" data-id="{{item.reminderId}}">删除</text>
         </view>
       </view>
     </view>
@@ -106,9 +106,9 @@
         <view 
           class="reminder-item completed" 
           wx:for="{{completedList}}" 
-          wx:key="id"
+          wx:key="reminderId"
         >
-          <view class="item-checkbox" catchtap="toggleComplete" data-id="{{item.id}}">
+          <view class="item-checkbox" catchtap="toggleComplete" data-id="{{item.reminderId}}">
             <view class="checkbox checked">
               <text>✓</text>
             </view>
@@ -125,7 +125,7 @@
           </view>
           
           <view class="item-actions">
-            <text class="action-delete" catchtap="deleteReminder" data-id="{{item.id}}">删除</text>
+            <text class="action-delete" catchtap="deleteReminder" data-id="{{item.reminderId}}">删除</text>
           </view>
         </view>
       </view>

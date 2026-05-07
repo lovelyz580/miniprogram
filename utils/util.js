@@ -1,6 +1,6 @@
 // utils/util.js
 import {
-	upload,baseUrl
+	upload,imgUrl
 } from './api';
 /**
  * 格式化时间
@@ -172,7 +172,8 @@ export const UploadImages = ({tempFiles=tempFiles} = {}) => {
 						try {
 							const data = JSON.parse(uploadRes.data);
 							if (data.code === 200) {
-								uploadResolve(data.data.url); // 假设后端返回的URL在data.data.url中
+								debugger
+								uploadResolve(data.url); // 假设后端返回的URL在data.data.url中
 							} else {
 								uploadReject(new Error(data.message || '上传失败'));
 							}
@@ -219,7 +220,7 @@ function formatImgUrl(str) {
 		if (item.indexOf('http://') === 0 || item.indexOf('https://') === 0) {
 			result.push(item);
 		} else {
-			result.push(`${baseUrl}` + item);
+			result.push(`${imgUrl}` + item);
 		}
 	}
 	return result;
@@ -248,7 +249,7 @@ function ShowImgUrl(str) {
 		if (item.indexOf('http://') === 0 || item.indexOf('https://') === 0) {
 			result.push(item);
 		} else {
-			url = `${baseUrl}` + item;
+			url = `${imgUrl}` + item;
 		}
 		if(isImage(item)){
 			result.push({url:url,type:'image'});

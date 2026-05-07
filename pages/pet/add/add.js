@@ -284,10 +284,10 @@ Page({
 						},
 						success: (res) => {
 							const res_1 = JSON.parse(res.data);
-							debugger
+							// debugger
 							if (res_1.code === 200) {
 								this.setData({
-									'formData.avatarUrl': urls.baseUrl + res_1.data.url
+									'formData.avatarUrl': urls.imgUrl + res_1.data.url
 								})
 							}
 						},

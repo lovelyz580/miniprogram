@@ -1,0 +1,223 @@
+<!-- pages/reminder/add/add.wxml -->
+<view class="container">
+  <!-- 顶部导航 -->
+  <view class="nav-bar">
+    <text class="nav-cancel" bindtap="onCancel">取消</text>
+    <text class="nav-title">添加提醒</text>
+    <text class="nav-save {{canSave ? 'active' : ''}}" bindtap="onSave">保存</text>
+  </view>
+
+  <!-- 表单区域 -->
+  <view class="form-container">
+    <!-- 基本信息 -->
+    <view class="form-section">
+      <view class="form-title">基本信息</view>
+      
+      <view class="form-item">
+        <text class="form-label">提醒标题 <text class="required">*</text></text>
+        <input 
+          class="form-input"
+          placeholder="输入提醒标题"
+          bindinput="onTitleInput"
+          value="{{formData.title}}"
+          maxlength="50"
+        />
+      </view>
+
+      <view class="form-item">
+        <text class="form-label">描述说明</text>
+        <textarea 
+          class="form-textarea"
+          placeholder="输入描述说明（选填）"
+          bindinput="onDescriptionInput"
+          value="{{formData.content}}"
+          maxlength="200"
+          auto-height
+        ></textarea>
+      </view>
+
+      <view class="form-item">
+        <text class="form-label">提醒分类 <text class="required">*</text></text>
+        <view class="category-selector">
+          <view 
+            class="category-option {{formData.category === 1 ? 'active' : ''}}"
+            bindtap="selectCategory"
+            data-category="1"
+          >
+            <text class="category-icon">💉</text>
+            <text class="category-text">疫苗</text>
+          </view>
+          <view 
+            class="category-option {{formData.category === 2 ? 'active' : ''}}"
+            bindtap="selectCategory"
+            data-category="2"
+          >
+            <text class="category-icon">🩺</text>
+            <text class="category-text">体检</text>
+          </view>
+          <view 
+            class="category-option {{formData.category === 3 ? 'active' : ''}}"
+            bindtap="selectCategory"
+            data-category="3"
+          >
+            <text class="category-icon">💊</text>
+            <text class="category-text">用药</text>
+          </view>
+          <view 
+            class="category-option {{formData.category === 4 ? 'active' : ''}}"
+            bindtap="selectCategory"
+            data-category="4"
+          >
+            <text class="category-icon">📌</text>
+            <text class="category-text">其他</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="form-item">
+        <text class="form-label">关联宠物 <text class="required">*</text></text>
+        <view class="form-picker" bindtap="showPetPicker">
+          <text class="{{formData.petName ? '' : 'placeholder'}}">
+            {{formData.petName || '选择宠物'}}
+          </text>
+          <text class="picker-arrow">›</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 时间设置 -->
+    <view class="form-section">
+      <view class="form-title">时间设置</view>
+      
+      <view class="form-item">
+        <text class="form-label">提醒日期 <text class="required">*</text></text>
+        <view class="form-picker" bindtap="showDatePicker">
+          <text class="{{formData.remindDate ? '' : 'placeholder'}}">
+            {{formData.remindDate || '选择日期'}}
+          </text>
+          <text class="picker-arrow">›</text>
+        </view>
+      </view>
+
+      <view class="form-item">
+        <text class="form-label">提醒时间 <text class="required">*</text></text>
+        <view class="form-picker" bindtap="showTimePicker">
+          <text class="{{formData.remindTime ? '' : 'placeholder'}}">
+            {{formData.remindTime || '选择时间'}}
+          </text>
+          <text class="picker-arrow">›</text>
+        </view>
+      </view>
+
+      <view class="form-item">
+        <text class="form-label">重复类型</text>
+        <view class="repeat-selector">
+          <view 
+            class="repeat-option {{formData.repeatType === '0' ? 'active' : ''}}"
+            bindtap="selectRepeatType"
+            data-type="0"
+          >
+            <text>不重复</text>
+          </view>
+          <view 
+            class="repeat-option {{formData.repeatType === '1' ? 'active' : ''}}"
+            bindtap="selectRepeatType"
+            data-type="1"
+          >
+            <text>每天</text>
+          </view>
+          <view 
+            class="repeat-option {{formData.repeatType === '2' ? 'active' : ''}}"
+            bindtap="selectRepeatType"
+            data-type="2"
+          >
+            <text>每周</text>
+          </view>
+          <view 
+            class="repeat-option {{formData.repeatType === '3' ? 'active' : ''}}"
+            bindtap="selectRepeatType"
+            data-type="3"
+          >
+            <text>每月</text>
+          </view>
+          <view 
+            class="repeat-option {{formData.repeatType === '4' ? 'active' : ''}}"
+            bindtap="selectRepeatType"
+            data-type="4"
+          >
+            <text>每年</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 日期选择器弹窗 -->
+  <view class="picker-modal {{showDatePicker ? 'show' : ''}}" catchtap="hideDatePicker">
+    <view class="picker-content" catchtap="stopPropagation">
+      <view class="picker-header">
+        <text class="picker-cancel" catchtap="hideDatePicker">取消</text>
+        <text class="picker-title">选择日期</text>
+        <text class="picker-confirm" catchtap="confirmDatePicker">确定</text>
+      </view>
+      <picker-view 
+        class="picker-view"
+        value="{{datePickerValue}}"
+        bindchange="onDatePickerChange"
+      >
+        <picker-view-column>
+          <view class="picker-item" wx:for="{{years}}" wx:key="*this">{{item}}年</view>
+        </picker-view-column>
+        <picker-view-column>
+          <view class="picker-item" wx:for="{{months}}" wx:key="*this">{{item}}月</view>
+        </picker-view-column>
+        <picker-view-column>
+          <view class="picker-item" wx:for="{{days}}" wx:key="*this">{{item}}日</view>
+        </picker-view-column>
+      </picker-view>
+    </view>
+  </view>
+
+  <!-- 时间选择器弹窗 -->
+  <view class="picker-modal {{showTimePickerModal ? 'show' : ''}}" catchtap="hideTimePicker">
+    <view class="picker-content" catchtap="stopPropagation">
+      <view class="picker-header">
+        <text class="picker-cancel" catchtap="hideTimePicker">取消</text>
+        <text class="picker-title">选择时间</text>
+        <text class="picker-confirm" catchtap="confirmTimePicker">确定</text>
+      </view>
+      <picker-view 
+        class="picker-view"
+        value="{{timePickerValue}}"
+        bindchange="onTimePickerChange"
+      >
+        <picker-view-column>
+          <view class="picker-item" wx:for="{{hours}}" wx:key="*this">{{item}}时</view>
+        </picker-view-column>
+        <picker-view-column>
+          <view class="picker-item" wx:for="{{minutes}}" wx:key="*this">{{item}}分</view>
+        </picker-view-column>
+      </picker-view>
+    </view>
+  </view>
+
+  <!-- 宠物选择弹窗 -->
+  <view class="picker-modal {{showPetPickerModal ? 'show' : ''}}" catchtap="hidePetPicker">
+    <view class="picker-content pet-picker" catchtap="stopPropagation">
+      <view class="picker-header">
+        <text class="picker-cancel" catchtap="hidePetPicker">取消</text>
+        <text class="picker-title">选择宠物</text>
+        <text class="picker-confirm" catchtap="confirmPetPicker">确定</text>
+      </view>
+      <picker-view 
+        class="picker-view"
+        value="{{petPickerValue}}"
+        bindchange="onPetPickerChange"
+      >
+        <picker-view-column>
+          <view class="picker-item" wx:for="{{petList}}" wx:key="petId">{{item.name}}</view>
+        </picker-view-column>
+      </picker-view>
+    </view>
+  </view>
+</view>

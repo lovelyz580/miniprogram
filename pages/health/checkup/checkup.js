@@ -89,12 +89,12 @@ Page({
     try {
       const res = await request({
         url: urls.getWeightList,
-        method: 'GET',
+        method: 'POST',
         data: { petId, page: 1, pageSize: 6 }
       })
       
       if (res.code === 200) {
-        const weightData = (res.data || []).map(item => ({
+        const weightData = (res.rows || []).map(item => ({
           date: item.createTime,
           weight: item.weight
         }))
@@ -185,7 +185,7 @@ Page({
     try {
       const res = await request({
         url: urls.checkupList,
-        method: 'GET',
+        method: 'POST',
         data: {
           petId: currentPet.petId,
           type: currentTab === 'all' ? '' : currentTab,
@@ -195,8 +195,8 @@ Page({
       })
       
       if (res.code === 200) {
-				debugger
-        const records = (res.data || []).map(item => ({
+				// debugger
+        const records = (res.rows || []).map(item => ({
           ...item,
           petAge: calculatePetAgeFormat(currentPet.birthDate || currentPet.adoptDate, item.checkupDate),
           hasAttachment: item.attachmentUrls && item.attachmentUrls.length > 0

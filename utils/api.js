@@ -1,8 +1,8 @@
 const env = __wxConfig.envVersion;
 console.log('>>> envVersion: ', env);
 const baseApi = {
-	develop: "http://localhost:8080/api/",
-	// develop: "https://wx.lovevivian.com/api/",
+	// develop: "http://localhost:8080/api/",
+	develop: "https://wx.lovevivian.com/api/",
 	trial: "https://wx.lovevivian.com/api/",
 	release: "https://wx.lovevivian.com/api/"
 };
@@ -10,7 +10,8 @@ var baseUrl = baseApi[env] || 'https://wx.lovevivian.com/';
 //api地址
 function url() {
 
-	this.baseUrl = "http://localhost:8080";
+	this.imgUrl = "https://img.lovevivian.com/";
+	// this.baseUrl = "http://localhost:8080";
 	//LMM
 	this.getUserInfo = baseUrl + "wechat/wx_login.do";
 
@@ -21,7 +22,7 @@ function url() {
 	this.getPetlist = baseUrl + "wechat/loginByWechat.do";
 	this.timelinelist = baseUrl + "timeline/list";
 	this.timelinecreate = baseUrl + "timeline/create";
-	this.upload = baseUrl + "upload";
+	this.upload = baseUrl + "common/upload";
 	this.updateUserAvatarUrl = baseUrl + "user/updateUserAvatarUrl.do";
 	this.addPet = baseUrl + "pet/add";
 	this.PetList = baseUrl + "pet/list";
@@ -44,15 +45,19 @@ function url() {
 	this.vaccineCount = baseUrl + "health/vaccine/count";
 	this.checkupCount = baseUrl + "health/checkup/count";
 	this.checkupList = baseUrl + "health/checkup/list";
+	this.checkupadd = baseUrl + "health/checkup/add";
+
+	
 	this.medicationCount = baseUrl + "health/medication/count";
 	this.medicationList = baseUrl + "health/medication/list";
 	this.weightCount = baseUrl + "health/weight/count";
 	//提醒
+	this.reminderList = baseUrl + "reminder/list";
 	this.upcoming = baseUrl + "reminder/upcoming";
-
-
 	//完成提醒
 	this.complete = baseUrl + "reminder/complete";
+	this.reminder = baseUrl + "reminder";
+	
 	//体重管理
 	this.getWeightList = baseUrl + "health/weight/list";
 	this.latestWeight = baseUrl + "health/weight/latest";

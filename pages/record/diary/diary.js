@@ -4,7 +4,9 @@ const {
 	request
 } = require('../../../utils/request')
 const {
-	formatTime,calculatePetAge
+	formatTime,
+	calculatePetAge,
+	UploadImages
 } = require('../../../utils/util')
 const urls = require('../../../utils/api')
 Page({
@@ -429,7 +431,7 @@ Page({
 
 	// 位置获取
 	getLocation() {
-		
+
 		wx.getLocation({
 			type: 'gcj02',
 			success: async (res) => {
@@ -570,7 +572,7 @@ Page({
 
 	// 发布
 	async onPublish() {
-		debugger
+		// debugger
 		if (this.data.content === '' && this.data.mediaList.length === 0) {
 			wx.showToast({
 				title: '请先添加内容',
@@ -593,9 +595,13 @@ Page({
 			})
 
 			// 先上传媒体文件
-			const mediaUrls = await this.uploadMedia()
+			// 上传图片
+			const mediaUrls = await UploadImages({
+				tempFiles: this.data.mediaList
+			});
+			console.log(mediaUrls)
 			const petAgeDays = calculatePetAge(this.data.selectedPet.adoptDate || this.data.selectedPet.birthDate)
-			
+
 			const data = {
 				content: this.data.content,
 				mediaUrls: mediaUrls.join(','),
@@ -604,7 +610,7 @@ Page({
 				recordDate: this.data.selectedDate,
 				petId: this.data.selectedPet.petId,
 				recordType: 2, // 日记类型
-				petAgeDays:petAgeDays,
+				petAgeDays: petAgeDays,
 				userId: this.data.userInfo.userId
 			}
 
@@ -638,36 +644,6 @@ Page({
 		}
 	},
 
-	// 上传媒体文件
-	async uploadMedia() {
-		const mediaUrls = []
-
-		for (const media of this.data.mediaList) {
-			if (media.url.startsWith('http')) {
-				mediaUrls.push(media.url)
-			} else {
-				try {
-					const res = await wx.uploadFile({
-						url: urls.upload,
-						filePath,
-						name: 'file',
-						header: {
-							"Content-Type": "multipart/form-data"
-						}
-					})
-
-					const data = JSON.parse(res.data)
-					if (data.code === 200) {
-						mediaUrls.push(data.data.url)
-					}
-				} catch (err) {
-					console.error('上传失败', err)
-				}
-			}
-		}
-
-		return mediaUrls
-	},
 
 	// 删除草稿
 	async deleteDraft() {

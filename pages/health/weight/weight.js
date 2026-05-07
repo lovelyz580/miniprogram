@@ -308,7 +308,7 @@ Page({
     try {
       const res = await request({
         url: urls.getWeightList,
-        method: 'GET',
+        method: 'POST',
         data: {
           petId: currentPet.petId,
           page,
@@ -317,7 +317,7 @@ Page({
       })
       
       if (res.code === 200) {
-        const records = (res.data || []).map(item => {
+        const records = (res.rows || []).map(item => {
           const date = new Date(item.createTime)
           return {
             ...item,

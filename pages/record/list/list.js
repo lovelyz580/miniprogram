@@ -235,7 +235,7 @@ Page({
 
 	// 跳转详情
 	goToDetail(e) {
-		debugger
+		// debugger
 		// if (this.data.isSelectionMode) return
 		const id = e.currentTarget.dataset.item.recordId;
 		const type = e.currentTarget.dataset.item.recordType;

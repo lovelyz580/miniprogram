@@ -2,7 +2,7 @@
 <view class="container">
   <!-- 宠物信息卡片 -->
   <view class="pet-info-card" wx:if="{{currentPet}}">
-    <image class="pet-avatar" src="{{currentPet.avatar || '/assets/images/pet-default.png'}}" mode="aspectFill"></image>
+    <image class="pet-avatar" src="{{currentPet.avatarUrl || '/assets/images/pet-default.png'}}" mode="aspectFill"></image>
     <view class="pet-detail">
       <text class="pet-name">{{currentPet.name}}</text>
       <text class="pet-breed">{{currentPet.breed || currentPet.species}}</text>
