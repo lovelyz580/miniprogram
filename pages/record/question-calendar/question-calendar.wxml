@@ -144,28 +144,31 @@ function contains(arr, item) {
     </view>
   </view>
 
-  <!-- 底部入口：与今日问答页卡片行一致 -->
-  <view class="qa-nav-dock">
-    <view class="qa-nav-card qa-nav-card--primary" bindtap="goToTodayQuestion">
-      <view class="qa-nav-row">
-        <view class="qa-nav-icon-wrap">
-          <text class="qa-nav-icon">✏️</text>
-        </view>
-        <view class="qa-nav-info">
-          <text class="qa-nav-title">今日问答</text>
-          <text class="qa-nav-desc">回答今日推荐问题</text>
+  <!-- 底部导航（与今日问答页入口一致） -->
+  <view class="qa-nav-bar">
+    <view class="qa-nav-inner">
+      <view class="qa-nav-row qa-nav-row--primary" bindtap="goToTodayQuestion">
+        <view class="qa-nav-accent"></view>
+        <view class="qa-nav-body">
+          <view class="qa-nav-icon-wrap">
+            <text class="qa-nav-icon">✏️</text>
+          </view>
+          <view class="qa-nav-text-col">
+            <text class="qa-nav-title">今日问答</text>
+            <text class="qa-nav-desc">记录今天的问答</text>
+          </view>
         </view>
         <text class="qa-nav-arrow">›</text>
       </view>
-    </view>
-    <view class="qa-nav-card" bindtap="goToHistory">
-      <view class="qa-nav-row">
-        <view class="qa-nav-icon-wrap">
-          <text class="qa-nav-icon">📚</text>
-        </view>
-        <view class="qa-nav-info">
-          <text class="qa-nav-title">历史问答</text>
-          <text class="qa-nav-desc">浏览全部问答记录</text>
+      <view class="qa-nav-row" bindtap="goToHistory">
+        <view class="qa-nav-body">
+          <view class="qa-nav-icon-wrap">
+            <text class="qa-nav-icon">📚</text>
+          </view>
+          <view class="qa-nav-text-col">
+            <text class="qa-nav-title">历史问答</text>
+            <text class="qa-nav-desc">浏览全部问答记录</text>
+          </view>
         </view>
         <text class="qa-nav-arrow">›</text>
       </view>

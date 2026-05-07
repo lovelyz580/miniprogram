@@ -4,9 +4,7 @@
 .container {
   min-height: 100vh;
   background-color: #F5F7FA;
-  /* 为底部双卡片 + 安全区预留空间 */
-  padding-bottom: 280rpx;
-  padding-bottom: calc(260rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(300rpx + env(safe-area-inset-bottom));
 }
 
 /* 顶部标题 */
@@ -22,6 +20,7 @@
 .header-content {
   display: flex;
   align-items: center;
+  min-width: 0;
 }
 
 .header-icon-wrap {
@@ -383,50 +382,57 @@
   border-radius: 8rpx;
 }
 
-/* 底部入口（与 daily-question 信息行一致） */
-.qa-nav-dock {
+/* 底部导航（与今日问答入口同级） */
+.qa-nav-bar {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
-  z-index: 10;
-  padding: 16rpx 24rpx;
-  padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
+  padding: 20rpx 24rpx;
+  padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
   background-color: #F5F7FA;
-  box-shadow: 0 -4rpx 24rpx rgba(0, 0, 0, 0.06);
+  box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.06);
 }
 
-.qa-nav-card {
-  background-color: #FFFFFF;
-  border-radius: 20rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
-  margin-bottom: 16rpx;
-  overflow: hidden;
-}
-
-.qa-nav-card:last-child {
-  margin-bottom: 0;
-}
-
-.qa-nav-card--primary {
-  box-shadow: 0 4rpx 20rpx rgba(51, 102, 204, 0.12);
-  border-left: 6rpx solid #3366CC;
+.qa-nav-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
 }
 
 .qa-nav-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 26rpx 28rpx;
+  padding: 24rpx 24rpx 24rpx 0;
+  background-color: #FFFFFF;
+  border-radius: 20rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
+  overflow: hidden;
 }
 
-.qa-nav-card--primary .qa-nav-row {
-  padding-left: 22rpx;
+.qa-nav-accent {
+  width: 8rpx;
+  align-self: stretch;
+  flex-shrink: 0;
+  background-color: #3366CC;
+  border-radius: 0 4rpx 4rpx 0;
+  margin-right: 16rpx;
+}
+
+.qa-nav-body {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.qa-nav-row:not(.qa-nav-row--primary) .qa-nav-body {
+  padding-left: 24rpx;
 }
 
 .qa-nav-icon-wrap {
-  width: 80rpx;
-  height: 80rpx;
+  width: 88rpx;
+  height: 88rpx;
   border-radius: 20rpx;
   background-color: #E6F0FF;
   display: flex;
@@ -437,14 +443,14 @@
 }
 
 .qa-nav-icon {
-  font-size: 40rpx;
+  font-size: 44rpx;
   line-height: 1;
 }
 
-.qa-nav-info {
-  flex: 1;
+.qa-nav-text-col {
   display: flex;
   flex-direction: column;
+  flex: 1;
   min-width: 0;
 }
 
@@ -457,13 +463,12 @@
 .qa-nav-desc {
   font-size: 24rpx;
   color: #999999;
-  margin-top: 6rpx;
+  margin-top: 4rpx;
 }
 
 .qa-nav-arrow {
   font-size: 36rpx;
   color: #CCCCCC;
-  margin-left: 16rpx;
+  padding-right: 8rpx;
   flex-shrink: 0;
-  line-height: 1;
 }

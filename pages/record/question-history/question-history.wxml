@@ -1,5 +1,5 @@
 <!--question-history.wxml-->
-<!--历史回答页面-->
+<!--历史问答页面-->
 <view class="container">
   <!-- 顶部标题 -->
   <view class="header">
@@ -69,7 +69,7 @@
     <!-- 空状态 -->
     <view class="empty-state" wx:if="{{answerList.length === 0 && !loading}}">
       <text class="empty-icon">📝</text>
-      <text class="empty-text">暂无历史问答</text>
+      <text class="empty-text">暂无历史回答</text>
       <text class="empty-tip">快去回答今日问题吧</text>
     </view>
 

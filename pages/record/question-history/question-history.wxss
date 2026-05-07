@@ -1,5 +1,5 @@
 /* question-history.wxss */
-/* 历史回答页面样式 */
+/* 历史问答页面样式 */
 
 .container {
   min-height: 100vh;

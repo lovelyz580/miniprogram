@@ -20,6 +20,7 @@
 .header-content {
   display: flex;
   align-items: center;
+  min-width: 0;
 }
 
 .header-icon-wrap {
@@ -329,24 +330,14 @@
   color: #3366CC;
 }
 
-/* 历史问答 / 问答日历入口（与问答日历页底栏一致） */
-.history-section {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin: 24rpx 30rpx 0;
-  padding: 26rpx 28rpx;
-  background-color: #FFFFFF;
-  border-radius: 20rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
-}
-
+/* 历史问答入口 */
+.history-section,
 .calendar-section {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 16rpx 30rpx 0;
-  padding: 26rpx 28rpx;
+  margin: 24rpx 30rpx 0;
+  padding: 24rpx 28rpx;
   background-color: #FFFFFF;
   border-radius: 20rpx;
   box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
@@ -356,13 +347,12 @@
 .calendar-content {
   display: flex;
   align-items: center;
-  flex: 1;
   min-width: 0;
 }
 
-.qa-entry-icon-wrap {
-  width: 80rpx;
-  height: 80rpx;
+.nav-entry-icon-wrap {
+  width: 88rpx;
+  height: 88rpx;
   border-radius: 20rpx;
   background-color: #E6F0FF;
   display: flex;
@@ -374,7 +364,7 @@
 
 .history-icon,
 .calendar-icon {
-  font-size: 40rpx;
+  font-size: 44rpx;
   line-height: 1;
 }
 
@@ -395,16 +385,13 @@
 .calendar-desc {
   font-size: 24rpx;
   color: #999999;
-  margin-top: 6rpx;
+  margin-top: 4rpx;
 }
 
 .history-arrow,
 .calendar-arrow {
   font-size: 36rpx;
   color: #CCCCCC;
-  margin-left: 16rpx;
-  flex-shrink: 0;
-  line-height: 1;
 }
 
 /* 统计区域 */
