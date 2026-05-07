@@ -11,7 +11,9 @@ function contains(arr, item) {
   <!-- 顶部标题 -->
   <view class="header">
     <view class="header-content">
-      <text class="header-icon">📅</text>
+      <view class="header-icon-wrap">
+        <text class="header-icon">📅</text>
+      </view>
       <view class="header-text">
         <text class="header-title">问答日历</text>
         <text class="header-subtitle">{{currentYear}}年{{currentMonth}}月</text>
@@ -65,11 +67,7 @@ function contains(arr, item) {
 
     <!-- 日历主体 -->
     <view class="calendar-body">
-      <view 
-        class="calendar-day {{!item.isCurrentMonth ? 'not-current' : ''}} 
-				{{item.isToday ? 'today' : ''}}
-				 {{selectedDate === item.date ? 'selected' : ''}} 
-				 {{utils.contains(answerDates,item.date) ? 'has-answer' : ''}}"
+      <view  class="calendar-day {{!item.isCurrentMonth ? 'not-current' : ''}} {{item.isToday ? 'today' : ''}} {{selectedDate === item.date ? 'selected' : ''}} {{utils.contains(answerDates,item.date) ? 'has-answer' : ''}}"
         wx:for="{{calendarDays}}"
         wx:key="index"
         bindtap="onDateTap"
@@ -146,15 +144,31 @@ function contains(arr, item) {
     </view>
   </view>
 
-  <!-- 底部快捷入口 -->
-  <view class="quick-actions">
-    <view class="action-btn" bindtap="goToHistory">
-      <text class="action-icon">📚</text>
-      <text class="action-text">历史回答</text>
+  <!-- 底部入口：与今日问答页卡片行一致 -->
+  <view class="qa-nav-dock">
+    <view class="qa-nav-card qa-nav-card--primary" bindtap="goToTodayQuestion">
+      <view class="qa-nav-row">
+        <view class="qa-nav-icon-wrap">
+          <text class="qa-nav-icon">✏️</text>
+        </view>
+        <view class="qa-nav-info">
+          <text class="qa-nav-title">今日问答</text>
+          <text class="qa-nav-desc">回答今日推荐问题</text>
+        </view>
+        <text class="qa-nav-arrow">›</text>
+      </view>
     </view>
-    <view class="action-btn primary" bindtap="goToTodayQuestion">
-      <text class="action-icon">✏️</text>
-      <text class="action-text">今日问答</text>
+    <view class="qa-nav-card" bindtap="goToHistory">
+      <view class="qa-nav-row">
+        <view class="qa-nav-icon-wrap">
+          <text class="qa-nav-icon">📚</text>
+        </view>
+        <view class="qa-nav-info">
+          <text class="qa-nav-title">历史问答</text>
+          <text class="qa-nav-desc">浏览全部问答记录</text>
+        </view>
+        <text class="qa-nav-arrow">›</text>
+      </view>
     </view>
   </view>
 </view>

@@ -3,7 +3,9 @@
   <!-- 顶部标题 -->
   <view class="header">
     <view class="header-content">
-      <text class="header-icon">💭</text>
+      <view class="header-icon-wrap">
+        <text class="header-icon">💭</text>
+      </view>
       <view class="header-text">
         <text class="header-title">今日问答</text>
         <text class="header-date">{{todayDate}}</text>
@@ -103,7 +105,9 @@
   <!-- 历史问答入口 -->
   <view class="history-section" bindtap="goToHistory">
     <view class="history-content">
-      <text class="history-icon">📚</text>
+      <view class="qa-entry-icon-wrap">
+        <text class="history-icon">📚</text>
+      </view>
       <view class="history-info">
         <text class="history-title">历史问答</text>
         <text class="history-count">已回答 {{answeredCount}} 个问题</text>
@@ -115,7 +119,9 @@
   <!-- 问题日历入口 -->
   <view class="calendar-section" bindtap="goToCalendar">
     <view class="calendar-content">
-      <text class="calendar-icon">📅</text>
+      <view class="qa-entry-icon-wrap">
+        <text class="calendar-icon">📅</text>
+      </view>
       <view class="calendar-info">
         <text class="calendar-title">问答日历</text>
         <text class="calendar-desc">查看每日问答记录</text>
