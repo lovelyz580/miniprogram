@@ -1,6 +1,6 @@
 {
   "usingComponents": {},
-  "navigationBarTitleText": "体重记录",
+  "navigationBarTitleText": "体重",
   "enablePullDownRefresh": true,
   "backgroundTextStyle": "dark"
 }

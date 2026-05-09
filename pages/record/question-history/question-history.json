@@ -1,9 +1,9 @@
 {
   "usingComponents": {},
   "navigationBarTitleText": "历史回答",
-  "navigationBarBackgroundColor": "#FFFFFF",
+  "navigationBarBackgroundColor": "#FFF4E7",
   "navigationBarTextStyle": "black",
-  "backgroundColor": "#F5F7FA",
+  "backgroundColor": "#FFF4E7",
   "enablePullDownRefresh": true,
   "onReachBottomDistance": 50
 }

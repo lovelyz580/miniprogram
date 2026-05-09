@@ -105,7 +105,6 @@ Page({
 				// console.log(data.answerDates.indexOf('2026-04-17') !== -1)
 				// console.log(data.answerDates.indexOf('2026-04-14') !== -1)
 				// console.log(data.answerDates.indexOf('2026-04-19') !== -1)
-				// debugger
         // 设置有回答的日期
         this.setData({
           answerDates: data.answerDates || [],

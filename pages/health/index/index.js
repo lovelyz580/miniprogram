@@ -30,11 +30,12 @@ Page({
   },
 
   onLoad() {
+
     this.initPage()
   },
 
   onShow() {
-    // this.refreshData()
+    this.refreshData()
   },
 
   onPullDownRefresh() {
@@ -84,9 +85,7 @@ Page({
     const userInfo = wx.getStorageSync('userInfo')
     if (userInfo) {
       this.setData({ userInfo })
-    }else{
-			this.goToLogin()
-		}
+    }
   },
   // 获取宠物列表
   async getPetList() {

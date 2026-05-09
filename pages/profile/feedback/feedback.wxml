@@ -1,0 +1,130 @@
+<view class="feedback-container">
+  <!-- 页面标题 -->
+  <view class="feedback-header">
+    <view class="header-copy">
+      <text class="header-kicker">🐾 温柔反馈箱</text>
+      <text class="header-title">我们在听，也在认真照看</text>
+      <text class="header-subtitle">把使用中的想法告诉我们，一起把爪印记忆变得更贴心。</text>
+    </view>
+    <view class="header-pet">
+      <text class="header-pet-face">🐱</text>
+    </view>
+  </view>
+
+  <!-- 反馈内容 -->
+  <view class="form-section">
+    <view class="form-item">
+      <view class="form-label">
+        <text class="label-text">📝 反馈内容</text>
+        <text class="label-required">*</text>
+      </view>
+      <textarea 
+        class="feedback-textarea"
+        placeholder="请描述您遇到的问题或建议&#10;例如：想记录的新功能、使用不顺手的地方、需要我们修复的问题"
+        maxlength="{{maxContentLength}}"
+        value="{{feedbackContent}}"
+        bindinput="onContentInput"
+        show-confirm-bar="false"
+      ></textarea>
+      <view class="char-count">
+        <text>{{feedbackContent.length}}/{{maxContentLength}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 图片上传 -->
+  <view class="form-section">
+    <view class="form-label">
+      <text class="label-text">🐾 上传图片</text>
+      <text class="label-optional">（可选，最多{{maxImages}}张）</text>
+    </view>
+    <view class="image-grid">
+      <!-- 上传按钮 -->
+      <view 
+        wx:if="{{imageList.length < maxImages}}"
+        class="image-upload-btn"
+        bindtap="selectImage"
+      >
+        <view class="upload-icon">
+          <text class="icon-text">+</text>
+        </view>
+        <text class="upload-text">添加截图</text>
+      </view>
+
+      <!-- 图片列表 -->
+      <view 
+        wx:for="{{imageList}}"
+        wx:key="index"
+        class="image-item"
+      >
+        <image
+          src="{{item.uploadUrl || item.tempPath}}"
+          class="image-preview"
+          mode="aspectFill"
+          bindtap="previewImage"
+          data-index="{{index}}"
+        ></image>
+        
+        <!-- 上传中提示 -->
+        <view wx:if="{{item.isUploading}}" class="upload-status">
+          <text class="status-text">上传中...</text>
+        </view>
+
+        <!-- 删除按钮 -->
+        <view 
+          wx:if="{{!item.isUploading}}"
+          class="delete-btn"
+          bindtap="deleteImage"
+          data-index="{{index}}"
+        >
+          <text class="delete-icon">×</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 联系方式 -->
+  <view class="form-section">
+    <view class="form-item">
+      <view class="form-label">
+        <text class="label-text">💌 联系方式</text>
+        <text class="label-optional">（可选）</text>
+      </view>
+      <input 
+        class="contact-input"
+        type="text"
+        placeholder="手机号或邮箱，方便我们带着结果回来找您"
+        value="{{contactInfo}}"
+        bindinput="onContactInput"
+      />
+    </view>
+  </view>
+
+  <!-- 提交按钮 -->
+  <view class="form-section submit-section">
+    <button 
+      class="submit-btn {{!canSubmit ? 'disabled' : ''}}"
+      bindtap="submitFeedback"
+      disabled="{{!canSubmit}}"
+      loading="{{isSubmitting}}"
+    >
+      {{isSubmitting ? '正在送达...' : '提交反馈'}}
+    </button>
+  </view>
+
+  <!-- 说明文字 -->
+  <view class="help-text">
+    <view class="help-item">
+      <text class="help-icon">🐾</text>
+      <text class="help-content">感谢您对爪印记忆的信任与支持</text>
+    </view>
+    <view class="help-item">
+      <text class="help-icon">💛</text>
+      <text class="help-content">我们会认真查看您的每一条反馈</text>
+    </view>
+    <view class="help-item">
+      <text class="help-icon">🌿</text>
+      <text class="help-content">优质反馈将帮助我们不断完善功能</text>
+    </view>
+  </view>
+</view>

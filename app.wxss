@@ -1,0 +1,44 @@
+page {
+  min-height: 100%;
+  background:
+    radial-gradient(circle at 12% 4%, rgba(255, 194, 122, 0.22) 0, rgba(255, 194, 122, 0) 180rpx),
+    linear-gradient(180deg, #FFF4E7 0%, #FFF9F1 48%, #F7F1E8 100%);
+  color: #4B3B32;
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+button {
+  font-family: inherit;
+}
+
+button::after {
+  border: none;
+}
+
+image {
+  will-change: transform;
+}
+
+.theme-card {
+  background: rgba(255, 255, 255, 0.94);
+  border: 1rpx solid rgba(240, 223, 200, 0.82);
+  border-radius: 24rpx;
+  box-shadow: 0 10rpx 28rpx rgba(146, 103, 67, 0.09);
+}
+
+.theme-primary-bg {
+  background: linear-gradient(135deg, #F7A45A 0%, #E87852 100%);
+}
+
+.theme-soft-bg {
+  background: #FFF7EC;
+}
+
+.theme-title {
+  color: #4B3B32;
+  font-weight: 700;
+}
+
+.theme-muted {
+  color: #9B7B63;
+}

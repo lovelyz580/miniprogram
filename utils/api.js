@@ -12,17 +12,16 @@ function url() {
 
 	this.imgUrl = "https://img.lovevivian.com/";
 	// this.baseUrl = "http://localhost:8080";
-	//LMM
-	this.getUserInfo = baseUrl + "wechat/wx_login.do";
 
 
-	
+	this.genwxaCode = baseUrl + "user/generateWxaCode.do";
+	this.sysInfo = baseUrl + "user/sysinfo.do";
 	this.loginByWechat = baseUrl + "user/wx_login.do";
 	
 	this.getPetlist = baseUrl + "wechat/loginByWechat.do";
 	this.timelinelist = baseUrl + "timeline/list";
 	this.timelinecreate = baseUrl + "timeline/create";
-	this.upload = baseUrl + "common/upload";
+	this.upload = baseUrl + "file/upload";
 	this.updateUserAvatarUrl = baseUrl + "user/updateUserAvatarUrl.do";
 	this.addPet = baseUrl + "pet/add";
 	this.PetList = baseUrl + "pet/list";
@@ -71,6 +70,10 @@ function url() {
 	this.vaccineNext = baseUrl + "health/vaccine/next";
 	this.vaccineList = baseUrl + "health/vaccine/list";
 	this.vaccineAdd = baseUrl + "health/vaccine/add";
+	
+	//反馈与帮助
+	this.submitFeedback = baseUrl + "feedback/submit";
+	this.getFeedbackList = baseUrl + "feedback/list";
 }
 var urls = new url();
 module.exports = urls;

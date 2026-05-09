@@ -1,6 +1,6 @@
 {
   "usingComponents": {},
-  "navigationBarTitleText": "体检记录",
+  "navigationBarTitleText": "体检",
   "enablePullDownRefresh": true,
   "backgroundTextStyle": "dark"
 }

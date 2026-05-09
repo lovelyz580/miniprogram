@@ -180,9 +180,9 @@ Page({
 				method: 'GET'
 			})
 
-			if (res.code === 0 && res.data) {
+			if (res.code === 200 && res.data) {
 				const draft = res.data
-				const selectedPet = this.data.petList.find(p => p.id === draft.petId) || this.data.selectedPet
+				const selectedPet = this.data.petList.find(p => p.petId === draft.petId) || this.data.selectedPet
 
 				this.setData({
 					content: draft.content,
@@ -572,7 +572,6 @@ Page({
 
 	// 发布
 	async onPublish() {
-		// debugger
 		if (this.data.content === '' && this.data.mediaList.length === 0) {
 			wx.showToast({
 				title: '请先添加内容',

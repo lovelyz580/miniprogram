@@ -287,3 +287,87 @@
 .tab-bar-placeholder {
   height: 100rpx;
 }
+
+/* 爪印记忆暖系主题覆盖 */
+.container {
+  background:
+    radial-gradient(circle at 86% 4%, rgba(132, 183, 108, 0.16) 0, rgba(132, 183, 108, 0) 180rpx),
+    linear-gradient(180deg, #FFF4E7 0%, #FFF9F1 52%, #F7F1E8 100%);
+}
+
+.filter-bar {
+  margin: 24rpx 28rpx 0;
+  padding: 18rpx;
+  border: 1rpx solid rgba(240, 223, 200, 0.82);
+  border-radius: 24rpx;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 10rpx 28rpx rgba(146, 103, 67, 0.08);
+}
+
+.filter-tab {
+  background-color: #FFF7EC;
+  color: #8C6F5A;
+  font-weight: 600;
+}
+
+.filter-tab.active {
+  background: linear-gradient(135deg, #F7A45A 0%, #E87852 100%);
+  color: #FFFFFF;
+  box-shadow: 0 6rpx 14rpx rgba(232, 120, 82, 0.22);
+}
+
+.group-title,
+.item-title,
+.empty-title {
+  color: #4B3B32;
+}
+
+.group-count,
+.repeat-info {
+  background-color: #FFF0DE;
+  color: #9B7B63;
+}
+
+.reminder-item {
+  border-radius: 22rpx;
+  border: 1rpx solid rgba(240, 223, 200, 0.82);
+  box-shadow: 0 8rpx 22rpx rgba(146, 103, 67, 0.08);
+}
+
+.reminder-item.overdue {
+  background-color: #FFF7EC;
+}
+
+.checkbox.checked {
+  background-color: #73AF74;
+  border-color: #73AF74;
+}
+
+.category-tag-vaccine {
+  background-color: #FFF0DE;
+  color: #D87545;
+}
+
+.category-tag-checkup {
+  background-color: #EAF5E8;
+  color: #5B9B67;
+}
+
+.category-tag-medication {
+  background-color: #F5EADF;
+  color: #9A704F;
+}
+
+.category-tag-other {
+  background-color: #FFE8DD;
+  color: #E87852;
+}
+
+.action-edit {
+  color: #D87545;
+}
+
+.add-btn {
+  background: linear-gradient(135deg, #F7A45A 0%, #E87852 100%);
+  box-shadow: 0 10rpx 24rpx rgba(232, 120, 82, 0.28);
+}

@@ -81,6 +81,7 @@ Page({
     const months = []
     const days = []
 
+    // 年份：当前年份往前20年
     for (let i = now.getFullYear() - 20; i <= now.getFullYear(); i++) {
       years.push(i)
     }
@@ -93,11 +94,16 @@ Page({
       days.push(i)
     }
 
+    // 计算默认选中位置
+    const yearIndex = years.indexOf(now.getFullYear())
+    const monthIndex = months.indexOf(now.getMonth() + 1)
+    const dayIndex = days.indexOf(now.getDate())
+
     this.setData({
       years,
       months,
       days,
-      datePickerValue: [20, now.getMonth(), now.getDate() - 1]
+      datePickerValue: [yearIndex, monthIndex, dayIndex]
     })
   },
 
@@ -105,12 +111,16 @@ Page({
   onNameInput(e) {
     this.setData({
       'formData.name': e.detail.value
+    }, () => {
+      this.checkCanSave()
     })
-		if (this.data.formData.name.trim()) {
-			this.setData({
-				canSave: true
-			})
-    }
+  },
+  
+  // 检查是否可以保存
+  checkCanSave() {
+    const { name, breed, adoptDate } = this.data.formData
+    const canSave = name.trim() && breed && adoptDate
+    this.setData({ canSave })
   },
 
   onWeightInput(e) {
@@ -211,6 +221,8 @@ Page({
       'formData.breed': this.data.customBreed || selectedBreed,
       showBreedPickerModal: false,
       customBreed: ''
+    }, () => {
+      this.checkCanSave()
     })
   },
 
@@ -261,6 +273,8 @@ Page({
   confirmDate() {
     this.setData({
       showDatePickerModal: false
+    }, () => {
+      this.checkCanSave()
     })
   },
 
@@ -270,37 +284,50 @@ Page({
       count: 1,
       sizeType: ['compressed'],
       sourceType: ['album', 'camera'],
-      success: async (res) => {
+      success: (res) => {
         const tempFilePath = res.tempFilePaths[0]
         wx.showLoading({ title: '上传中...' })
-				try {
-					wx.uploadFile({
-						url: urls.upload,
-						filePath: tempFilePath,
-						name: 'file',
-						formData: {},
-						header: {
-							"Content-Type": "multipart/form-data"
-						},
-						success: (res) => {
-							const res_1 = JSON.parse(res.data);
-							// debugger
-							if (res_1.code === 200) {
-								this.setData({
-									'formData.avatarUrl': urls.imgUrl + res_1.data.url
-								})
-							}
-						},
-					})
-          wx.hideLoading()
-        } catch (err) {
-          console.error('上传头像失败', err)
-          // 本地预览
-          this.setData({
-            'formData.avatarUrl': tempFilePath
-          })
-          wx.hideLoading()
-        }
+        
+        wx.uploadFile({
+          url: urls.upload,
+          filePath: tempFilePath,
+          name: 'file',
+          formData: {},
+          header: {
+            "Content-Type": "multipart/form-data"
+          },
+          success: (uploadRes) => {
+            wx.hideLoading()
+            try {
+              const result = JSON.parse(uploadRes.data)
+              if (result.code === 200) {
+                this.setData({
+                  'formData.avatarUrl': urls.imgUrl + result.url
+                })
+                wx.showToast({
+                  title: '上传成功',
+                  icon: 'success'
+                })
+              } else {
+                throw new Error('上传失败')
+              }
+            } catch (err) {
+              console.error('解析上传结果失败', err)
+              wx.showToast({
+                title: '上传失败',
+                icon: 'none'
+              })
+            }
+          },
+          fail: (err) => {
+            wx.hideLoading()
+            console.error('上传头像失败', err)
+            wx.showToast({
+              title: '上传失败',
+              icon: 'none'
+            })
+          }
+        })
       }
     })
   },
@@ -336,7 +363,9 @@ Page({
       })
       return
     }
+    
     this.data.formData.userId = this.data.userInfo.userId
+    
     try {
       wx.showLoading({ title: '保存中...' })
       
@@ -348,24 +377,28 @@ Page({
       
       wx.hideLoading()
       
-      if (res.code === 0) {
+      if (res.code === 200 ) {
         wx.showToast({
           title: '添加成功',
           icon: 'success'
         })
         
-        // 如果需要上传新头像
-        if (this.data.formData.avatarUrl && !this.data.formData.avatarUrl.startsWith('http')) {
-          // 头像已经在上面的上传中处理了
-        }
-        
         setTimeout(() => {
           wx.navigateBack()
         }, 1500)
+      } else {
+        wx.showToast({
+          title: res.msg || '添加失败',
+          icon: 'none'
+        })
       }
     } catch (err) {
       console.error('保存失败', err)
       wx.hideLoading()
+      wx.showToast({
+        title: '保存失败，请重试',
+        icon: 'none'
+      })
     }
   }
 })

@@ -1,0 +1,117 @@
+<!--pages/profile/settings/settings.wxml-->
+<view class="settings-container">
+  <view class="settings-hero">
+    <view class="hero-copy">
+      <text class="hero-kicker">🐾 爪印守护</text>
+      <text class="hero-title">为每段陪伴开启安心权限</text>
+      <text class="hero-desc">相册、相机与位置权限会帮助您更轻松地记录毛孩子的温柔瞬间。</text>
+    </view>
+    <view class="hero-paw">
+      <text class="paw-main">🐶</text>
+      <text class="paw-dot paw-dot-one">●</text>
+      <text class="paw-dot paw-dot-two">●</text>
+    </view>
+  </view>
+
+  <!-- 权限管理板块 -->
+  <view class="settings-section">
+    <view class="section-header">
+      <view>
+        <view class="section-title">权限管理</view>
+        <view class="section-subtitle">按需开启，让回忆收集更顺手</view>
+      </view>
+      <text class="section-badge">安全可控</text>
+    </view>
+    
+    <!-- 相册权限 -->
+    <view class="permission-item">
+      <view class="permission-icon album">🖼️</view>
+      <view class="permission-info">
+        <view class="permission-name">相册</view>
+        <view class="permission-desc">上传宠物照片，保存珍贵成长记录</view>
+      </view>
+      <view class="permission-status {{permissions.album === 'authorized' ? 'authorized' : ''}}">
+        {{permissions.album === 'authorized' ? '已授权' : '未授权'}}
+      </view>
+      <button class="permission-btn {{permissions.album === 'authorized' ? 'authorized' : ''}}" 
+        bindtap="requestAlbumPermission">
+        {{permissions.album === 'authorized' ? '已开启' : '开启'}}
+      </button>
+    </view>
+
+    <!-- 摄像头权限 -->
+    <view class="permission-item">
+      <view class="permission-icon camera">📷</view>
+      <view class="permission-info">
+        <view class="permission-name">摄像头</view>
+        <view class="permission-desc">拍下当下表情，记录鲜活陪伴</view>
+      </view>
+      <view class="permission-status {{permissions.camera === 'authorized' ? 'authorized' : ''}}">
+        {{permissions.camera === 'authorized' ? '已授权' : '未授权'}}
+      </view>
+      <button class="permission-btn {{permissions.camera === 'authorized' ? 'authorized' : ''}}" 
+        bindtap="requestCameraPermission">
+        {{permissions.camera === 'authorized' ? '已开启' : '开启'}}
+      </button>
+    </view>
+
+    <!-- 位置权限 -->
+    <view class="permission-item">
+      <view class="permission-icon location">📍</view>
+      <view class="permission-info">
+        <view class="permission-name">位置信息</view>
+        <view class="permission-desc">标记散步、旅行与纪念地点</view>
+      </view>
+      <view class="permission-status {{permissions.location === 'authorized' ? 'authorized' : ''}}">
+        {{permissions.location === 'authorized' ? '已授权' : '未授权'}}
+      </view>
+      <button class="permission-btn {{permissions.location === 'authorized' ? 'authorized' : ''}}" 
+        bindtap="requestLocationPermission">
+        {{permissions.location === 'authorized' ? '已开启' : '开启'}}
+      </button>
+    </view>
+
+    <!-- 麦克风权限 -->
+    <view class="permission-item">
+      <view class="permission-icon record">🎙️</view>
+      <view class="permission-info">
+        <view class="permission-name">麦克风</view>
+        <view class="permission-desc">留下叫声、呼噜声与温柔独白</view>
+      </view>
+      <view class="permission-status {{permissions.record === 'authorized' ? 'authorized' : ''}}">
+        {{permissions.record === 'authorized' ? '已授权' : '未授权'}}
+      </view>
+      <button class="permission-btn {{permissions.record === 'authorized' ? 'authorized' : ''}}" 
+        bindtap="requestRecordPermission">
+        {{permissions.record === 'authorized' ? '已开启' : '开启'}}
+      </button>
+    </view>
+
+    <!-- 通讯录权限 -->
+    <view class="permission-item">
+      <view class="permission-icon contact">👥</view>
+      <view class="permission-info">
+        <view class="permission-name">通讯录</view>
+        <view class="permission-desc">便于分享给同样牵挂它的人</view>
+      </view>
+      <view class="permission-status {{permissions.contact === 'authorized' ? 'authorized' : ''}}">
+        {{permissions.contact === 'authorized' ? '已授权' : '未授权'}}
+      </view>
+      <button class="permission-btn {{permissions.contact === 'authorized' ? 'authorized' : ''}}" 
+        bindtap="requestContactPermission">
+        {{permissions.contact === 'authorized' ? '已开启' : '开启'}}
+      </button>
+    </view>
+  </view>
+  <!-- 提示信息 -->
+  <view class="tips-section" wx:if="{{showTips}}">
+    <view class="tips-content">
+      <view class="tips-title">温馨说明</view>
+      <view class="tips-text">
+        • 部分记录功能需要相应权限才能正常使用\n
+        • 您可以随时在微信设置中调整授权\n
+        • 我们只会在您主动使用相关功能时调用权限
+      </view>
+    </view>
+  </view>
+</view>

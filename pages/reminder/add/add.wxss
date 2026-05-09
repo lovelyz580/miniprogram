@@ -263,3 +263,58 @@
   font-size: 32rpx;
   color: #333333;
 }
+
+/* 爪印记忆暖系主题覆盖 */
+.container {
+  background:
+    radial-gradient(circle at 14% 4%, rgba(255, 194, 122, 0.2) 0, rgba(255, 194, 122, 0) 180rpx),
+    linear-gradient(180deg, #FFF4E7 0%, #FFF9F1 52%, #F7F1E8 100%);
+}
+
+.nav-bar {
+  border-bottom: none;
+  background: rgba(255, 253, 248, 0.94);
+  box-shadow: 0 6rpx 18rpx rgba(146, 103, 67, 0.07);
+}
+
+.nav-title,
+.form-title,
+.form-label,
+.picker-title,
+.picker-item {
+  color: #4B3B32;
+}
+
+.nav-save {
+  background-color: #FFF0DE;
+  color: #A48B79;
+}
+
+.nav-save.active,
+.category-option.active,
+.repeat-option.active {
+  background: linear-gradient(135deg, #F7A45A 0%, #E87852 100%);
+  box-shadow: 0 6rpx 14rpx rgba(232, 120, 82, 0.22);
+}
+
+.form-section {
+  border-radius: 24rpx;
+  border: 1rpx solid rgba(240, 223, 200, 0.82);
+  box-shadow: 0 10rpx 28rpx rgba(146, 103, 67, 0.08);
+}
+
+.form-title,
+.form-item,
+.picker-header {
+  border-color: #F2E5D8;
+}
+
+.category-option,
+.repeat-option {
+  background-color: #FFF7EC;
+  color: #8C6F5A;
+}
+
+.picker-confirm {
+  color: #D87545;
+}

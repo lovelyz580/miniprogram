@@ -2,8 +2,8 @@
 const app = getApp()
 const {
 	request
-} = require('../../utils/request')
-const urls = require('../../utils/api')
+} = require('../../../utils/request')
+const urls = require('../../../utils/api')
 Page({
 	data: {
 		// 用户信息
@@ -32,10 +32,33 @@ Page({
 		this.getUserInfo()
 		this.getPetList()
 	},
+	getUsername(e){
+		let nickname = e.detail.value;
+		const userInfo = {
+			...this.data.userInfo,
+			nickname: nickname
+		}
+		wx.setStorageSync('userInfo', userInfo)
+		this.setData({
+			userInfo
+		})
+	},
+	updateUsername(){
+		const userInfo =this.data.userInfo;
+		const data = {
+			userId: userInfo.userId,
+			nickname: userInfo.nickname,
+		}
+		const update_res = request({
+			url: urls.updateUserAvatarUrl,
+			method: 'POST',
+			data
+		})
+	},
 
 	// 获取用户信息
 	getUserInfo() {
-		const userInfo = wx.getStorageSync('userInfo')
+		const userInfo = wx.getStorageSync('userInfo') || null;
 		this.setData({
 			userInfo
 		})
@@ -43,7 +66,10 @@ Page({
 
 	// 获取宠物列表
 	async getPetList() {
-		// debugger
+		if (!this.data.userInfo) {
+			// 未登录在 checkLoginForAvatar 会跳转，这里直接中断即可
+			return
+		}
 		let userId = this.data.userInfo.userId;
 		try {
 			const res = await request({
@@ -102,12 +128,10 @@ Page({
 		const {
 			avatarUrl
 		} = e.detail;
-		// debugger
 		this.uploadAvatar(avatarUrl)
 	},
 	//选择头像
 	chooseAvatar(e) {
-		// debugger
 		wx.chooseImage({
 			count: 1,
 			sizeType: ['compressed'],
@@ -135,7 +159,6 @@ Page({
 				},
 				success: (res) => {
 					const res_1 = JSON.parse(res.data);
-					// debugger
 					if (res_1.code === 200) {
 						this.updateUseravatarUrl(res_1);
 					}
@@ -156,7 +179,7 @@ Page({
 	 * @param {*} res 
 	 */
 	updateUseravatarUrl(res) {
-		const avatarUrl = urls.imgUrl + res.data.url;
+		const avatarUrl = urls.imgUrl + res.url;
 		const userInfo = {
 			...this.data.userInfo,
 			avatarUrl: avatarUrl
@@ -210,7 +233,7 @@ Page({
 	// 跳转设置
 	goToSettings() {
 		wx.navigateTo({
-			url: '/pages/profile/settings'
+			url: '/pages/profile/settings/settings'
 		})
 	},
 	// 我的记录
@@ -219,10 +242,10 @@ Page({
 			url: '/pages/record/list/list'
 		})
 	},
-	// 跳转帮助
+	// 跳转帮助与反馈
 	goToHelp() {
 		wx.navigateTo({
-			url: '/pages/profile/help'
+			url: '/pages/profile/feedback/feedback'
 		})
 	},
 

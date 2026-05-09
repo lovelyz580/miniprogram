@@ -1,9 +1,9 @@
 {
   "usingComponents": {},
-  "navigationBarTitleText": "记录详情",
-  "navigationBarBackgroundColor": "#FFFFFF",
+  "navigationBarTitleText": "详情",
+  "navigationBarBackgroundColor": "#FFF4E7",
   "navigationBarTextStyle": "black",
-  "backgroundColor": "#F5F7FA",
+  "backgroundColor": "#FFF4E7",
   "enableShareAppMessage": true,
   "enableShareTimeline": true
 }

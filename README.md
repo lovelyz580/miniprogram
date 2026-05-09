@@ -1,6 +1,8 @@
 # 爪印记忆 - 微信小程序
 
-
+    "pages/record/daily-question/daily-question",
+		"pages/record/question-history/question-history",
+    "pages/record/question-calendar/question-calendar",
     // {
       //   "pagePath": "pages/health/index",
       //   "text": "健康",

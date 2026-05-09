@@ -152,6 +152,7 @@ Page({
     const months = []
     const days = []
 
+    // 年份：当前年份往前20年
     for (let i = now.getFullYear() - 20; i <= now.getFullYear(); i++) {
       years.push(i)
     }
@@ -164,10 +165,16 @@ Page({
       days.push(i)
     }
 
+    // 计算默认选中位置（今天）
+    const yearIndex = years.indexOf(now.getFullYear())
+    const monthIndex = months.indexOf(now.getMonth() + 1)
+    const dayIndex = days.indexOf(now.getDate())
+
     this.setData({
       years,
       months,
-      days
+      days,
+      datePickerValue: [yearIndex, monthIndex, dayIndex]
     })
   },
 
@@ -322,37 +329,51 @@ Page({
       count: 1,
       sizeType: ['compressed'],
       sourceType: ['album', 'camera'],
-      success: async (res) => {
+      success: (res) => {
         const tempFilePath = res.tempFilePaths[0]
-				wx.showLoading({ title: '上传中...' })
-				try {
-					wx.uploadFile({
-						url: urls.upload,
-						filePath: tempFilePath,
-						name: 'file',
-						formData: {},
-						header: {
-							"Content-Type": "multipart/form-data"
-						},
-						success: (res) => {
-							const res_1 = JSON.parse(res.data);
-							// debugger
-							if (res_1.code === 200) {
-								this.setData({
-									'formData.avatarUrl': urls.imgUrl + res_1.data.url
-								})
-							}
-						},
-					})
-          wx.hideLoading()
-        } catch (err) {
-          console.error('上传头像失败', err)
-          // 本地预览
-          this.setData({
-            'formData.avatarUrl': tempFilePath
-          })
-          wx.hideLoading()
-        }
+        wx.showLoading({ title: '上传中...' })
+        
+        wx.uploadFile({
+          url: urls.upload,
+          filePath: tempFilePath,
+          name: 'file',
+          formData: {},
+          header: {
+            "Content-Type": "multipart/form-data"
+          },
+          success: (uploadRes) => {
+            wx.hideLoading()
+            try {
+              const result = JSON.parse(uploadRes.data)
+              if (result.code === 200) {
+                this.setData({
+                  'formData.avatarUrl': urls.imgUrl + result.url,
+                  avatarChanged: true
+                })
+                wx.showToast({
+                  title: '上传成功',
+                  icon: 'success'
+                })
+              } else {
+                throw new Error('上传失败')
+              }
+            } catch (err) {
+              console.error('解析上传结果失败', err)
+              wx.showToast({
+                title: '上传失败',
+                icon: 'none'
+              })
+            }
+          },
+          fail: (err) => {
+            wx.hideLoading()
+            console.error('上传头像失败', err)
+            wx.showToast({
+              title: '上传失败',
+              icon: 'none'
+            })
+          }
+        })
       }
     })
   },
@@ -400,7 +421,7 @@ Page({
       
       wx.hideLoading()
       
-      if (res.code === 200) {
+      if (res.code === 200 ) {
         wx.showToast({
           title: '保存成功',
           icon: 'success'
@@ -409,10 +430,19 @@ Page({
         setTimeout(() => {
           wx.navigateBack()
         }, 1500)
+      } else {
+        wx.showToast({
+          title: res.msg || '保存失败',
+          icon: 'none'
+        })
       }
     } catch (err) {
       console.error('保存失败', err)
       wx.hideLoading()
+      wx.showToast({
+        title: '保存失败，请重试',
+        icon: 'none'
+      })
     }
   },
 
@@ -429,13 +459,13 @@ Page({
             wx.showLoading({ title: '删除中...' })
             
             const result = await request({
-              url:  urls.baseUrl+`pet/${this.data.petId}`,
+              url: urls.baseUrl + `pet/${this.data.petId}`,
               method: 'DELETE'
             })
             
             wx.hideLoading()
             
-            if (result.code === 0) {
+            if (result.code === 200 ) {
               wx.showToast({
                 title: '删除成功',
                 icon: 'success'
@@ -452,10 +482,19 @@ Page({
                   url: '/pages/index/index'
                 })
               }, 1500)
+            } else {
+              wx.showToast({
+                title: result.msg || '删除失败',
+                icon: 'none'
+              })
             }
           } catch (err) {
             console.error('删除失败', err)
             wx.hideLoading()
+            wx.showToast({
+              title: '删除失败，请重试',
+              icon: 'none'
+            })
           }
         }
       }

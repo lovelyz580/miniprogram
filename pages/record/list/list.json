@@ -1,7 +1,7 @@
 {
   "usingComponents": {},
   "navigationBarTitleText": "我的记录",
-  "navigationBarBackgroundColor": "#FFFFFF",
+  "navigationBarBackgroundColor": "#FFF4E7",
   "navigationBarTextStyle": "black",
-  "backgroundColor": "#F5F7FA"
+  "backgroundColor": "#FFF4E7"
 }

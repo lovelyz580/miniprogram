@@ -172,7 +172,6 @@ export const UploadImages = ({tempFiles=tempFiles} = {}) => {
 						try {
 							const data = JSON.parse(uploadRes.data);
 							if (data.code === 200) {
-								debugger
 								uploadResolve(data.url); // 假设后端返回的URL在data.data.url中
 							} else {
 								uploadReject(new Error(data.message || '上传失败'));

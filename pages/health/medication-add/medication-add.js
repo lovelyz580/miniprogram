@@ -208,7 +208,6 @@ Page({
           title: '添加成功',
           icon: 'success'
         })
-				// debugger
         // 如果启用了提醒，创建提醒
         if (enableReminder && res.data?.recordId) {
           await this.createReminder(res.data.recordId, medicationName, startDate, endDate, reminderTime, reminderDays)

@@ -650,3 +650,50 @@
   flex-shrink: 0;
   font-weight: 300;
 }
+
+/* 爪印记忆暖系主题覆盖 */
+.container {
+  background:
+    radial-gradient(circle at 12% 4%, rgba(255, 194, 122, 0.2) 0, rgba(255, 194, 122, 0) 180rpx),
+    linear-gradient(180deg, #FFF4E7 0%, #FFF9F1 52%, #F7F1E8 100%);
+}
+
+.pet-picker,
+.calendar-section,
+.question-card,
+.answer-list,
+.qa-nav-row {
+  border: 1rpx solid rgba(240, 223, 200, 0.82);
+  box-shadow: 0 10rpx 28rpx rgba(146, 103, 67, 0.08);
+}
+
+.pet-picker,
+.calendar-section,
+.question-card,
+.answer-list,
+.qa-nav-row {
+  background-color: rgba(255, 255, 255, 0.94);
+}
+
+.switch-btn.active,
+.calendar-day.today,
+.empty-btn {
+  background: linear-gradient(135deg, #F7A45A 0%, #E87852 100%);
+  color: #FFFFFF;
+  box-shadow: 0 6rpx 14rpx rgba(232, 120, 82, 0.22);
+}
+
+.calendar-day.answered,
+.answer-item {
+  background-color: #FFF7EC;
+}
+
+.question-title,
+.qa-nav-title {
+  color: #4B3B32;
+}
+
+.question-date,
+.qa-nav-desc {
+  color: #9B7B63;
+}

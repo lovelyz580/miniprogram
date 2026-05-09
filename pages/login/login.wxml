@@ -80,12 +80,12 @@
         <text class="divider-text">其他登录方式</text>
         <view class="divider-line"></view>
       </view>
-      <view class="alt-options">
+      <!-- <view class="alt-options">
         <view class="alt-option" bindtap="onPhoneLogin">
           <text class="alt-icon">📱</text>
           <text class="alt-text">手机号登录</text>
         </view>
-      </view>
+      </view> -->
     </view>
   </view>
 

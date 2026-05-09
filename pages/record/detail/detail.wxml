@@ -27,16 +27,16 @@
       <text class="user-name">{{record.nickname || '神秘铲屎官'}}</text>
       <text class="record-time">{{record.createTime}}</text>
     </view>
-    <view class="pet-badge" >
-      <image class="pet-avatar" src="{{record.avatarUrl || '/assets/images/default-pet.png'}}" mode="aspectFill"></image>
+    <view class="pet-badge">
+      <image class="pet-avatar" src="{{record.petAvatarUrl || '/assets/images/default-pet.png'}}" mode="aspectFill"></image>
       <text class="pet-name">{{record.petName}}</text>
     </view>
   </view>
 
   <!-- 内容区域 -->
   <view class="content-section">
-	    <!-- 里程碑特殊标识 -->
-			<view class="milestone-section" wx:if="{{recordType === 'milestone' && record}}">
+    <!-- 里程碑特殊标识 -->
+    <view class="milestone-section" wx:if="{{recordType === 'milestone' && record}}">
       <view class="milestone-badge">
         <text class="milestone-icon">{{record.icon || '⭐'}}</text>
         <text class="milestone-name">{{record.milestoneName}}</text>
@@ -55,24 +55,24 @@
 
     <!-- 文字内容 -->
     <text class="content-text" wx:if="{{record.content}}">{{record.content}}</text>
-		<text class="content-text" wx:if="{{record.description}}">{{record.description}}</text>
+    <text class="content-text" wx:if="{{record.description}}">{{record.description}}</text>
 
     <!-- 媒体展示 -->
     <view class="media-section" wx:if="{{record.mediaUrls && record.mediaUrls.length > 0}}">
-      <view 
+      <view
         class="media-item {{record.mediaUrls.length === 1 ? 'single' : ''}}"
         wx:for="{{record.mediaUrls}}"
         wx:key="index"
         wx:if="{{index < 9}}"
       >
-        <video 
+        <video
           wx:if="{{item.type === 'video'}}"
           src="{{item.url}}"
           class="media-video"
           poster="{{item.thumbnail}}"
           controls
         ></video>
-        <image 
+        <image
           wx:else
           src="{{item.url}}"
           mode="aspectFill"
@@ -98,111 +98,34 @@
     <!-- 标签 -->
     <view class="tag-list" wx:if="{{record.recordType}}">
       <text class="tag-item" wx:if="{{record.recordType==1}}"># 心情气泡</text>
-			<text class="tag-item" wx:if="{{record.recordType==2}}"># 日记</text>
+      <text class="tag-item" wx:if="{{record.recordType==2}}"># 日记</text>
     </view>
   </view>
 
-  <!-- 互动区域 -->
-  <!-- <view class="interaction-section">
-    <view class="interaction-item" bindtap="toggleLike">
-      <text class="interaction-icon {{record.isLiked ? 'active' : ''}}">{{record.isLiked ? '❤️' : '🤍'}}</text>
-      <text class="interaction-count">{{record.likeCount || 0}}</text>
-    </view>
-    <view class="interaction-item" bindtap="scrollToComments">
-      <text class="interaction-icon">💬</text>
-      <text class="interaction-count">{{record.commentCount || 0}}</text>
-    </view>
-    <view class="interaction-item" bindtap="onShare">
-      <text class="interaction-icon">↗️</text>
-      <text class="interaction-text">分享</text>
-    </view>
-  </view> -->
-
-  <!-- 点赞列表 -->
-  <!-- <view class="likes-section" wx:if="{{record.likes && record.likes.length > 0}}">
-    <view class="likes-list">
-      <image 
-        class="like-avatar"
-        wx:for="{{record.likes}}"
-        wx:key="id"
-        src="{{item.avatarUrl}}"
-        mode="aspectFill"
-      ></image>
-      <text class="likes-text">{{record.likeCount}} 人觉得很赞</text>
-    </view>
-  </view> -->
-
-  <!-- 评论区 -->
-  <!-- <view class="comments-section" id="comments">
-    <view class="comments-header">
-      <text class="comments-title">评论 ({{record.commentCount || 0}})</text>
-    </view>
-
-    <view class="comments-list" wx:if="{{comments.length > 0}}">
-      <view 
-        class="comment-item"
-        wx:for="{{comments}}"
-        wx:key="id"
-      >
-        <image class="comment-avatar" src="{{item.avatarUrl}}" mode="aspectFill"></image>
-        <view class="comment-content">
-          <view class="comment-header">
-            <text class="comment-name">{{item.userName}}</text>
-            <text class="comment-time">{{item.createTime}}</text>
-          </view>
-          <text class="comment-text">{{item.content}}</text>
-          <view class="comment-actions">
-            <text class="comment-reply" bindtap="onReply" data-comment="{{item}}">回复</text>
-            <text class="comment-like {{item.isLiked ? 'active' : ''}}" bindtap="likeComment" data-id="{{item.id}}">
-              {{item.isLiked ? '❤️' : '🤍'}} {{item.likeCount || 0}}
-            </text>
-          </view>
-        </view>
-      </view>
-    </view>
-
-    <view class="comments-empty" wx:if="{{comments.length === 0 && !isLoadingComments}}">
-      <text>暂无评论，快来留爪印~</text>
-    </view>-->
-
-    <!-- 加载更多 -->
-    <!-- <view class="load-more" wx:if="{{hasMoreComments}}" bindtap="loadMoreComments">
-      <text>加载更多</text>
-    </view>
-  </view>  -->
-
-  <!-- 底部评论输入 -->
-  <!-- <view class="comment-input-section" wx:if="{{!isPreview}}">
-    <input 
-      class="comment-input"
-      placeholder="{{replyTo ? '回复 @' + replyTo.userName : '写评论...' }}"
-      bindfocus="onCommentFocus"
-      bindblur="onCommentBlur"
-      bindinput="onCommentInput"
-      value="{{commentText}}"
-    />
-    <view class="comment-submit {{commentText ? 'active' : ''}}" bindtap="submitComment">
-      <text>发送</text>
-    </view>
-  </view> -->
+  <!-- 隐藏的 Canvas，用于绘制海报 -->
+  <canvas
+    canvas-id="posterCanvas"
+    class="poster-canvas-hidden"
+    style="width:{{posterW}}px; height:{{posterH}}px;"
+  ></canvas>
 </view>
 
 <!-- 更多操作弹窗 -->
 <view class="action-sheet {{showActionSheet ? 'show' : ''}}">
   <view class="action-mask" bindtap="hideActionSheet"></view>
   <view class="action-content">
-    <view class="action-item"  wx:if="{{isOwner}}" bindtap="onEdit">
+    <!-- <view class="action-item" wx:if="{{isOwner}}" bindtap="onEdit">
       <text class="action-icon">✏️</text>
       <text class="action-text">编辑</text>
-    </view>
+    </view> -->
     <view class="action-item" bindtap="onCopyLink">
       <text class="action-icon">🔗</text>
       <text class="action-text">复制链接</text>
     </view>
-    <view class="action-item" bindtap="onReport">
+    <!-- <view class="action-item" bindtap="onReport">
       <text class="action-icon">🚫</text>
       <text class="action-text">举报</text>
-    </view>
+    </view> -->
     <view class="action-item danger" wx:if="{{isOwner}}" bindtap="onDelete">
       <text class="action-icon">🗑</text>
       <text class="action-text">删除</text>
@@ -217,25 +140,106 @@
 <view class="share-modal {{showShareModal ? 'show' : ''}}">
   <view class="share-mask" bindtap="hideShareModal"></view>
   <view class="share-content">
+    <!-- 顶部拖拽条 -->
+    <view class="sheet-handle"></view>
+
+    <!-- 标题行 -->
     <view class="share-header">
-      <text>分享到</text>
+      <view class="share-header-left">
+        <text class="share-title">分享记录</text>
+        <text class="share-subtitle">让更多人看见这份温暖 🐾</text>
+      </view>
+      <view class="share-close-btn" bindtap="hideShareModal">
+        <text class="share-close-icon">✕</text>
+      </view>
     </view>
+
+    <!-- 分享选项 -->
     <view class="share-options">
-      <view class="share-option" bindtap="shareToFriend">
-        <view class="share-icon">💬</view>
-        <text>微信好友</text>
-      </view>
-      <view class="share-option" bindtap="shareToMoments">
-        <view class="share-icon">🖼</view>
-        <text>朋友圈</text>
-      </view>
+      <!-- 分享给好友 -->
+      <button class="share-option share-btn-reset" open-type="share" bindtap="hideShareModal">
+        <view class="share-icon-wrap share-icon-friend">
+          <text class="share-icon-emoji">💬</text>
+        </view>
+        <text class="share-label">微信好友</text>
+      </button>
+
+      <!-- 分享朋友圈 -->
+      <button class="share-option share-btn-reset" open-type="shareTimeline" bindtap="hideShareModal">
+        <view class="share-icon-wrap share-icon-moments">
+          <text class="share-icon-emoji">🌐</text>
+        </view>
+        <text class="share-label">朋友圈</text>
+      </button>
+
+      <!-- 生成海报 -->
       <view class="share-option" bindtap="savePoster">
-        <view class="share-icon">📱</view>
-        <text>保存图片</text>
+        <view class="share-icon-wrap share-icon-poster">
+          <text class="share-icon-emoji">🖼️</text>
+        </view>
+        <text class="share-label">生成海报</text>
+      </view>
+
+      <!-- 复制链接 -->
+      <view class="share-option" bindtap="onCopyLinkFromShare">
+        <view class="share-icon-wrap share-icon-link">
+          <text class="share-icon-emoji">🔗</text>
+        </view>
+        <text class="share-label">复制链接</text>
       </view>
     </view>
-    <view class="share-cancel" bindtap="hideShareModal">
-      <text>取消</text>
+
+    <!-- 取消按钮 -->
+    <view class="share-cancel-btn" bindtap="hideShareModal">
+      <text class="share-cancel-text">取消</text>
+    </view>
+  </view>
+</view>
+
+<!-- 海报预览弹窗 -->
+<view class="poster-modal {{showPosterModal ? 'show' : ''}}">
+  <view class="poster-mask" bindtap="hidePosterModal"></view>
+  <view class="poster-modal-content">
+    <!-- 标题 -->
+    <view class="poster-modal-header">
+      <text class="poster-modal-title">🎨 专属海报</text>
+      <view class="poster-close" bindtap="hidePosterModal">
+        <text>✕</text>
+      </view>
+    </view>
+
+    <!-- 海报预览 -->
+    <view class="poster-preview-wrap">
+      <!-- 生成中状态 -->
+      <view class="poster-generating" wx:if="{{posterGenerating}}">
+        <view class="generating-spinner"></view>
+        <text class="generating-text">正在生成海报...</text>
+      </view>
+      <!-- 海报图片 -->
+      <image
+        wx:if="{{posterTempPath && !posterGenerating}}"
+        class="poster-preview-img"
+        src="{{posterTempPath}}"
+        mode="widthFix"
+        show-menu-by-longpress="true"
+      ></image>
+    </view>
+
+    <!-- 长按提示 -->
+    <view class="poster-tip" wx:if="{{posterTempPath && !posterGenerating}}">
+      <text class="tip-text">💡 长按图片可直接保存或分享</text>
+    </view>
+
+    <!-- 操作按钮 -->
+    <view class="poster-actions" wx:if="{{posterTempPath && !posterGenerating}}">
+      <view class="poster-btn save-btn" bindtap="savePosterToAlbum">
+        <text class="poster-btn-icon">💾</text>
+        <text class="poster-btn-text">保存相册</text>
+      </view>
+      <view class="poster-btn share-moments-btn" bindtap="sharePosterToMoments">
+        <text class="poster-btn-icon">🌐</text>
+        <text class="poster-btn-text">分享朋友圈</text>
+      </view>
     </view>
   </view>
 </view>

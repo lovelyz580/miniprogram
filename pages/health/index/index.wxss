@@ -390,3 +390,102 @@
 .tab-bar-placeholder {
   height: 100rpx;
 }
+
+/* 爪印记忆暖系主题强化 */
+.container {
+  background:
+    radial-gradient(circle at 86% 4%, rgba(132, 183, 108, 0.16) 0, rgba(132, 183, 108, 0) 180rpx),
+    linear-gradient(180deg, #FFF4E7 0%, #FFF9F1 52%, #F7F1E8 100%);
+}
+
+.pet-info-bar {
+  margin: 24rpx 28rpx 0;
+  border-radius: 26rpx;
+  background: linear-gradient(135deg, #FFFFFF 0%, #FFF7EC 100%);
+  border: 1rpx solid rgba(240, 223, 200, 0.82);
+  box-shadow: 0 10rpx 28rpx rgba(146, 103, 67, 0.09);
+}
+
+.pet-avatar {
+  border: 5rpx solid #FFFFFF;
+  box-shadow: 0 6rpx 16rpx rgba(146, 103, 67, 0.12);
+}
+
+.pet-name,
+.overview-title text:first-child,
+.card-title,
+.section-title,
+.reminder-title {
+  color: #4B3B32;
+}
+
+.pet-breed,
+.empty-weight,
+.reminder-tag-vaccine,
+.reminder-tag-checkup,
+.reminder-tag-medication,
+.reminder-tag-other,
+.reminder-status.pending {
+  border-radius: 999rpx;
+}
+
+.health-overview,
+.health-card,
+.reminder-list,
+.empty-reminder {
+  border: 1rpx solid rgba(240, 223, 200, 0.82);
+  box-shadow: 0 10rpx 28rpx rgba(146, 103, 67, 0.09);
+}
+
+.health-overview {
+  background: linear-gradient(180deg, #FFFFFF 0%, #FFF9F1 100%);
+}
+
+.weight-value,
+.section-more {
+  color: #D87545;
+}
+
+.add-pet-btn,
+.empty-action {
+  background: linear-gradient(135deg, #F7A45A 0%, #E87852 100%);
+  box-shadow: 0 8rpx 20rpx rgba(232, 120, 82, 0.24);
+}
+
+.vaccine-icon {
+  background-color: #FFF0DE;
+}
+
+.checkup-icon {
+  background-color: #EAF5E8;
+}
+
+.medication-icon {
+  background-color: #F5EADF;
+}
+
+.weight-icon {
+  background-color: #FFE8DD;
+}
+
+.reminder-tag-vaccine {
+  background-color: #FFF0DE;
+  color: #D87545;
+}
+
+.reminder-tag-checkup,
+.reminder-status.done {
+  background-color: #EAF6EA;
+  color: #5B9B67;
+}
+
+.reminder-tag-medication {
+  background-color: #F5EADF;
+  color: #9A704F;
+}
+
+.reminder-tag-other,
+.reminder-status.overdue {
+  background-color: #FFE8DD;
+  color: #E87852;
+}

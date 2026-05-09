@@ -66,7 +66,7 @@ Page({
       await this.getPetInfo()
       await this.getWeightData()
       await this.getTrendData()
-      await this.getRecords()
+      await this.getRecords(true)
     } catch (err) {
       console.error('初始化失败', err)
     }
@@ -329,7 +329,7 @@ Page({
         
         this.setData({
           records: refresh ? records : [...this.data.records, ...records],
-          totalCount: res.data.totagetRecordsreminderl || 0,
+          totalCount: res.total || 0,
           hasMore: records.length === pageSize,
           page: page + 1,
           isLoading: false

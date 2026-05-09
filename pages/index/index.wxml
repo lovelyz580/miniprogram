@@ -141,11 +141,11 @@
           <text class="option-name">写日记</text>
           <text class="option-desc">记录详细的故事</text>
         </view>
-        <view class="option-item" bindtap="goToDailyQuestion">
+        <!-- <view class="option-item" wx:if="{{showQuestion}}" bindtap="goToDailyQuestion">
           <text class="option-icon">🎯</text>
           <text class="option-name">今日问答</text>
           <text class="option-desc">回答一个问题</text>
-        </view>
+        </view> -->
         <view class="option-item" bindtap="goToMilestone">
           <text class="option-icon">🏆</text>
           <text class="option-name">记录里程碑</text>

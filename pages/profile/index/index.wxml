@@ -12,15 +12,20 @@
         <text>编辑</text>
       </view>
     </button>
-    <view class="user-info">
+		<view class="user-info" bindtap="goToLogin" wx:if="{{userInfo === null}}">
       <view class="user-name-row">
-        <text class="user-name">{{userInfo.nickname || '未登录'}}</text>
+        <text class="user-name">未登录</text>
+      </view>
+      <text class="login-tip" >点击登录</text>
+    </view>
+    <view class="user-info"wx:if="{{userInfo !== null}}">
+      <view class="user-name-row">
+        <input type="nickname" class="user-name" bindinput="getUsername" bindblur="updateUsername" value="{{userInfo.nickname}}" placeholder="请输入昵称"/>
         <view class="vip-badge" wx:if="{{userInfo.isVip}}">
           <text>VIP</text>
         </view>
       </view>
       <text class="user-phone" wx:if="{{userInfo.nickname}}">{{userInfo.phone || ''}}</text>
-      <text class="login-tip" wx:else bindtap="goToLogin">点击登录</text>
     </view>
   </view>
 

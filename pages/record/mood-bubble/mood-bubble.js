@@ -143,7 +143,7 @@ Page({
 				if (res.code === 200) {
 					const currentPet = res.data
 					const petAgeDays = calculatePetAge(currentPet.adoptDate || currentPet.birthDate)
-					// debugger
+				
 					this.setData({
 						currentPet,
 						petAgeDays
@@ -233,7 +233,6 @@ Page({
 					location: location
 				}
 			})
-			// debugger
 			if (res.code === 200) {
 
 				const weather = `${res.data.text} ${res.data.temp}℃`
@@ -315,7 +314,6 @@ Page({
 
 	// 切换位置
 	toggleLocation() {
-		// debugger
 		const enableLocation = !this.data.enableLocation
 		this.setData({
 			enableLocation
@@ -375,7 +373,6 @@ Page({
 			});
 			console.log(mediaUrls)
 
-			// debugger
 			// 2. 创建记录
 			const res = await request({
 				url: urls.timelinecreate,

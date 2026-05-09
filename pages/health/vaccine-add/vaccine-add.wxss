@@ -210,3 +210,35 @@
 .tab-bar-placeholder {
   height: 100rpx;
 }
+
+/* 爪印记忆暖系主题覆盖 */
+.container {
+  background:
+    radial-gradient(circle at 12% 4%, rgba(255, 194, 122, 0.2) 0, rgba(255, 194, 122, 0) 180rpx),
+    linear-gradient(180deg, #FFF4E7 0%, #FFF9F1 52%, #F7F1E8 100%);
+}
+
+.pet-info-card,
+.form-section {
+  border: 1rpx solid rgba(240, 223, 200, 0.82);
+  box-shadow: 0 10rpx 28rpx rgba(146, 103, 67, 0.08);
+}
+
+.form-title,
+.form-label,
+.pet-name {
+  color: #4B3B32;
+}
+
+.form-input,
+.form-picker,
+.form-textarea,
+.upload-add,
+.btn-draft {
+  background-color: #FFF7EC;
+}
+
+.btn-submit {
+  background: linear-gradient(135deg, #F7A45A 0%, #E87852 100%);
+  box-shadow: 0 8rpx 20rpx rgba(232, 120, 82, 0.24);
+}

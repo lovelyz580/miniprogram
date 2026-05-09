@@ -195,7 +195,6 @@ Page({
       })
       
       if (res.code === 200) {
-				// debugger
         const records = (res.rows || []).map(item => ({
           ...item,
           petAge: calculatePetAgeFormat(currentPet.birthDate || currentPet.adoptDate, item.checkupDate),
