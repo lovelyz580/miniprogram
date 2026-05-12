@@ -273,6 +273,10 @@
   margin-top: 12rpx;
 }
 
+.item-rich-text {
+  word-break: break-word;
+}
+
 .item-footer {
   display: flex;
   align-items: center;

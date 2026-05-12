@@ -21,6 +21,6 @@
 	},
 	"libVersion": "3.15.1",
 	"setting": {
-		"urlCheck": false
+		"urlCheck": true
 	}
 }

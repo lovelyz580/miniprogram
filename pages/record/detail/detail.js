@@ -36,7 +36,10 @@ Page({
 		if (options.isPreview === 'true') {
 			this.setData({
 				isPreview: true,
-				record: app.globalData.previewRecord || {}
+				record: {
+					...(app.globalData.previewRecord || {}),
+					isRichContent: this.isRichTextContent((app.globalData.previewRecord || {}).content)
+				}
 			})
 		} else if (options.id) {
 			this.setData({ recordId: options.id })
@@ -63,6 +66,7 @@ Page({
 					record: {
 						...record,
 						petAgeAtDate: age,
+						isRichContent: this.isRichTextContent(record.content),
 						mediaUrls: ShowImgUrl(record.mediaUrls),
 					},
 					isOwner: userInfo && record.userId === userInfo.userId
@@ -73,6 +77,10 @@ Page({
 			console.error('获取记录详情失败', err)
 			wx.hideLoading()
 		}
+	},
+
+	isRichTextContent(content = '') {
+		return /<\/?[a-z][\s\S]*>/i.test(content)
 	},
 
 	goBack() { wx.navigateBack() },

@@ -13,6 +13,9 @@ Page({
 	data: {
 		// 编辑内容
 		content: '',
+		contentHtml: '',
+		editorFormats: {},
+		isEditorReady: false,
 		mediaList: [],
 		location: '',
 		selectedTag: '',
@@ -20,9 +23,6 @@ Page({
 		selectedPet: null,
 
 		// 编辑状态
-		isBold: false,
-		isItalic: false,
-		isList: false,
 		canPublish: false,
 		// 宠物列表
 		petList: [],
@@ -162,6 +162,7 @@ Page({
 					petList,
 					selectedPet: currentPet || petList[0]
 				})
+				this.checkCanPublish()
 			}
 		} catch (err) {
 			console.error('获取宠物列表失败', err)
@@ -186,15 +187,14 @@ Page({
 
 				this.setData({
 					content: draft.content,
+					contentHtml: draft.content || '',
 					mediaList: draft.mediaList || [],
 					location: draft.location || '',
 					selectedTag: draft.tag || '',
 					selectedDate: draft.recordDate || this.data.selectedDate,
-					selectedPet,
-					isBold: draft.isBold || false,
-					isItalic: draft.isItalic || false,
-					isList: draft.isList || false
+					selectedPet
 				})
+				this.setEditorContents()
 			}
 
 			wx.hideLoading()
@@ -222,12 +222,14 @@ Page({
 
 				this.setData({
 					content: record.content,
+					contentHtml: record.content || '',
 					mediaList: record.mediaUrls || [],
 					location: record.location || '',
 					selectedTag: record.tag || '',
 					selectedDate: record.recordDate || this.data.selectedDate,
 					selectedPet
 				})
+				this.setEditorContents()
 			}
 
 			wx.hideLoading()
@@ -237,45 +239,92 @@ Page({
 		}
 	},
 
-	// 内容输入
-	onContentInput(e) {
-		this.setData({
-			content: e.detail.value
+	onEditorReady() {
+		wx.createSelectorQuery()
+			.select('#diaryEditor')
+			.context((res) => {
+				this.editorCtx = res.context
+				this.setData({ isEditorReady: true })
+				this.setEditorContents()
+			})
+			.exec()
+	},
+
+	setEditorContents() {
+		if (!this.editorCtx || !this.data.isEditorReady) return
+		const html = this.data.contentHtml || this.data.content || ''
+		if (!html) return
+		this.editorCtx.setContents({
+			html,
+			fail: (err) => console.error('设置编辑器内容失败', err)
 		})
 	},
 
-	// 格式化功能
-	toggleBold() {
+	// 富文本内容输入
+	onEditorInput(e) {
+		const text = (e.detail.text || '').replace(/\n$/, '')
 		this.setData({
-			isBold: !this.data.isBold
+			content: text.slice(0, 5000),
+			contentHtml: e.detail.html || ''
 		})
+		this.checkCanPublish()
 	},
 
-	toggleItalic() {
-		this.setData({
-			isItalic: !this.data.isItalic
-		})
+	onEditorStatusChange(e) {
+		this.setData({ editorFormats: e.detail })
 	},
 
-	toggleList() {
-		this.setData({
-			isList: !this.data.isList
+	formatEditor(e) {
+		if (!this.editorCtx) return
+		const { name, value } = e.currentTarget.dataset
+		this.editorCtx.format(name, value || null)
+	},
+
+	undoEditor() {
+		if (this.editorCtx) this.editorCtx.undo()
+	},
+
+	redoEditor() {
+		if (this.editorCtx) this.editorCtx.redo()
+	},
+
+	clearEditor() {
+		if (!this.data.content && !this.data.contentHtml) return
+		wx.showModal({
+			title: '清空内容',
+			content: '确定清空当前日记正文吗？',
+			confirmText: '清空',
+			confirmColor: '#D85D52',
+			success: (res) => {
+				if (!res.confirm || !this.editorCtx) return
+				this.editorCtx.clear()
+				this.setData({
+					content: '',
+					contentHtml: '',
+					editorFormats: {}
+				})
+				this.checkCanPublish()
+			}
 		})
 	},
 
 	insertEmoji() {
 		const emojis = ['😀', '😄', '🥰', '😍', '🤩', '😘', '🐶', '🐱', '🐕', '🐾', '🎾', '🏃', '🍖', '🛁', '💤', '❤️', '⭐']
 		const emoji = emojis[Math.floor(Math.random() * emojis.length)]
-		this.setData({
-			content: this.data.content + emoji
-		})
+		if (this.editorCtx) {
+			this.editorCtx.insertText({ text: emoji })
+		}
 	},
 	// 检查是否可以发布
 	checkCanPublish() {
-		const canPublish = this.data.selectedTag !== '' && this.data.mediaList.length > 0
+		const canPublish = !!this.data.selectedPet && (this.data.content.trim() !== '' || this.data.mediaList.length > 0)
 		this.setData({
 			canPublish
 		})
+	},
+
+	getSubmitContent() {
+		return this.data.contentHtml || this.data.content
 	},
 
 	// 日期选择
@@ -327,6 +376,7 @@ Page({
 			selectedPet: pet,
 			showPetPickerModal: false
 		})
+		this.checkCanPublish()
 	},
 
 	goToAddPet() {
@@ -504,15 +554,12 @@ Page({
 				title: '保存中...'
 			})
 			const data = {
-				content: this.data.content,
+				content: this.getSubmitContent(),
 				mediaList: this.data.mediaList,
 				location: this.data.location,
 				moodTag: this.data.selectedTag,
 				recordDate: this.data.selectedDate,
-				petId: this.data.selectedpet.id,
-				isBold: this.data.isBold,
-				isItalic: this.data.isItalic,
-				isList: this.data.isList
+				petId: this.data.selectedPet && this.data.selectedPet.petId
 			}
 
 			let res
@@ -556,13 +603,21 @@ Page({
 		}
 
 		// 保存到全局用于预览
+		const previewContent = this.getSubmitContent()
 		app.globalData.previewRecord = {
-			content: this.data.content,
+			content: previewContent,
+			isRichContent: /<\/?[a-z][\s\S]*>/i.test(previewContent),
 			mediaList: this.data.mediaList,
+			mediaUrls: this.data.mediaList,
 			location: this.data.location,
 			moodTag: this.data.selectedTag,
 			recordDate: this.data.selectedDate,
-			pet: this.data.selectedPet
+			pet: this.data.selectedPet,
+			petName: this.data.selectedPet && this.data.selectedPet.name,
+			petAvatarUrl: this.data.selectedPet && this.data.selectedPet.avatarUrl,
+			nickname: this.data.userInfo && this.data.userInfo.nickname,
+			avatarUrl: this.data.userInfo && this.data.userInfo.avatarUrl,
+			createTime: this.data.selectedDate
 		}
 
 		wx.navigateTo({
@@ -575,6 +630,14 @@ Page({
 		if (this.data.content === '' && this.data.mediaList.length === 0) {
 			wx.showToast({
 				title: '请先添加内容',
+				icon: 'none'
+			})
+			return
+		}
+
+		if (this.data.content.length > 5000) {
+			wx.showToast({
+				title: '日记内容不能超过5000字',
 				icon: 'none'
 			})
 			return
@@ -595,14 +658,21 @@ Page({
 
 			// 先上传媒体文件
 			// 上传图片
-			const mediaUrls = await UploadImages({
-				tempFiles: this.data.mediaList
-			});
+			let images = [];
+			let mediaList= this.data.mediaList;
+			let mediaUrls ="";
+			if(mediaList.length>0){
+				mediaList.map(i => (
+					images.push(i.url)
+				))
+				mediaUrls = await UploadImages({
+					tempFiles: images
+				});
+			}
 			console.log(mediaUrls)
 			const petAgeDays = calculatePetAge(this.data.selectedPet.adoptDate || this.data.selectedPet.birthDate)
-
 			const data = {
-				content: this.data.content,
+				content: this.getSubmitContent(),
 				mediaUrls: mediaUrls.join(','),
 				location: this.data.location,
 				moodTag: this.data.selectedTag,

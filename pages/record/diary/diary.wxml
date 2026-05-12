@@ -24,28 +24,53 @@
 
   <!-- 富文本编辑器 -->
   <view class="editor-section">
-    <textarea 
-      class="content-editor"
+    <editor
+      id="diaryEditor"
+      class="content-editor rich-editor"
       placeholder="记录今天和{{selectedPet.name || 'TA'}}的温暖时光..."
-      maxlength="5000"
-      bindinput="onContentInput"
-      value="{{content}}"
-    ></textarea>
+      bindready="onEditorReady"
+      bindinput="onEditorInput"
+      bindstatuschange="onEditorStatusChange"
+      show-img-size="{{true}}"
+      show-img-toolbar="{{true}}"
+      show-img-resize="{{true}}"
+    ></editor>
     
     <!-- 格式工具栏 -->
     <view class="format-toolbar">
-      <!-- <view class="format-btn {{isBold ? 'active' : ''}}" bindtap="toggleBold">
+      <view class="format-btn {{editorFormats.bold ? 'active' : ''}}" bindtap="formatEditor" data-name="bold">
         <text>B</text>
       </view>
-      <view class="format-btn {{isItalic ? 'active' : ''}}" bindtap="toggleItalic">
-        <text style="font-style: italic;">I</text>
+      <view class="format-btn {{editorFormats.italic ? 'active' : ''}}" bindtap="formatEditor" data-name="italic">
+        <text class="italic-text">I</text>
       </view>
-      <view class="format-btn {{isList ? 'active' : ''}}" bindtap="toggleList">
-        <text>☰</text>
-      </view> -->
+      <view class="format-btn {{editorFormats.underline ? 'active' : ''}}" bindtap="formatEditor" data-name="underline">
+        <text class="underline-text">U</text>
+      </view>
+      <view class="format-btn {{editorFormats.header === 'h2' ? 'active' : ''}}" bindtap="formatEditor" data-name="header" data-value="h2">
+        <text>H</text>
+      </view>
+      <view class="format-btn {{editorFormats.list === 'bullet' ? 'active' : ''}}" bindtap="formatEditor" data-name="list" data-value="bullet">
+        <text>•</text>
+      </view>
+      <view class="format-btn {{editorFormats.list === 'ordered' ? 'active' : ''}}" bindtap="formatEditor" data-name="list" data-value="ordered">
+        <text>1.</text>
+      </view>
+      <view class="format-btn {{editorFormats.align === 'center' ? 'active' : ''}}" bindtap="formatEditor" data-name="align" data-value="center">
+        <text>居</text>
+      </view>
       <view class="format-separator"></view>
       <view class="format-btn" bindtap="insertEmoji">
         <text>😊</text>
+      </view>
+      <view class="format-btn" bindtap="undoEditor">
+        <text>↶</text>
+      </view>
+      <view class="format-btn" bindtap="redoEditor">
+        <text>↷</text>
+      </view>
+      <view class="format-btn danger" bindtap="clearEditor">
+        <text>清</text>
       </view>
     </view>
 

@@ -88,6 +88,7 @@ Page({
 					...item,
 					typeIcon: this.getTypeIcon(item.recordType),
 					typeName: this.getTypeName(item.recordType),
+					isRichContent: this.isRichTextContent(item.content),
 					mediaUrls:formatImgUrl(item.mediaUrls),
 				}))
 
@@ -110,6 +111,10 @@ Page({
 				isRefreshing: false
 			})
 		}
+	},
+
+	isRichTextContent(content = '') {
+		return /<\/?[a-z][\s\S]*>/i.test(content)
 	},
 
 	// 获取类型图标

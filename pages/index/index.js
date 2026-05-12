@@ -189,6 +189,7 @@ Page({
 				const formattedRecords = records.map(record => ({
 					...record,
 					mediaUrls: formatImgUrl(record.mediaUrls),
+					isRichContent: this.isRichTextContent(record.content),
 					createTime: formatTime(new Date(record.createTime), 'yyyy.MM.dd'),
 					petAgeDays: calculatePetAge(this.data.currentPet.adoptDate, new Date(record.createTime))
 				}))
@@ -208,6 +209,10 @@ Page({
 				isRefreshing: false
 			})
 		}
+	},
+
+	isRichTextContent(content = '') {
+		return /<\/?[a-z][\s\S]*>/i.test(content)
 	},
 
 	// 刷新数据

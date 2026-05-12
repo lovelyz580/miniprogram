@@ -122,7 +122,8 @@
           </view>
         </view>
         
-        <text class="item-text">{{item.content}}</text>
+        <rich-text class="item-text item-rich-text" wx:if="{{item.isRichContent && item.content}}" nodes="{{item.content}}"></rich-text>
+        <text class="item-text" wx:elif="{{item.content}}">{{item.content}}</text>
         
         <view class="item-footer">
           <!-- <view class="item-stats">

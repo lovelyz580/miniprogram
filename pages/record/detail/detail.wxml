@@ -54,8 +54,9 @@
     </view>
 
     <!-- 文字内容 -->
-    <text class="content-text" wx:if="{{record.content}}">{{record.content}}</text>
-    <text class="content-text" wx:if="{{record.description}}">{{record.description}}</text>
+    <rich-text class="content-text content-rich" wx:if="{{record.isRichContent && record.content}}" nodes="{{record.content}}"></rich-text>
+    <text class="content-text" wx:elif="{{record.content}}">{{record.content}}</text>
+    <text class="content-text" wx:if="{{record.description && !record.content}}">{{record.description}}</text>
 
     <!-- 媒体展示 -->
     <view class="media-section" wx:if="{{record.mediaUrls && record.mediaUrls.length > 0}}">
@@ -75,7 +76,7 @@
         <image
           wx:else
           src="{{item.url}}"
-          mode="aspectFill"
+          mode="{{record.mediaUrls.length === 1 ? 'widthFix' : 'aspectFill'}}"
           class="media-image"
           bindtap="previewMedia"
           data-index="{{index}}"
@@ -118,10 +119,10 @@
       <text class="action-icon">✏️</text>
       <text class="action-text">编辑</text>
     </view> -->
-    <view class="action-item" bindtap="onCopyLink">
+    <!-- <view class="action-item" bindtap="onCopyLink">
       <text class="action-icon">🔗</text>
       <text class="action-text">复制链接</text>
-    </view>
+    </view> -->
     <!-- <view class="action-item" bindtap="onReport">
       <text class="action-icon">🚫</text>
       <text class="action-text">举报</text>
@@ -181,12 +182,12 @@
       </view>
 
       <!-- 复制链接 -->
-      <view class="share-option" bindtap="onCopyLinkFromShare">
+      <!-- <view class="share-option" bindtap="onCopyLinkFromShare">
         <view class="share-icon-wrap share-icon-link">
           <text class="share-icon-emoji">🔗</text>
         </view>
         <text class="share-label">复制链接</text>
-      </view>
+      </view> -->
     </view>
 
     <!-- 取消按钮 -->

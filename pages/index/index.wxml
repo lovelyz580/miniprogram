@@ -47,7 +47,7 @@
         data-id="{{item.recordId}}"
       >
         <!-- 图片区域 -->
-        <view class="record-media">
+        <view class="record-media" wx:if="{{item.mediaUrls.length > 0}}">
           <image 
             class="record-image" 
             src="{{item.mediaUrls[0]}}" 
@@ -70,7 +70,8 @@
           </view>
 
           <!-- 文字内容 -->
-          <text class="record-text" wx:if="{{item.content}}">{{item.content}}</text>
+          <rich-text class="record-text record-rich-text" wx:if="{{item.isRichContent && item.content}}" nodes="{{item.content}}"></rich-text>
+          <text class="record-text" wx:elif="{{item.content}}">{{item.content}}</text>
 
           <!-- 元数据 -->
           <view class="record-meta">
