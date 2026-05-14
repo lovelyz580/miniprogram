@@ -352,7 +352,7 @@ Page({
 
 	// 检查是否可以发布
 	checkCanPublish() {
-		const canPublish = this.data.selectedTag !== '' && this.data.mediaList.length > 0
+		const canPublish = this.data.selectedTag !== '' || this.data.mediaList.length > 0 || this.data.content.trim() !== ''
 		this.setData({
 			canPublish
 		})

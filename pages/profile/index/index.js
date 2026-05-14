@@ -66,31 +66,14 @@ Page({
 
 	// 获取宠物列表
 	async getPetList() {
-		if (!this.data.userInfo) {
-			// 未登录在 checkLoginForAvatar 会跳转，这里直接中断即可
-			return
-		}
-		let userId = this.data.userInfo.userId;
-		try {
-			const res = await request({
-				url: urls.PetList,
-				method: 'GET',
-				data:{
-					userId:userId
-				}
+		if (!this.data.userInfo) return
+		const result = await app.refreshPetList(this.data.userInfo.userId)
+		if (result) {
+			const petId = wx.getStorageSync('petId')
+			this.setData({
+				petList: result.petList,
+				petId: petId || (result.petList.length > 0 ? result.petList[0].petId : null)
 			})
-
-			if (res.code === 200) {
-				const petList = res.data || []
-				const petId = wx.getStorageSync('petId')
-
-				this.setData({
-					petList,
-					petId: petId || (petList.length > 0 ? petList[0].petId : null)
-				})
-			}
-		} catch (err) {
-			console.error('获取宠物列表失败', err)
 		}
 	},
 

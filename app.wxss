@@ -42,3 +42,37 @@ image {
 .theme-muted {
   color: #9B7B63;
 }
+
+/* 骨架屏通用动画 */
+@keyframes skeletonPulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.4; }
+  100% { opacity: 1; }
+}
+
+.skeleton {
+  animation: skeletonPulse 1.5s ease-in-out infinite;
+}
+
+.skeleton-block {
+  background: linear-gradient(90deg, #F0E8E1 25%, #F7F1EC 50%, #F0E8E1 75%);
+  background-size: 200% 100%;
+  animation: skeletonPulse 1.5s ease-in-out infinite;
+  border-radius: 8rpx;
+}
+
+.skeleton-circle {
+  background: linear-gradient(90deg, #F0E8E1 25%, #F7F1EC 50%, #F0E8E1 75%);
+  background-size: 200% 100%;
+  animation: skeletonPulse 1.5s ease-in-out infinite;
+  border-radius: 50%;
+}
+
+.skeleton-card {
+  background: rgba(255,255,255,0.94);
+  border: 1rpx solid rgba(240,223,200,0.82);
+  border-radius: 24rpx;
+  box-shadow: 0 10rpx 28rpx rgba(146,103,67,0.09);
+  padding: 30rpx;
+  margin: 24rpx 30rpx;
+}

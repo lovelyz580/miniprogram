@@ -4,7 +4,10 @@ const {
 	request
 } = require('../../../utils/request')
 const {
-	formatTime,formatImgUrl
+	formatTime,
+	formatImgUrl,
+	isRichTextContent,
+	debounce
 } = require('../../../utils/util')
 const urls = require('../../../utils/api')
 Page({
@@ -32,11 +35,17 @@ Page({
 
 		// 弹窗控制
 		showCreateModal: false,
-		showSortModal: false
+		showSortModal: false,
+		// 骨架屏
+		showSkeleton: true
 	},
 
 	onLoad(options) {
-		// 如果有筛选参数
+		this.debouncedSearch = debounce(() => {
+			this.setData({ page: 1 })
+			this.getRecords()
+		}, 300)
+
 		if (options.type) {
 			this.setData({
 				filterType: options.type
@@ -88,7 +97,7 @@ Page({
 					...item,
 					typeIcon: this.getTypeIcon(item.recordType),
 					typeName: this.getTypeName(item.recordType),
-					isRichContent: this.isRichTextContent(item.content),
+					isRichContent: isRichTextContent(item.content),
 					mediaUrls:formatImgUrl(item.mediaUrls),
 				}))
 
@@ -96,12 +105,14 @@ Page({
 					records: this.data.page === 1 ? records : [...this.data.records, ...records],
 					hasMore: records.length >= this.data.pageSize,
 					isLoading: false,
-					isRefreshing: false
+					isRefreshing: false,
+					showSkeleton: false
 				})
 			} else {
 				this.setData({
 					isLoading: false,
-					isRefreshing: false
+					isRefreshing: false,
+					showSkeleton: false
 				})
 			}
 		} catch (err) {
@@ -111,10 +122,6 @@ Page({
 				isRefreshing: false
 			})
 		}
-	},
-
-	isRichTextContent(content = '') {
-		return /<\/?[a-z][\s\S]*>/i.test(content)
 	},
 
 	// 获取类型图标
@@ -158,11 +165,16 @@ Page({
 	},
 
 	// 搜索输入
+	// 搜索输入（防抖）
 	onSearchInput(e) {
 		this.setData({
 			searchKeyword: e.detail.value
 		})
+		this.debouncedSearch()
 	},
+
+	// 防抖搜索
+	debouncedSearch: null,
 
 	// 清除搜索
 	clearSearch() {

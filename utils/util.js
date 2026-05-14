@@ -1,7 +1,5 @@
 // utils/util.js
-import {
-	upload,imgUrl
-} from './api';
+const urls = require('./api');
 /**
  * 格式化时间
  * @param {Date|number|string} date 时间对象或时间戳
@@ -158,13 +156,13 @@ const validateImageSize = (fileSize) => {
  * @param {Array} [options.sourceType=['album', 'camera']] - 选择图片来源
  * @returns {Promise<string | string[]>} - 单张图返回URL字符串，多张图返回URL数组
  */
-export const UploadImages = ({tempFiles=tempFiles} = {}) => {
+const UploadImages = ({tempFiles=tempFiles} = {}) => {
 	return new Promise((resolve, reject) => {
 		// 3. 批量上传图片
 		const uploadPromises = tempFiles.map((tempFilePath) => {
 			return new Promise((uploadResolve, uploadReject) => {
 				wx.uploadFile({
-					url: `${upload}`, // 替换为你的上传接口地址
+					url: `${urls.upload}`, // 替换为你的上传接口地址
 					filePath: tempFilePath,
 					name: 'file',
 					formData: {},
@@ -219,10 +217,14 @@ function formatImgUrl(str) {
 		if (item.indexOf('http://') === 0 || item.indexOf('https://') === 0) {
 			result.push(item);
 		} else {
-			result.push(`${imgUrl}` + item);
+			result.push(`${urls.imgUrl}` + item);
 		}
 	}
 	return result;
+}
+
+function isRichTextContent(content = '') {
+	return /<\/?[a-z][\s\S]*>/i.test(content)
 }
 
 function ShowImgUrl(str) {
@@ -248,7 +250,7 @@ function ShowImgUrl(str) {
 		if (item.indexOf('http://') === 0 || item.indexOf('https://') === 0) {
 			result.push(item);
 		} else {
-			url = `${imgUrl}` + item;
+			url = `${urls.imgUrl}` + item;
 		}
 		if(isImage(item)){
 			result.push({url:url,type:'image'});
@@ -278,5 +280,6 @@ module.exports = {
 	throttle,
 	formatImgUrl,
 	UploadImages,
-	ShowImgUrl
+	ShowImgUrl,
+	isRichTextContent
 }

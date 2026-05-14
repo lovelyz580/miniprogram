@@ -167,30 +167,18 @@ Page({
 
 	// 获取宠物列表
 	async getPetList() {
-		try {
-			let userId = this.data.userInfo.userId;
-			const res = await request({
-				url: urls.PetList,
-				method: 'GET',
-				data: {
-					userId: userId
-				}
+		if (!this.data.userInfo) return
+		const result = await app.refreshPetList(this.data.userInfo.userId)
+		if (result) {
+			const petId = wx.getStorageSync('petId')
+			const currentPet = result.petList.find(p => p.petId === petId) || result.petList[0]
+			this.setData({
+				petList: result.petList,
+				selectedPet: currentPet
 			})
-			if (res.code === 200) {
-				const petList = res.data || []
-				const petId = wx.getStorageSync('petId')
-				const currentPet = petList.find(p => p.petId === petId) || petList[0]
-				this.setData({
-					petList,
-					selectedPet: currentPet || petList[0]
-				})
-				if (currentPet) {
-					this.calculatePetAge()
-				}
+			if (currentPet) {
+				this.calculatePetAge()
 			}
-			
-		} catch (err) {
-			console.error('获取宠物列表失败', err)
 		}
 	},
 

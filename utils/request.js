@@ -4,7 +4,7 @@
  * 网络请求封装
  */
 
-const app = getApp()
+let isRedirecting = false
 
 /**
  * 发起请求
@@ -25,7 +25,6 @@ function request(options) {
     loadingText = '加载中...'
   } = options
 
-  // 显示loading
   if (showLoading) {
     wx.showLoading({
       title: loadingText,
@@ -35,7 +34,7 @@ function request(options) {
 
   return new Promise((resolve, reject) => {
     wx.request({
-      url:  url,
+      url: url,
       method,
       data,
       header: {
@@ -47,21 +46,21 @@ function request(options) {
           wx.hideLoading()
         }
 
-        // 请求成功
         if (res.statusCode === 200) {
-          // // token过期
-          // if (res.data.code === 401) {
-          //   wx.removeStorageSync('token')
-          //   wx.removeStorageSync('userInfo')
-          //   wx.reLaunch({
-          //     url: '/pages/login/login'
-          //   })
-          //   reject(new Error('登录已过期'))
-          //   return
-          // }
+          if (res.data && (res.data.code === 401)) {
+            if (isRedirecting) return
+            isRedirecting = true
+            wx.removeStorageSync('token')
+            wx.removeStorageSync('userInfo')
+            wx.reLaunch({
+              url: '/pages/login/login',
+              complete: () => { isRedirecting = false }
+            })
+            reject(new Error('登录已过期'))
+            return
+          }
           resolve(res.data)
         } else {
-          // HTTP错误
           wx.showToast({
             title: '网络错误',
             icon: 'none'

@@ -26,7 +26,8 @@ Page({
     
     // 健康提醒
     reminders: [],
-    isLoading: false
+    isLoading: false,
+    showSkeleton: true
   },
 
   onLoad() {
@@ -55,6 +56,8 @@ Page({
       }
     } catch (err) {
       console.error('初始化失败', err)
+    } finally {
+      this.setData({ showSkeleton: false })
     }
   },
 
@@ -87,42 +90,21 @@ Page({
       this.setData({ userInfo })
     }
   },
-  // 获取宠物列表
-  async getPetList() {
-		console.log("获取宠物列表");
-		if (!this.data.userInfo) {
-			// 未登录在 checkLoginForAvatar 会跳转，这里直接中断即可
-			return
+	// 获取宠物列表
+	async getPetList() {
+		if (!this.data.userInfo) return
+		const result = await app.refreshPetList(this.data.userInfo.userId)
+		if (result) {
+			this.setData({
+				petList: result.petList,
+				currentPet: result.currentPet
+			})
+			if (result.currentPet) {
+				const petAge = calculatePetAgeFormat(result.currentPet.birthDate || result.currentPet.adoptDate)
+				this.setData({ petAge })
+			}
 		}
-    try {
-			let userId = this.data.userInfo.userId;
-      const res = await request({
-				url: urls.PetList,
-				method: 'GET',
-				data:{
-					userId:userId
-				}
-      })
-      if (res.code === 200) {
-        const petList = res.data || []
-        const petId = wx.getStorageSync('petId')
-        const currentPet = petList.find(p => p.petId === petId) || petList[0]
-				wx.setStorageSync('petList', petList)
-        this.setData({ 
-          petList,
-          currentPet
-        })
-        
-        if (currentPet) {
-          wx.setStorageSync('petId', currentPet.petId)
-          const petAge = calculatePetAgeFormat(currentPet.birthDate || currentPet.adoptDate)
-          this.setData({ petAge })
-        }
-      }
-    } catch (err) {
-      console.error('获取宠物列表失败', err)
-    }
-  },
+	},
 
   // 获取健康概览
   async getHealthOverview() {

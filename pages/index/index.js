@@ -6,7 +6,8 @@ const {
 const {
 	formatTime,
 	calculatePetAge,
-	formatImgUrl
+	formatImgUrl,
+	isRichTextContent
 } = require('../../utils/util')
 const urls = require('../../utils/api')
 Page({
@@ -34,7 +35,9 @@ Page({
 		// 弹窗控制
 		showRecordModal: false,
 		showPetModal: false,
-		showQuestion: false
+		showQuestion: false,
+		// 骨架屏
+		showSkeleton: true
 	},
 
 	onLoad() {
@@ -63,6 +66,8 @@ Page({
 				title: '加载失败',
 				icon: 'none'
 			})
+		} finally {
+			this.setData({ showSkeleton: false })
 		}
 	},
 	async getSysinfo() {
@@ -98,34 +103,13 @@ Page({
 	},
 	// 获取宠物列表
 	async getPetList() {
-		console.log("获取宠物列表");
-		if (!this.data.userInfo) {
-			// 未登录在 checkLoginForAvatar 会跳转，这里直接中断即可
-			return
-		}
-		try {
-			let userId = this.data.userInfo.userId;
-			const res = await request({
-				url: urls.PetList,
-				method: 'GET',
-				data: {
-					userId: userId
-				}
+		if (!this.data.userInfo) return
+		const result = await app.refreshPetList(this.data.userInfo.userId)
+		if (result) {
+			this.setData({
+				petList: result.petList,
+				currentPet: result.currentPet
 			})
-			if (res.code === 200) {
-				const petList = res.data || []
-				const petId = wx.getStorageSync('petId')
-				const currentPet = petList.find(p => p.petId === petId) || petList[0]
-				this.setData({
-					petList,
-					currentPet
-				})
-				if (currentPet) {
-					wx.setStorageSync('petId', currentPet.petId)
-				}
-			}
-		} catch (err) {
-			console.error('获取宠物列表失败', err)
 		}
 	},
 
@@ -189,7 +173,7 @@ Page({
 				const formattedRecords = records.map(record => ({
 					...record,
 					mediaUrls: formatImgUrl(record.mediaUrls),
-					isRichContent: this.isRichTextContent(record.content),
+					isRichContent: isRichTextContent(record.content),
 					createTime: formatTime(new Date(record.createTime), 'yyyy.MM.dd'),
 					petAgeDays: calculatePetAge(this.data.currentPet.adoptDate, new Date(record.createTime))
 				}))
@@ -209,10 +193,6 @@ Page({
 				isRefreshing: false
 			})
 		}
-	},
-
-	isRichTextContent(content = '') {
-		return /<\/?[a-z][\s\S]*>/i.test(content)
 	},
 
 	// 刷新数据

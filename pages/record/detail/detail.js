@@ -1,7 +1,7 @@
 // detail.js
 const app = getApp()
 const { request } = require('../../../utils/request')
-const { ShowImgUrl, calculatePetAgeFormat } = require('../../../utils/util')
+const { ShowImgUrl, calculatePetAgeFormat, isRichTextContent } = require('../../../utils/util')
 const urls = require('../../../utils/api')
 
 Page({
@@ -38,7 +38,7 @@ Page({
 				isPreview: true,
 				record: {
 					...(app.globalData.previewRecord || {}),
-					isRichContent: this.isRichTextContent((app.globalData.previewRecord || {}).content)
+					isRichContent: isRichTextContent((app.globalData.previewRecord || {}).content)
 				}
 			})
 		} else if (options.id) {
@@ -66,7 +66,7 @@ Page({
 					record: {
 						...record,
 						petAgeAtDate: age,
-						isRichContent: this.isRichTextContent(record.content),
+						isRichContent: isRichTextContent(record.content),
 						mediaUrls: ShowImgUrl(record.mediaUrls),
 					},
 					isOwner: userInfo && record.userId === userInfo.userId
@@ -79,8 +79,26 @@ Page({
 		}
 	},
 
-	isRichTextContent(content = '') {
-		return /<\/?[a-z][\s\S]*>/i.test(content)
+	getPlainContent(content = '') {
+		return String(content)
+			.replace(/<br\s*\/?>/gi, '\n')
+			.replace(/<\/p>|<\/div>|<\/h[1-6]>|<\/li>/gi, '\n')
+			.replace(/<[^>]+>/g, '')
+			.replace(/&nbsp;/gi, ' ')
+			.replace(/&lt;/gi, '<')
+			.replace(/&gt;/gi, '>')
+			.replace(/&amp;/gi, '&')
+			.replace(/&quot;/gi, '"')
+			.replace(/&#39;/gi, "'")
+			.replace(/\n{3,}/g, '\n\n')
+			.trim()
+	},
+
+	getShareTitle(record) {
+		const content = this.getPlainContent(record.content || record.description || '')
+		return content
+			? content.slice(0, 30) + (content.length > 30 ? '...' : '')
+			: `${record.petName || '宠物'}的温暖记录`
 	},
 
 	goBack() { wx.navigateBack() },
@@ -183,9 +201,7 @@ Page({
 		const { record, recordId } = this.data
 		const coverUrl = record.mediaUrls && record.mediaUrls[0] && record.mediaUrls[0].url
 		return {
-			title: record.content
-				? record.content.slice(0, 30) + (record.content.length > 30 ? '...' : '')
-				: `${record.petName || '宠物'}的温暖记录`,
+			title: this.getShareTitle(record),
 			path: `/pages/record/detail/detail?id=${recordId}`,
 			imageUrl: coverUrl || ''
 		}
@@ -196,9 +212,7 @@ Page({
 		const { record, recordId } = this.data
 		const coverUrl = record.mediaUrls && record.mediaUrls[0] && record.mediaUrls[0].url
 		return {
-			title: record.content
-				? record.content.slice(0, 30) + (record.content.length > 30 ? '...' : '')
-				: `${record.petName || '宠物'}的温暖记录`,
+			title: this.getShareTitle(record),
 			query: `id=${recordId}`,
 			imageUrl: coverUrl || ''
 		}
@@ -214,19 +228,70 @@ Page({
 		})
 
 		try {
+			// 0. 初始化 Canvas
+			const canvasInfo = await this.getCanvasNode()
+			this.canvasNode = canvasInfo.node
+			this.canvasCtx = canvasInfo.ctx
 			// 1. 获取小程序码
 			await this.fetchQrCode()
 			// 2. 下载所需图片资源
 			const assets = await this.downloadAssets()
-			// 3. 绘制 Canvas
-			await this.drawPosterCanvas(assets)
-			// 4. 导出图片
+			// 3. 将下载的图片路径转换为 Image 对象
+			const images = await this.loadPosterImages(assets)
+			// 4. 绘制 Canvas
+			this.drawPosterCanvas(images)
+			// 5. 导出图片
 			await this.exportCanvas()
 		} catch (err) {
 			console.error('生成海报失败', err)
 			this.setData({ posterGenerating: false })
 			wx.showToast({ title: '生成失败，请重试', icon: 'none' })
 		}
+	},
+
+	// 初始化 Canvas 节点（Canvas 2D API）
+	getCanvasNode() {
+		return new Promise((resolve, reject) => {
+			const query = wx.createSelectorQuery()
+			query.select('#posterCanvas')
+				.fields({ node: true, size: true })
+				.exec((res) => {
+					if (!res || !res[0]) {
+						reject(new Error('Canvas not found'))
+						return
+					}
+					const canvas = res[0].node
+					const ctx = canvas.getContext('2d')
+					const dpr = wx.getSystemInfoSync().pixelRatio
+					canvas.width = this.data.posterW * dpr
+					canvas.height = this.data.posterH * dpr
+					ctx.scale(dpr, dpr)
+					resolve({ node: canvas, ctx })
+				})
+		})
+	},
+
+	// 加载图片到 Canvas Image 对象
+	async loadPosterImages(assets) {
+		const images = {}
+		for (const key of ['cover', 'avatar', 'qr']) {
+			if (assets[key]) {
+				images[key] = await this.loadCanvasImage(assets[key])
+			} else {
+				images[key] = null
+			}
+		}
+		return images
+	},
+
+	loadCanvasImage(src) {
+		return new Promise((resolve) => {
+			if (!src) { resolve(null); return }
+			const img = this.canvasNode.createImage()
+			img.onload = () => resolve(img)
+			img.onerror = () => resolve(null)
+			img.src = src
+		})
 	},
 
 	// 获取小程序码
@@ -283,177 +348,194 @@ Page({
 		})
 	},
 
-	// 绘制海报 Canvas
-	drawPosterCanvas(assets) {
-		return new Promise((resolve, reject) => {
-			const { record } = this.data
-			const W = this.data.posterW   // 375
-			const H = this.data.posterH   // 667
-			const ctx = wx.createCanvasContext('posterCanvas')
+	// 绘制海报 Canvas（Canvas 2D API）
+	drawPosterCanvas(images) {
+		const ctx = this.canvasCtx
+		const { record } = this.data
+		const W = this.data.posterW	 // 375
+		const H = this.data.posterH	 // 667
 
-			// ── 背景 ──────────────────────────────────────────
-			const bg = ctx.createLinearGradient(0, 0, 0, H)
-			bg.addColorStop(0, '#FFFBF5')
-			bg.addColorStop(1, '#FFE6D6')
-			ctx.setFillStyle(bg)
-			ctx.fillRect(0, 0, W, H)
+		// ── 背景 ──────────────────────────────────────────
+		const bg = ctx.createLinearGradient(0, 0, 0, H)
+		bg.addColorStop(0, '#FFFBF5')
+		bg.addColorStop(1, '#FFE6D6')
+		ctx.fillStyle = bg
+		ctx.fillRect(0, 0, W, H)
 
-			// 装饰圆
-			ctx.setFillStyle('rgba(255,183,77,0.12)')
-			ctx.beginPath(); ctx.arc(W * 0.85, 60, 80, 0, Math.PI * 2); ctx.fill()
-			ctx.beginPath(); ctx.arc(W * 0.1, H - 80, 60, 0, Math.PI * 2); ctx.fill()
+		// 装饰圆
+		ctx.fillStyle = 'rgba(255,183,77,0.12)'
+		ctx.beginPath(); ctx.arc(W * 0.85, 60, 80, 0, Math.PI * 2); ctx.fill()
+		ctx.beginPath(); ctx.arc(W * 0.1, H - 80, 60, 0, Math.PI * 2); ctx.fill()
 
-			// ── 顶部品牌栏 ────────────────────────────────────
-			ctx.setFillStyle('#FFFFFF')
-			this.roundRect(ctx, 20, 20, W - 40, 70, 16)
+		// ── 顶部品牌栏 ────────────────────────────────────
+		ctx.fillStyle = '#FFFFFF'
+		this.roundRect(ctx, 20, 20, W - 40, 70, 16)
+		ctx.fill()
+
+		ctx.font = '22px sans-serif'
+		ctx.fillStyle = '#FF8A65'
+		ctx.textAlign = 'left'
+		ctx.textBaseline = 'middle'
+		ctx.fillText('🐾 爪印记忆', 36, 55)
+
+		ctx.font = '16px sans-serif'
+		ctx.fillStyle = '#A89F9A'
+		ctx.textAlign = 'right'
+		ctx.fillText(record.createTime || '', W - 36, 55)
+
+		// ── 封面图（保持原比例，居中裁剪）────────────────────────
+		const imgY = 108
+		const imgH = 200
+		const coverW = W - 40
+		if (images.cover) {
+			const imgW = images.cover.width
+			const imgH_actual = images.cover.height
+			const ratio = Math.max(coverW / imgW, imgH / imgH_actual)
+			const drawW = imgW * ratio
+			const drawH = imgH_actual * ratio
+			const drawX = 20 + (coverW - drawW) / 2
+			const drawY = imgY + (imgH - drawH) / 2
+			ctx.save()
+			this.roundRect(ctx, 20, imgY, coverW, imgH, 16)
+			ctx.clip()
+			ctx.drawImage(images.cover, drawX, drawY, drawW, drawH)
+			ctx.restore()
+		} else {
+			const ph = ctx.createLinearGradient(20, imgY, W - 20, imgY + imgH)
+			ph.addColorStop(0, '#FFE0CC')
+			ph.addColorStop(1, '#FFDAB9')
+			ctx.fillStyle = ph
+			this.roundRect(ctx, 20, imgY, W - 40, imgH, 16)
 			ctx.fill()
+			ctx.font = '48px sans-serif'
+			ctx.fillStyle = 'rgba(255,138,101,0.5)'
+			ctx.textAlign = 'center'
+			ctx.textBaseline = 'middle'
+			ctx.fillText('🐾', W / 2, imgY + imgH / 2)
+		}
 
-			ctx.setFontSize(22)
-			ctx.setFillStyle('#FF8A65')
-			ctx.setTextAlign('left')
-			ctx.fillText('🐾 爪印记忆', 36, 62)
-
-			ctx.setFontSize(16)
-			ctx.setFillStyle('#A89F9A')
-			ctx.setTextAlign('right')
-			ctx.fillText(record.createTime || '', W - 36, 62)
-
-			// ── 封面图 ────────────────────────────────────────
-			const imgY = 108
-			const imgH = 200
-			if (assets.cover) {
-				ctx.save()
-				this.roundRect(ctx, 20, imgY, W - 40, imgH, 16)
-				ctx.clip()
-				ctx.drawImage(assets.cover, 20, imgY, W - 40, imgH)
-				ctx.restore()
-			} else {
-				const ph = ctx.createLinearGradient(20, imgY, W - 20, imgY + imgH)
-				ph.addColorStop(0, '#FFE0CC')
-				ph.addColorStop(1, '#FFDAB9')
-				ctx.setFillStyle(ph)
-				this.roundRect(ctx, 20, imgY, W - 40, imgH, 16)
-				ctx.fill()
-				ctx.setFontSize(48)
-				ctx.setFillStyle('rgba(255,138,101,0.5)')
-				ctx.setTextAlign('center')
-				ctx.fillText('🐾', W / 2, imgY + imgH / 2 + 16)
-			}
-
-			// 图片数量角标
-			if (record.mediaUrls && record.mediaUrls.length > 1) {
-				ctx.setFillStyle('rgba(0,0,0,0.45)')
-				this.roundRect(ctx, W - 70, imgY + imgH - 36, 50, 26, 8)
-				ctx.fill()
-				ctx.setFontSize(14)
-				ctx.setFillStyle('#FFFFFF')
-				ctx.setTextAlign('center')
-				ctx.fillText(`+${record.mediaUrls.length - 1}`, W - 45, imgY + imgH - 17)
-			}
-
-			// ── 用户信息行 ────────────────────────────────────
-			const userY = imgY + imgH + 20
-			if (assets.avatar) {
-				ctx.save()
-				ctx.beginPath()
-				ctx.arc(44, userY + 20, 20, 0, Math.PI * 2)
-				ctx.clip()
-				ctx.drawImage(assets.avatar, 24, userY, 40, 40)
-				ctx.restore()
-			} else {
-				ctx.setFillStyle('#FFE0CC')
-				ctx.beginPath()
-				ctx.arc(44, userY + 20, 20, 0, Math.PI * 2)
-				ctx.fill()
-			}
-			ctx.setFontSize(18)
-			ctx.setFillStyle('#5C4A42')
-			ctx.setTextAlign('left')
-			ctx.fillText(record.nickname || '神秘铲屎官', 74, userY + 16)
-			ctx.setFontSize(14)
-			ctx.setFillStyle('#A89F9A')
-			ctx.fillText(`与 ${record.petName || 'TA'} 的温暖时光`, 74, userY + 34)
-
-			// ── 内容卡片 ──────────────────────────────────────
-			const cardY = userY + 56
-			const cardH = H - cardY - 120
-			ctx.setFillStyle('#FFFFFF')
-			ctx.setShadow(0, 4, 12, 'rgba(180,160,140,0.12)')
-			this.roundRect(ctx, 20, cardY, W - 40, cardH, 16)
+		// 图片数量角标
+		if (record.mediaUrls && record.mediaUrls.length > 1) {
+			ctx.fillStyle = 'rgba(0,0,0,0.45)'
+			this.roundRect(ctx, W - 70, imgY + imgH - 36, 50, 26, 8)
 			ctx.fill()
-			ctx.setShadow(0, 0, 0, 'transparent')
+			ctx.font = '14px sans-serif'
+			ctx.fillStyle = '#FFFFFF'
+			ctx.textAlign = 'center'
+			ctx.textBaseline = 'middle'
+			ctx.fillText(`+${record.mediaUrls.length - 1}`, W - 45, imgY + imgH - 23)
+		}
 
-			// 顶部橙色装饰条
-			ctx.setFillStyle('#FF8A65')
-			this.roundRect(ctx, 20, cardY, W - 40, 6, 3)
+		// ── 用户信息行 ────────────────────────────────────
+		const userY = imgY + imgH + 20
+		if (images.avatar) {
+			ctx.save()
+			ctx.beginPath()
+			ctx.arc(44, userY + 20, 20, 0, Math.PI * 2)
+			ctx.clip()
+			ctx.drawImage(images.avatar, 24, userY, 40, 40)
+			ctx.restore()
+		} else {
+			ctx.fillStyle = '#FFE0CC'
+			ctx.beginPath()
+			ctx.arc(44, userY + 20, 20, 0, Math.PI * 2)
 			ctx.fill()
+		}
+		ctx.font = '18px sans-serif'
+		ctx.fillStyle = '#5C4A42'
+		ctx.textAlign = 'left'
+		ctx.textBaseline = 'middle'
+		ctx.fillText(record.nickname || '神秘铲屎官', 74, userY + 16)
+		ctx.font = '14px sans-serif'
+		ctx.fillStyle = '#A89F9A'
+		ctx.fillText(`与 ${record.petName || 'TA'} 的温暖时光`, 74, userY + 36)
 
-			// 心情标签
-			let textStartY = cardY + 24
-			if (record.moodTag) {
-				ctx.setFillStyle('#FFF0E5')
-				this.roundRect(ctx, 36, textStartY, 100, 28, 8)
-				ctx.fill()
-				ctx.setFontSize(14)
-				ctx.setFillStyle('#FF8A65')
-				ctx.setTextAlign('left')
-				ctx.fillText(record.moodTag, 46, textStartY + 19)
-				textStartY += 40
-			}
+		// ── 内容卡片 ──────────────────────────────────────
+		const cardY = userY + 56
+		const cardH = H - cardY - 120
+		ctx.fillStyle = '#FFFFFF'
+		ctx.shadowOffsetX = 0
+		ctx.shadowOffsetY = 4
+		ctx.shadowBlur = 12
+		ctx.shadowColor = 'rgba(180,160,140,0.12)'
+		this.roundRect(ctx, 20, cardY, W - 40, cardH, 16)
+		ctx.fill()
+		ctx.shadowOffsetX = 0
+		ctx.shadowOffsetY = 0
+		ctx.shadowBlur = 0
+		ctx.shadowColor = 'transparent'
 
-			// 正文（最多 5 行）
-			const content = record.content || record.description || ''
-			if (content) {
-				ctx.setFontSize(17)
-				ctx.setFillStyle('#4A3E38')
-				ctx.setTextAlign('left')
-				const maxW = W - 40 - 32 * 2
-				const lines = this.wrapText(content, maxW, 17)
-				const maxLines = 5
-				lines.slice(0, maxLines).forEach((line, i) => {
-					const isLast = i === maxLines - 1 && lines.length > maxLines
-					ctx.fillText(isLast ? line.slice(0, -1) + '...' : line, 52, textStartY + 22 + i * 28)
-				})
-			}
+		// 顶部橙色装饰条
+		ctx.fillStyle = '#FF8A65'
+		this.roundRect(ctx, 20, cardY, W - 40, 6, 3)
+		ctx.fill()
 
-			// 位置
-			if (record.location) {
-				ctx.setFontSize(14)
-				ctx.setFillStyle('#A89F9A')
-				ctx.setTextAlign('left')
-				ctx.fillText(`📍 ${record.location}`, 36, cardY + cardH - 20)
-			}
-
-			// ── 底部：小程序码 + 提示 ─────────────────────────
-			const footerY = H - 110
-			ctx.setFillStyle('#FFFFFF')
-			this.roundRect(ctx, 20, footerY, W - 40, 90, 16)
+		// 心情标签
+		let textStartY = cardY + 24
+		if (record.moodTag) {
+			ctx.fillStyle = '#FFF0E5'
+			this.roundRect(ctx, 36, textStartY, 100, 28, 8)
 			ctx.fill()
+			ctx.font = '14px sans-serif'
+			ctx.fillStyle = '#FF8A65'
+			ctx.textAlign = 'left'
+			ctx.textBaseline = 'middle'
+			ctx.fillText(record.moodTag, 46, textStartY + 14)
+			textStartY += 40
+		}
 
-			if (assets.qr) {
-				ctx.drawImage(assets.qr, W - 100, footerY + 10, 70, 70)
-			} else {
-				// 无小程序码时绘制占位
-				ctx.setFillStyle('#F5F0EB')
-				this.roundRect(ctx, W - 100, footerY + 10, 70, 70, 8)
-				ctx.fill()
-				ctx.setFontSize(12)
-				ctx.setFillStyle('#BDB3AC')
-				ctx.setTextAlign('center')
-				ctx.fillText('小程序码', W - 65, footerY + 50)
-			}
+		// 正文（最多 5 行）
+		const content = this.getPlainContent(record.content || record.description || '')
+		if (content) {
+			ctx.font = '17px sans-serif'
+			ctx.fillStyle = '#4A3E38'
+			ctx.textAlign = 'left'
+			ctx.textBaseline = 'middle'
+			const maxW = W - 40 - 32 * 2
+			const lines = this.wrapText(content, maxW, 17)
+			const maxLines = 5
+			lines.slice(0, maxLines).forEach((line, i) => {
+				const isLast = i === maxLines - 1 && lines.length > maxLines
+				ctx.fillText(isLast ? line.slice(0, -1) + '...' : line, 52, textStartY + 22 + i * 28)
+			})
+		}
 
-			ctx.setFontSize(16)
-			ctx.setFillStyle('#5C4A42')
-			ctx.setTextAlign('left')
-			ctx.fillText('扫码查看完整记录', 36, footerY + 34)
-			ctx.setFontSize(13)
-			ctx.setFillStyle('#A89F9A')
-			ctx.fillText('爪印记忆 · 记录与TA的温暖时光', 36, footerY + 56)
+		// 位置
+		if (record.location) {
+			ctx.font = '14px sans-serif'
+			ctx.fillStyle = '#A89F9A'
+			ctx.textAlign = 'left'
+			ctx.textBaseline = 'middle'
+			ctx.fillText(`📍 ${record.location}`, 36, cardY + cardH - 14)
+		}
 
-			// ── 绘制完成 ──────────────────────────────────────
-			ctx.draw(false, () => setTimeout(resolve, 400))
-		})
+		// ── 底部：小程序码 + 提示 ─────────────────────────
+		const footerY = H - 110
+		ctx.fillStyle = '#FFFFFF'
+		this.roundRect(ctx, 20, footerY, W - 40, 90, 16)
+		ctx.fill()
+
+		if (images.qr) {
+			ctx.drawImage(images.qr, W - 100, footerY + 10, 70, 70)
+		} else {
+			ctx.fillStyle = '#F5F0EB'
+			this.roundRect(ctx, W - 100, footerY + 10, 70, 70, 8)
+			ctx.fill()
+			ctx.font = '12px sans-serif'
+			ctx.fillStyle = '#BDB3AC'
+			ctx.textAlign = 'center'
+			ctx.textBaseline = 'middle'
+			ctx.fillText('小程序码', W - 65, footerY + 45)
+		}
+
+		ctx.font = '16px sans-serif'
+		ctx.fillStyle = '#5C4A42'
+		ctx.textAlign = 'left'
+		ctx.textBaseline = 'middle'
+		ctx.fillText('扫码查看完整记录', 36, footerY + 34)
+		ctx.font = '13px sans-serif'
+		ctx.fillStyle = '#A89F9A'
+		ctx.fillText('爪印记忆 · 记录与TA的温暖时光', 36, footerY + 58)
 	},
 
 	// 文本自动换行
@@ -495,13 +577,12 @@ Page({
 		ctx.closePath()
 	},
 
-	// 导出 Canvas 为图片
+	// 导出 Canvas 为图片（Canvas 2D API）
 	exportCanvas() {
 		return new Promise((resolve, reject) => {
 			wx.canvasToTempFilePath({
-				canvasId: 'posterCanvas',
-				fileType: 'jpg',
-				quality: 0.95,
+				canvas: this.canvasNode,
+				fileType: 'png',
 				success: (res) => {
 					this.setData({
 						posterTempPath: res.tempFilePath,

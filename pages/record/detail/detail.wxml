@@ -105,7 +105,8 @@
 
   <!-- 隐藏的 Canvas，用于绘制海报 -->
   <canvas
-    canvas-id="posterCanvas"
+    type="2d"
+    id="posterCanvas"
     class="poster-canvas-hidden"
     style="width:{{posterW}}px; height:{{posterH}}px;"
   ></canvas>

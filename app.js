@@ -1,33 +1,28 @@
 // app.js
+const urls = require('./utils/api')
+
 App({
   globalData: {
-    // 后端接口地址
     baseUrl: 'https://api.zhuayin.com',
-    // 用户信息
     userInfo: null,
-    // 当前宠物ID
-    currentPetId: null
+    currentPetId: null,
+    petList: null,
+    currentPet: null
   },
 
   onLaunch() {
-    // 检查登录状态
     this.checkLogin()
-    
-    // 获取系统信息
     this.getSystemInfo()
   },
 
-  // 检查登录状态
   checkLogin() {
     const token = wx.getStorageSync('token')
     const userInfo = wx.getStorageSync('userInfo')
-    
     if (token && userInfo) {
       this.globalData.userInfo = userInfo
     }
   },
 
-  // 获取系统信息
   getSystemInfo() {
     wx.getSystemInfo({
       success: (res) => {
@@ -39,6 +34,34 @@ App({
     })
   },
 
+  // 获取/刷新宠物列表（带缓存）
+  async refreshPetList(userId) {
+    if (!userId) {
+      const userInfo = wx.getStorageSync('userInfo')
+      if (!userInfo) return null
+      userId = userInfo.userId
+    }
+    const { request: req } = require('./utils/request')
+    try {
+      const res = await req({ url: urls.PetList, method: 'GET', data: { userId } })
+      if (res.code === 200) {
+        const petList = res.data || []
+        const petId = wx.getStorageSync('petId')
+        const currentPet = petList.find(p => p.petId === petId) || petList[0]
+        this.globalData.petList = petList
+        this.globalData.currentPet = currentPet
+        wx.setStorageSync('petList', petList)
+        if (currentPet) {
+          wx.setStorageSync('petId', currentPet.petId)
+        }
+        return { petList, currentPet }
+      }
+    } catch (err) {
+      console.error('获取宠物列表失败', err)
+    }
+    return null
+  },
+
   // 登录
   login() {
     return new Promise((resolve, reject) => {
@@ -46,11 +69,17 @@ App({
         success: async (res) => {
           if (res.code) {
             try {
-              // 发送code到后端换取token
-              const result = await this.request({
-                url: '/api/auth/login',
-                method: 'POST',
-                data: { code: res.code }
+              const result = await new Promise((resv, rej) => {
+                wx.request({
+                  url: this.globalData.baseUrl + '/api/auth/login',
+                  method: 'POST',
+                  data: { code: res.code },
+                  header: {
+                    'Content-Type': 'application/json'
+                  },
+                  success: (r) => resv(r.data),
+                  fail: rej
+                })
               })
               
               if (result.code === 0) {
@@ -80,25 +109,6 @@ App({
         desc: '用于完善用户资料',
         success: (res) => {
           resolve(res.userInfo)
-        },
-        fail: reject
-      })
-    })
-  },
-
-  // 封装请求方法
-  request(options) {
-    return new Promise((resolve, reject) => {
-      wx.request({
-        url: this.globalData.baseUrl + options.url,
-        method: options.method || 'GET',
-        data: options.data || {},
-        header: {
-          'Content-Type': 'application/json',
-          'Authorization': wx.getStorageSync('token') || ''
-        },
-        success: (res) => {
-          resolve(res.data)
         },
         fail: reject
       })
